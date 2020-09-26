@@ -1,0 +1,10 @@
+! $XFree86$
+
+#include "XClock"
+
+XClock.Clock.hourColor:		rgba:7f/00/00/c0
+XClock.Clock.minuteColor:	rgba:00/7f/7f/c0
+XClock.Clock.secondColor:	rgba:00/00/ff/80
+XClock.Clock.majorColor:	rgba:7f/00/00/c0
+XClock.Clock.minorColor:	rgba:00/7f/7f/c0
+

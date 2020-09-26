@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: X bitmaps
+Description: Bitmaps that are shared between X applications
+Version: @PACKAGE_VERSION@
+Cflags: -I${includedir}
+Libs:
