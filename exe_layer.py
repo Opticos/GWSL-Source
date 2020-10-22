@@ -30,10 +30,11 @@ class Cmd:
                 stderr=PIPE,
                 bufsize=1,
                 startupinfo=startupinfo,
-                universal_newlines=True)
+                universal_newlines=True,
+            )
 
             def listener(out, newqueue):
-                for line in iter(out.readline, b''):
+                for line in iter(out.readline, b""):
                     newqueue.put(line)
                 out.close()
 
@@ -61,14 +62,14 @@ class Cmd:
 
             read_queue = Queue()
             stdout_listener = Thread(
-                target=listener, args=[
-                    self.proc.stdout, read_queue])
+                target=listener, args=[self.proc.stdout, read_queue]
+            )
             stdout_listener.daemon = True
             stdout_listener.start()
 
             stderr_listener = Thread(
-                target=listener, args=[
-                    self.proc.stderr, read_queue])
+                target=listener, args=[self.proc.stderr, read_queue]
+            )
             stderr_listener.daemon = True
             stderr_listener.start()
 

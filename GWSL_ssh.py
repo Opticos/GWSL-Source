@@ -59,13 +59,7 @@ def get_login(machine):
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(
-        frame_1,
-        text="Username: ").grid(
-        row=0,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
@@ -73,13 +67,7 @@ def get_login(machine):
 
     link_user.focus_force()
 
-    tk.Label(
-        frame_1,
-        text="Password: ").grid(
-        row=1,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
 
     link_pass = ttk.Entry(frame_1, show="*")
 

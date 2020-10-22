@@ -27,9 +27,9 @@ icons = {}
 
 
 def hex_to_rgb(value):
-    value = value.lstrip('#')
+    value = value.lstrip("#")
     lv = len(value)
-    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+    return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
 
 def get_color():
@@ -44,9 +44,9 @@ def get_color():
         # key_value = QueryValueEx(key,'AccentColor')
 
         key = OpenKey(
-            registry,
-            r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent')
-        key_value2 = QueryValueEx(key, 'AccentPalette')
+            registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent"
+        )
+        key_value2 = QueryValueEx(key, "AccentPalette")
         value = key_value2[0]
         import codecs
 
@@ -57,8 +57,7 @@ def get_color():
         color = 4
 
         color = color * 3
-        return list(hex_to_rgb(
-            '#' + bins[color] + bins[color + 1] + bins[color + 2]))
+        return list(hex_to_rgb("#" + bins[color] + bins[color + 1] + bins[color + 2]))
 
         # Convert the interger to Hex and remove its offset
         accent_int = key_value[0]
@@ -68,7 +67,7 @@ def get_color():
 
         accent = accent_hex[4:6] + accent_hex[2:4] + accent_hex[0:2]
 
-        return hex_to_rgb('#' + accent)
+        return hex_to_rgb("#" + accent)
     except BaseException:
         return [0, 200, 200]
 
@@ -209,8 +208,7 @@ def pygame_icon(name, spec=None):
                     imager = pygame.image.load(filename).convert_alpha()
 
                 else:
-                    imager = pygame.image.load(
-                        asset_dir + "\\link.png").convert_alpha()
+                    imager = pygame.image.load(asset_dir + "\\link.png").convert_alpha()
         return imager
 
     except BaseException:
@@ -219,19 +217,14 @@ def pygame_icon(name, spec=None):
 
 
 def iris(
-        canvas,
-        pos,
-        size,
-        tint,
-        radius=10,
-        shadow_enabled=True,
-        shadow_size=0.08,
-        alpha=255):
+    canvas, pos, size, tint, radius=10, shadow_enabled=True, shadow_size=0.08, alpha=255
+):
     intensity = int((alpha / 255) * 30)
     s = pygame.Surface(size)
     s.blit(canvas, [0, 0], [pos[0], pos[1], size[0], size[1]])
     pygame.gfxdraw.filled_polygon(
-        s, [[0, 0], [size[0], 0], size, [0, size[1]]], tint + [intensity])
+        s, [[0, 0], [size[0], 0], size, [0, size[1]]], tint + [intensity]
+    )
     rad = radius
     b = pygame.image.tostring(s, "RGBA", False)
     b = PIL.Image.frombytes("RGBA", size, b)
@@ -243,27 +236,23 @@ def iris(
         w_expand = (size[0] / size[1]) - 1
         if w_expand == 0:
             w_expand = 1
-        shade = pygame.transform.scale(shadow,
-                                       [size[0] + 2 * w(shadow_size * w_expand),
-                                        size[1] + 2 * h(shadow_size)])
+        shade = pygame.transform.scale(
+            shadow,
+            [size[0] + 2 * w(shadow_size * w_expand), size[1] + 2 * h(shadow_size)],
+        )
         shadow_alpha = int((alpha / 255) * 150)
 
         shade.set_alpha(shadow_alpha)
 
-        canvas.blit(shade, [pos[0] - w(shadow_size * w_expand),
-                            pos[1] - h(shadow_size)])
+        canvas.blit(
+            shade, [pos[0] - w(shadow_size * w_expand), pos[1] - h(shadow_size)]
+        )
     canvas.blit(b, pos)
 
 
 def iris_light(
-        canvas,
-        pos,
-        size,
-        tint,
-        radius=10,
-        shadow_enabled=True,
-        shadow_size=0.08,
-        alpha=255):
+    canvas, pos, size, tint, radius=10, shadow_enabled=True, shadow_size=0.08, alpha=255
+):
     intensity = int((alpha / 255) * 30)
     size = [int(size[0]), int(size[1])]
     resolution = 30  # percentage of pixels to use for blur
@@ -273,8 +262,9 @@ def iris_light(
     s = pygame.transform.rotozoom(s, 0, (resolution / 100.0) * 1)
 
     size2 = s.get_size()
-    pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [
-        0, size2[1]]], tint + [intensity])
+    pygame.gfxdraw.filled_polygon(
+        s, [[0, 0], [size2[0], 0], size2, [0, size2[1]]], tint + [intensity]
+    )
     rad = radius
     b = pygame.image.tostring(s, "RGBA", False)
     b = PIL.Image.frombytes("RGBA", size2, b)
@@ -288,15 +278,17 @@ def iris_light(
         w_expand = (size[0] / size[1]) - 1
         if w_expand == 0:
             w_expand = 1
-        shade = pygame.transform.scale(shadow,
-                                       [size[0] + 2 * w(shadow_size * w_expand),
-                                        size[1] + 2 * h(shadow_size)])
+        shade = pygame.transform.scale(
+            shadow,
+            [size[0] + 2 * w(shadow_size * w_expand), size[1] + 2 * h(shadow_size)],
+        )
         shadow_alpha = int((alpha / 255) * 150)
 
         shade.set_alpha(shadow_alpha)
 
-        canvas.blit(shade, [pos[0] - w(shadow_size * w_expand),
-                            pos[1] - h(shadow_size)])
+        canvas.blit(
+            shade, [pos[0] - w(shadow_size * w_expand), pos[1] - h(shadow_size)]
+        )
 
     # b = pygame.transform.rotozoom(b, 0, (100.0 / resolution) * 1)
     b = pygame.transform.scale(b, size)
@@ -331,17 +323,18 @@ def toggle_mode():
 
 
 def iris2(
-        canvas,
-        pos,
-        size,
-        tint,
-        radius=10,
-        shadow_enabled=True,
-        rounded=0,
-        shadow_size=0.08,
-        alpha=255,
-        resolution=20,
-        anti_glitch=False):
+    canvas,
+    pos,
+    size,
+    tint,
+    radius=10,
+    shadow_enabled=True,
+    rounded=0,
+    shadow_size=0.08,
+    alpha=255,
+    resolution=20,
+    anti_glitch=False,
+):
     global fancy, mode
     intensity = int((alpha / 255) * 30)
     if intensity > 255:
@@ -369,25 +362,33 @@ def iris2(
 
     if not fancy:
         smooth_pad = 0
-    s = pygame.Surface([size[0] + int(2 * smooth_pad),
-                        size[1] + int(2 * smooth_pad)])  # , pygame.SRCALPHA)
+    s = pygame.Surface(
+        [size[0] + int(2 * smooth_pad), size[1] + int(2 * smooth_pad)]
+    )  # , pygame.SRCALPHA)
 
     if fancy:
-        s.blit(canvas, [0, 0], [pos[0] -
-                                smooth_pad, pos[1] -
-                                smooth_pad, size[0] +
-                                smooth_pad *
-                                2, size[1] +
-                                smooth_pad *
-                                2])  # , special_flags=pygame.BLEND_RGBA_ADD)
+        s.blit(
+            canvas,
+            [0, 0],
+            [
+                pos[0] - smooth_pad,
+                pos[1] - smooth_pad,
+                size[0] + smooth_pad * 2,
+                size[1] + smooth_pad * 2,
+            ],
+        )  # , special_flags=pygame.BLEND_RGBA_ADD)
         s = pygame.transform.rotozoom(s, 0, (resolution / 100.0) * 1)
         size2 = s.get_size()
         if tint:
-            pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [
-                0, size2[1]]], tint + [intensity])
+            pygame.gfxdraw.filled_polygon(
+                s, [[0, 0], [size2[0], 0], size2, [0, size2[1]]], tint + [intensity]
+            )
         if mode == "light":
-            pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [0, size2[1]]],
-                                          [255, 255, 255] + [int(70 * (alpha / 255))])
+            pygame.gfxdraw.filled_polygon(
+                s,
+                [[0, 0], [size2[0], 0], size2, [0, size2[1]]],
+                [255, 255, 255] + [int(70 * (alpha / 255))],
+            )
 
         rad = radius
         b = pygame.image.tostring(s, "RGBA", False)
@@ -407,10 +408,10 @@ def iris2(
         b = b.resize(size)
         if rounded != 0:
             b = imtools.round_image(
-                b, {}, False, None, rounded, 255, back_color="#00000000")
+                b, {}, False, None, rounded, 255, back_color="#00000000"
+            )
 
-        b = pygame.image.frombuffer(
-            b.tobytes(), b.size, b.mode).convert_alpha()
+        b = pygame.image.frombuffer(b.tobytes(), b.size, b.mode).convert_alpha()
 
     else:
         pass
@@ -430,22 +431,25 @@ def iris2(
         shadow_alpha = int((alpha / 255) * 150)
         s_cornera = s_corner.copy()
         s_cornera.set_alpha(shadow_alpha)
-        scaled_corner = pygame.transform.scale(
-            s_cornera, [shadow_width, shadow_width])
+        scaled_corner = pygame.transform.scale(s_cornera, [shadow_width, shadow_width])
 
         # TR
-        canvas.blit(
-            scaled_corner, [
-                pos[0] - shadow_width, pos[1] - shadow_width])
+        canvas.blit(scaled_corner, [pos[0] - shadow_width, pos[1] - shadow_width])
         # TL
-        canvas.blit(pygame.transform.rotate(scaled_corner, -90),
-                    [pos[0] + size[0], pos[1] - shadow_width])
+        canvas.blit(
+            pygame.transform.rotate(scaled_corner, -90),
+            [pos[0] + size[0], pos[1] - shadow_width],
+        )
         # BR
-        canvas.blit(pygame.transform.rotate(scaled_corner, -180),
-                    [pos[0] + size[0], pos[1] + size[1]])
+        canvas.blit(
+            pygame.transform.rotate(scaled_corner, -180),
+            [pos[0] + size[0], pos[1] + size[1]],
+        )
         # BL
-        canvas.blit(pygame.transform.rotate(scaled_corner, 90),
-                    [pos[0] - shadow_width, pos[1] + size[1]])
+        canvas.blit(
+            pygame.transform.rotate(scaled_corner, 90),
+            [pos[0] - shadow_width, pos[1] + size[1]],
+        )
         # edges
         s_edgea = s_edge.copy()
         s_edgea.set_alpha(shadow_alpha)
@@ -456,25 +460,22 @@ def iris2(
         # pygame.transform.rotozoom(s_edge, -90, 1)
         rotated_t = pygame.transform.rotate(s_edgea, -90)
         canvas.blit(
-            pygame.transform.scale(
-                rotated_t, [
-                    size[0], shadow_width]), [
-                pos[0], pos[1] - shadow_width])
+            pygame.transform.scale(rotated_t, [size[0], shadow_width]),
+            [pos[0], pos[1] - shadow_width],
+        )
         # L
         rotated_l = pygame.transform.flip(s_edgea, True, False)
         canvas.blit(
-            pygame.transform.scale(
-                rotated_l, [
-                    shadow_width, size[1]]), [
-                pos[0] + size[0], pos[1]])
+            pygame.transform.scale(rotated_l, [shadow_width, size[1]]),
+            [pos[0] + size[0], pos[1]],
+        )
 
         # B
         rotated_b = pygame.transform.rotate(s_edgea, 90)
         canvas.blit(
-            pygame.transform.scale(
-                rotated_b, [
-                    size[0], shadow_width]), [
-                pos[0], pos[1] + size[1]])
+            pygame.transform.scale(rotated_b, [size[0], shadow_width]),
+            [pos[0], pos[1] + size[1]],
+        )
 
     # b = pygame.transform.rotozoom(b, 0, (100.0 / resolution) * 1)
 
@@ -492,17 +493,27 @@ def iris2(
                                               [pos[0], pos[1] + size[1]]], tint + [int(50 * (alpha / 255))])
         """
         if mode == "light":
-            pygame.gfxdraw.filled_polygon(canvas, [pos,
-                                                   [pos[0] + size[0], pos[1]],
-                                                   [pos[0] + size[0], pos[1] + size[1]],
-                                                   [pos[0], pos[1] + size[1]]],
-                                          [255, 255, 255] + [int(255 * (alpha / 255))])
+            pygame.gfxdraw.filled_polygon(
+                canvas,
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                [255, 255, 255] + [int(255 * (alpha / 255))],
+            )
         else:
-            pygame.gfxdraw.filled_polygon(canvas, [pos,
-                                                   [pos[0] + size[0], pos[1]],
-                                                   [pos[0] + size[0], pos[1] + size[1]],
-                                                   [pos[0], pos[1] + size[1]]],
-                                          [50, 50, 50] + [int(255 * (alpha / 255))])
+            pygame.gfxdraw.filled_polygon(
+                canvas,
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                [50, 50, 50] + [int(255 * (alpha / 255))],
+            )
         """
         pygame.gfxdraw.filled_polygon(canvas, [pos,
                                                [pos[0] + size[0], pos[1]],
@@ -514,7 +525,7 @@ def iris2(
 def replace_color(img, color):
     data = np.array(img)
     red, green, blue, alpha = data.T
-    replaced_areas = (alpha != 0)
+    replaced_areas = alpha != 0
     data[..., :][replaced_areas.T] = tuple(color + [255])
     img2 = Image.fromarray(data)
     return img2
@@ -522,7 +533,8 @@ def replace_color(img, color):
 
 def add_shadow(surface):
     new_surf = pygame.Surface(
-        [surface.get_width() + 15, surface.get_height() + 15], pygame.SRCALPHA)
+        [surface.get_width() + 15, surface.get_height() + 15], pygame.SRCALPHA
+    )
     drop_shadow(new_surf, surface, [3, 3], alpha=80)
     new_surf.blit(surface, [8, 8], special_flags=pygame.BLEND_RGBA_ADD)
     return new_surf
@@ -550,10 +562,16 @@ def drop_shadow(canvas, surface, posit, radius=2, alpha=255, resolution=100):
 
     resolution = (r2 / size[0]) * 100
 
-    s = pygame.Surface([size[0] + int((100 / resolution) * radius * 3),
-                        size[1] + int((100 / resolution) * radius * 3)], pygame.SRCALPHA)
-    s.blit(surface, [int((100 / resolution) * radius),
-                     int((100 / resolution) * radius)])
+    s = pygame.Surface(
+        [
+            size[0] + int((100 / resolution) * radius * 3),
+            size[1] + int((100 / resolution) * radius * 3),
+        ],
+        pygame.SRCALPHA,
+    )
+    s.blit(
+        surface, [int((100 / resolution) * radius), int((100 / resolution) * radius)]
+    )
 
     size = s.get_size()
 
@@ -579,8 +597,13 @@ def drop_shadow(canvas, surface, posit, radius=2, alpha=255, resolution=100):
     b = pygame.image.frombuffer(b.tobytes(), b.size, b.mode).convert_alpha()
 
     b.set_alpha(int(80 * (alpha / 255)))
-    canvas.blit(b, [posit[0] - int(int((100 / resolution) * (radius / 2))),
-                    posit[1] - int((100 / resolution) * int(radius / 2))])
+    canvas.blit(
+        b,
+        [
+            posit[0] - int(int((100 / resolution) * (radius / 2))),
+            posit[1] - int((100 / resolution) * int(radius / 2)),
+        ],
+    )
 
 
 def noise(size, color, transparency, difference_range):
@@ -600,13 +623,12 @@ def noise(size, color, transparency, difference_range):
 
         for y in range(size[1]):
 
-            random_color = [color[0] + random.randrange(-difference_range,
-                                                        difference_range),
-                            color[1] + random.randrange(-difference_range,
-                                                        difference_range),
-                            color[2] + random.randrange(-difference_range,
-                                                        difference_range),
-                            transparency]
+            random_color = [
+                color[0] + random.randrange(-difference_range, difference_range),
+                color[1] + random.randrange(-difference_range, difference_range),
+                color[2] + random.randrange(-difference_range, difference_range),
+                transparency,
+            ]
 
             if random_color[0] < 0 or random_color[0] > 255:
                 random_color[0] = color[0]
@@ -621,8 +643,7 @@ def noise(size, color, transparency, difference_range):
 
             UIpix[x, y] = random_color
 
-    UI = pygame.image.frombuffer(
-        UI.tobytes(), UI.size, UI.mode).convert_alpha()
+    UI = pygame.image.frombuffer(UI.tobytes(), UI.size, UI.mode).convert_alpha()
 
     return UI
 
@@ -673,12 +694,7 @@ class iris_efficient:
     def __init__(self):
         self.last_image = None
 
-    def draw(
-            self,
-            canvas,
-            pos,
-            size,
-            tint):
+    def draw(self, canvas, pos, size, tint):
         iris_light(
             canvas,
             pos,
@@ -688,7 +704,8 @@ class iris_efficient:
             radius=10,
             shadow_enabled=True,
             shadow_size=0.08,
-            alpha=255)
+            alpha=255,
+        )
 
 
 def update():
@@ -732,8 +749,7 @@ def start_graphics(pg, assets):
     pygame.display.init()
     pygame.font.init()
     asset_dir = assets
-    s_corner = pygame.image.load(
-        asset_dir + "shadows/corner.png").convert_alpha()
+    s_corner = pygame.image.load(asset_dir + "shadows/corner.png").convert_alpha()
     s_edge = pygame.image.load(asset_dir + "shadows/edge.png").convert_alpha()
 
 

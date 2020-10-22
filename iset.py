@@ -6,12 +6,14 @@ path = None
 
 def create(path):
     with open(path, "w") as obj:
-        app = {"conf_ver": 3,
-               "general": {"clipboard": True, "position": "right"},
-               "graphics": {"window_mode": "multi"},
-               "putty": {"ip": None},
-               "distro_blacklist": ["docker"],
-               "app_blacklist": ["exampleblock"]}
+        app = {
+            "conf_ver": 3,
+            "general": {"clipboard": True, "position": "right"},
+            "graphics": {"window_mode": "multi"},
+            "putty": {"ip": None},
+            "distro_blacklist": ["docker"],
+            "app_blacklist": ["exampleblock"],
+        }
 
         json.dump(app, obj, indent=True)
         obj.close()

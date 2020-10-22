@@ -17,10 +17,10 @@ import iset
 
 cwd = os.getcwd()
 
-frozen = 'not'
-if getattr(sys, 'frozen', False):
+frozen = "not"
+if getattr(sys, "frozen", False):
     # we are running in a bundle
-    frozen = 'ever so'
+    frozen = "ever so"
     bundle_dir = sys._MEIPASS
 else:
     # we are running in a normal Python environment
@@ -67,14 +67,33 @@ def toggle_clipboard(systray, force="toggle"):
             else:
                 clip = "Enable"
 
-            menu = (("Default Window Mode", None,
-                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                    (clip + " Shared Clipboard", None, toggle_clipboard),
-                    ("GWSL Dashboard", None, open_dashboard),
-                    ("About", None, open_about),
-                    ("Quit", None, quits))
+            menu = (
+                (
+                    "Default Window Mode",
+                    None,
+                    [
+                        (
+                            "Switch to Multi Window Mode",
+                            bundle_dir + "\\assets\\" + "multi.ico",
+                            multi_mode,
+                        ),
+                        (
+                            "Switch to Single Window Mode",
+                            bundle_dir + "\\assets\\" + "single.ico",
+                            single_mode,
+                        ),
+                        (
+                            "Switch to Fullscreen Mode",
+                            bundle_dir + "\\assets\\" + "full.ico",
+                            full_mode,
+                        ),
+                    ],
+                ),
+                (clip + " Shared Clipboard", None, toggle_clipboard),
+                ("GWSL Dashboard", None, open_dashboard),
+                ("About", None, open_about),
+                ("Quit", None, quits),
+            )
 
             systray.shutdown()
             time.sleep(0.2)
@@ -87,12 +106,8 @@ def toggle_clipboard(systray, force="toggle"):
                 message = "GWSL - Single Window Mode"
 
             systray = tray(
-                bundle_dir +
-                "\\assets\\" +
-                ic,
-                message,
-                menu,
-                default_menu_index=5)
+                bundle_dir + "\\assets\\" + ic, message, menu, default_menu_index=5
+            )
             systray.start()
             restart_server()
 
@@ -112,14 +127,33 @@ def toggle_clipboard(systray, force="toggle"):
             else:
                 clip = "Enable"
 
-            menu = (("Default Window Mode", None,
-                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                    (clip + " Shared Clipboard", None, toggle_clipboard),
-                    ("GWSL Dashboard", None, open_dashboard),
-                    ("About", None, open_about),
-                    ("Quit", None, quits))
+            menu = (
+                (
+                    "Default Window Mode",
+                    None,
+                    [
+                        (
+                            "Switch to Multi Window Mode",
+                            bundle_dir + "\\assets\\" + "multi.ico",
+                            multi_mode,
+                        ),
+                        (
+                            "Switch to Single Window Mode",
+                            bundle_dir + "\\assets\\" + "single.ico",
+                            single_mode,
+                        ),
+                        (
+                            "Switch to Fullscreen Mode",
+                            bundle_dir + "\\assets\\" + "full.ico",
+                            full_mode,
+                        ),
+                    ],
+                ),
+                (clip + " Shared Clipboard", None, toggle_clipboard),
+                ("GWSL Dashboard", None, open_dashboard),
+                ("About", None, open_about),
+                ("Quit", None, quits),
+            )
 
             systray.shutdown()
 
@@ -131,12 +165,8 @@ def toggle_clipboard(systray, force="toggle"):
                 message = "GWSL - Single Window Mode"
 
             systray = tray(
-                bundle_dir +
-                "\\assets\\" +
-                ic,
-                message,
-                menu,
-                default_menu_index=5)
+                bundle_dir + "\\assets\\" + ic, message, menu, default_menu_index=5
+            )
             systray.start()
             restart_server()
         else:
@@ -149,9 +179,8 @@ def ask():
     choice = pymsgbox.confirm(
         text="Do you want to switch default window modes? This might force close some windows.",
         title="Switch Mode?",
-        buttons=[
-            "Yes",
-            "No"])
+        buttons=["Yes", "No"],
+    )
     if choice == "Yes":
         return True
     else:
@@ -162,9 +191,8 @@ def ask_clip():
     choice = pymsgbox.confirm(
         text="Toggle the shared clipboard? This might force close some windows.",
         title="Toggle Clipboard?",
-        buttons=[
-            "Yes",
-            "No"])
+        buttons=["Yes", "No"],
+    )
     if choice == "Yes":
         return True
     else:
@@ -175,9 +203,8 @@ def ask_restart():
     answer = pymsgbox.confirm(
         text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
         title="Uh Oh!",
-        buttons=[
-            'Yes',
-            'No'])
+        buttons=["Yes", "No"],
+    )
     if answer == "Yes":
         return True
     else:
@@ -241,20 +268,14 @@ def restart_server():
 
 
 def kill_server():
-    subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
-    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+    subprocess.getoutput("taskkill /F /IM vcxsrv.exe")
+    subprocess.getoutput("taskkill /F /IM GWSL_vcxsrv.exe")
     # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
 
 
 def start_server():
     global mode, clipboard
-    default_arguments = [
-        "-ac",
-        "-wgl",
-        "-compositewm",
-        "-notrayicon",
-        "-dpi",
-        "auto"]
+    default_arguments = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
     if mode == "multi":
         default_arguments.append("-multiwindow")
     elif mode == "full":
@@ -269,7 +290,7 @@ def start_server():
 
 
 def get_running():
-    proc_list = os.popen('tasklist').readlines()
+    proc_list = os.popen("tasklist").readlines()
     for proc in proc_list:
         if "GWSL_vcxsrv" in proc:
             return True
@@ -290,12 +311,11 @@ def main():
 
     # Start Tray Icon
     systray = tray(
-        bundle_dir +
-        "\\assets\\" +
-        ic,
+        bundle_dir + "\\assets\\" + ic,
         "GWSL - Multi Window Mode",
         menu,
-        default_menu_index=5)
+        default_menu_index=5,
+    )
     systray.start()
 
     # start service listener
@@ -318,13 +338,14 @@ def main():
                     else:
                         systray.shutdown()
                         kill_server()
-                        subprocess.getoutput('taskkill /F /IM GWSL.exe')
+                        subprocess.getoutput("taskkill /F /IM GWSL.exe")
                         sys.exit()
                 registry = ConnectRegistry(None, HKEY_CURRENT_USER)
                 key = OpenKey(
                     registry,
-                    r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-                key_value = QueryValueEx(key, 'SystemUsesLightTheme')
+                    r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+                )
+                key_value = QueryValueEx(key, "SystemUsesLightTheme")
                 k = int(key_value[0])
 
                 if k == 0:
@@ -332,14 +353,11 @@ def main():
                     systray.update(icon=bundle_dir + "\\assets\\" + "logo.ico")
                 else:
                     ic = "logodark.ico"
-                    systray.update(
-                        icon=bundle_dir +
-                             "\\assets\\" +
-                             "logodark.ico")
+                    systray.update(icon=bundle_dir + "\\assets\\" + "logodark.ico")
 
             if exiter:
                 kill_server()
-                subprocess.getoutput('taskkill /F /IM GWSL.exe')
+                subprocess.getoutput("taskkill /F /IM GWSL.exe")
                 systray.shutdown()
                 sys.exit()
         # except OSError:
@@ -360,7 +378,7 @@ def main():
 if __name__ == "__main__":
     # main_thread
     try:
-        sett_path = os.getenv('APPDATA') + "\\GWSL"
+        sett_path = os.getenv("APPDATA") + "\\GWSL"
         if os.path.isdir(sett_path) == False:
             os.mkdir(sett_path)
             print("creating appdata directory")
@@ -374,17 +392,18 @@ if __name__ == "__main__":
 
         logger = logging.getLogger(__name__)
         # Create handlers
-        f_handler = logging.FileHandler(sett_path + '\\service.log')
+        f_handler = logging.FileHandler(sett_path + "\\service.log")
         f_handler.setLevel(logging.ERROR)
 
         f_format = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
         f_handler.setFormatter(f_format)
 
         # Add handlers to the logger
         logger.addHandler(f_handler)
     except BaseException:
-        sett_path = os.getenv('APPDATA') + "\\GWSL\\errorbegin"
+        sett_path = os.getenv("APPDATA") + "\\GWSL\\errorbegin"
         if os.path.isdir(sett_path) == False:
             os.mkdir(sett_path)
         sys.exit()
@@ -401,9 +420,9 @@ if __name__ == "__main__":
     try:
         registry = ConnectRegistry(None, HKEY_CURRENT_USER)
         key = OpenKey(
-            registry,
-            r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key, 'SystemUsesLightTheme')
+            registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+        )
+        key_value = QueryValueEx(key, "SystemUsesLightTheme")
         k = int(key_value[0])
         if k == 0:
             ic = "logo.ico"
@@ -428,15 +447,34 @@ if __name__ == "__main__":
         else:
             clip = "Disable"
 
-        menu = (("Default Window Mode", None,
-                 [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                  ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                  ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                (clip + " Shared Clipboard", None, toggle_clipboard),
-                ("GWSL Dashboard", None, open_dashboard),
-                ("About", None, open_about),
-                ("Quit", None, quits))
-        key.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
+        menu = (
+            (
+                "Default Window Mode",
+                None,
+                [
+                    (
+                        "Switch to Multi Window Mode",
+                        bundle_dir + "\\assets\\" + "multi.ico",
+                        multi_mode,
+                    ),
+                    (
+                        "Switch to Single Window Mode",
+                        bundle_dir + "\\assets\\" + "single.ico",
+                        single_mode,
+                    ),
+                    (
+                        "Switch to Fullscreen Mode",
+                        bundle_dir + "\\assets\\" + "full.ico",
+                        full_mode,
+                    ),
+                ],
+            ),
+            (clip + " Shared Clipboard", None, toggle_clipboard),
+            ("GWSL Dashboard", None, open_dashboard),
+            ("About", None, open_about),
+            ("Quit", None, quits),
+        )
+        key.add_hotkey("alt+ctrl+g", open_dashboard, args=systray)
         main()
     except Exception as e:
         logger.exception("Exception occurred")

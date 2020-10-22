@@ -49,23 +49,23 @@ version = "1.3.6"
 
 args = sys.argv
 
-frozen = 'not'
-if getattr(sys, 'frozen', False):
+frozen = "not"
+if getattr(sys, "frozen", False):
     # we are running in a bundle
-    frozen = 'ever so'
+    frozen = "ever so"
     bundle_dir = sys._MEIPASS
 else:
     # we are running in a normal Python environment
     bundle_dir = os.path.dirname(os.path.abspath(__file__))
-print('we are', frozen, 'frozen')
-print('bundle dir is', bundle_dir)
-print('sys.argv[0] is', sys.argv[0])
-print('sys.executable is', sys.executable)
-print('os.getcwd is', os.getcwd())
+print("we are", frozen, "frozen")
+print("bundle dir is", bundle_dir)
+print("sys.argv[0] is", sys.argv[0])
+print("sys.executable is", sys.executable)
+print("os.getcwd is", os.getcwd())
 
 asset_dir = bundle_dir + "\\assets\\"
 
-app_path = os.getenv('APPDATA') + "\\GWSL\\"
+app_path = os.getenv("APPDATA") + "\\GWSL\\"
 
 if os.path.isdir(app_path) == False:
     # os.mkdir(app_path)
@@ -74,11 +74,10 @@ if os.path.isdir(app_path) == False:
 
 logger = logging.getLogger(__name__)
 # Create handlers
-f_handler = logging.FileHandler(app_path + 'dashboard.log')
+f_handler = logging.FileHandler(app_path + "dashboard.log")
 f_handler.setLevel(logging.ERROR)
 
-f_format = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+f_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 f_handler.setFormatter(f_format)
 
 # Add handlers to the logger
@@ -109,12 +108,14 @@ try:
         # print("Moving helper script")
         print(
             subprocess.getoutput(
-                'copy "' +
-                bundle_dir +
-                r"\\assets\GWSL_helper.sh" +
-                '" "' +
-                app_path +
-                '"'))
+                'copy "'
+                + bundle_dir
+                + r"\\assets\GWSL_helper.sh"
+                + '" "'
+                + app_path
+                + '"'
+            )
+        )
     else:
         # make sure the script is up to date
         scr = open(app_path + "GWSL_helper.sh", "r")
@@ -125,23 +126,27 @@ try:
             print("Updating Script")
             print(
                 subprocess.getoutput(
-                    'copy "' +
-                    bundle_dir +
-                    r"\\assets\GWSL_helper.sh" +
-                    '" "' +
-                    app_path +
-                    '"'))
+                    'copy "'
+                    + bundle_dir
+                    + r"\\assets\GWSL_helper.sh"
+                    + '" "'
+                    + app_path
+                    + '"'
+                )
+            )
 
     if os.path.exists(app_path + "Licenses.txt") == False:
         # print("Moving Licenses")
         print(
             subprocess.getoutput(
-                'copy "' +
-                bundle_dir +
-                r"\\assets\Licenses.txt" +
-                '" "' +
-                app_path +
-                '"'))
+                'copy "'
+                + bundle_dir
+                + r"\\assets\Licenses.txt"
+                + '" "'
+                + app_path
+                + '"'
+            )
+        )
 except Exception as e:
     logger.exception("Exception occurred")
     sys.exit()
@@ -171,10 +176,8 @@ if "--r" not in args:
         try:
             import win32gui
 
-
             def windowEnumerationHandler(hwnd, top_windows):
                 top_windows.append((hwnd, win32gui.GetWindowText(hwnd)))
-
 
             results = []
             top_windows = []
@@ -193,10 +196,8 @@ if "--r" not in args:
         try:
             import win32gui
 
-
             def windowEnumerationHandler(hwnd, top_windows):
                 top_windows.append((hwnd, win32gui.GetWindowText(hwnd)))
-
 
             results = []
             top_windows = []
@@ -248,7 +249,8 @@ if "--r" not in args:
         screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
         WIDTH, HEIGHT = ui.inch2pix(3.8), ui.inch2pix(
-            5.7)  # ui.inch2pix(7.9), ui.inch2pix(5)
+            5.7
+        )  # ui.inch2pix(7.9), ui.inch2pix(5)
 
         sett = iset.read()
         side = sett["general"]["position"]
@@ -257,8 +259,10 @@ if "--r" not in args:
         else:
             winpos = screensize[0] - WIDTH
 
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (
-            winpos, screensize[1])  # screensize[1] - taskbar)
+        os.environ["SDL_VIDEO_WINDOW_POS"] = "%d,%d" % (
+            winpos,
+            screensize[1],
+        )  # screensize[1] - taskbar)
 
         py_root = pygame.display.set_mode([WIDTH, HEIGHT], NOFRAME)
 
@@ -289,11 +293,9 @@ if "--r" not in args:
         #    mini1 = pygame.image.load(bak).convert()
         back = pygame.Surface([WIDTH, HEIGHT])  # mini1.copy()
 
-
         def get_pos():
             rect = win32gui.GetWindowRect(HWND)
             return [int(rect[0]), int(rect[1])]
-
 
         poser = get_pos()
         back = pygame.transform.scale(back, screensize)
@@ -302,9 +304,9 @@ if "--r" not in args:
 
         registry = ConnectRegistry(None, HKEY_CURRENT_USER)
         key = OpenKey(
-            registry,
-            r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key, 'SystemUsesLightTheme')
+            registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+        )
+        key_value = QueryValueEx(key, "SystemUsesLightTheme")
         k = int(key_value[0])
         light = False
         white = [255, 255, 255]
@@ -321,8 +323,10 @@ if "--r" not in args:
         hwnd = HWND
 
         win32gui.SetWindowLong(
-            hwnd, win32con.GWL_EXSTYLE, win32gui.GetWindowLong(
-                hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
+            hwnd,
+            win32con.GWL_EXSTYLE,
+            win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED,
+        )
 
         # win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
         import blur
@@ -336,7 +340,7 @@ if "--r" not in args:
 def get_version(machine):
     try:
         machines = os.popen("wsl.exe -l -v").read()  # lines()
-        machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+        machines = re.sub(r"[^a-zA-Z0-9./\n-]", r"", machines).splitlines()
         if "VERSION" in machines[0]:
             machines = machines[2:]
             machines[:] = (value for value in machines if value != "")
@@ -364,64 +368,68 @@ def helper(topic):
         url = "configuring-a-wsl-distro-for-use-with-gwsl"
     elif topic == "launcher":
         url = "using-the-integrated-linux-app-launcher"
-    webbrowser.get('windows-default').open(
-        "https://opticos.github.io/gwsl/tutorials/manual.html#" + str(url))
+    webbrowser.get("windows-default").open(
+        "https://opticos.github.io/gwsl/tutorials/manual.html#" + str(url)
+    )
 
 
 def help_short():
-    webbrowser.get('windows-default').open(
-        "https://opticos.github.io/gwsl/tutorials/manual.html#using-the-gwsl-shortcut-creator")
+    webbrowser.get("windows-default").open(
+        "https://opticos.github.io/gwsl/tutorials/manual.html#using-the-gwsl-shortcut-creator"
+    )
 
 
 def help_ssh():
-    webbrowser.get('windows-default').open(
-        "https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh")
+    webbrowser.get("windows-default").open(
+        "https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh"
+    )
 
 
 def runs(distro, command):
     subprocess.Popen(
-        "wsl.exe ~ -d " +
-        str(distro) +
-        " . ~/.profile;nohup /bin/sh -c " +
-        '"' +
-        str(command) +
-        '&"',
-        shell=True)  # .readlines()
+        "wsl.exe ~ -d "
+        + str(distro)
+        + " . ~/.profile;nohup /bin/sh -c "
+        + '"'
+        + str(command)
+        + '&"',
+        shell=True,
+    )  # .readlines()
     return None
 
 
 def run(distro, command):
     out = subprocess.getoutput(
-        "wsl.exe ~ -d " +
-        str(distro) +
-        " . ~/.profile;nohup /bin/sh -c " +
-        '"' +
-        str(command) +
-        ' &"')  # .readlines()
+        "wsl.exe ~ -d "
+        + str(distro)
+        + " . ~/.profile;nohup /bin/sh -c "
+        + '"'
+        + str(command)
+        + ' &"'
+    )  # .readlines()
     return out
 
 
 def runo3(distro, command):
     out = subprocess.getoutput(
-        "wsl.exe ~ -d " +
-        str(distro) +
-        " . ~/.profile;/bin/sh -c " +
-        '"' +
-        str(command) +
-        '"')  # .readlines()
+        "wsl.exe ~ -d "
+        + str(distro)
+        + " . ~/.profile;/bin/sh -c "
+        + '"'
+        + str(command)
+        + '"'
+    )  # .readlines()
     return out
 
 
 def runo2(distro, command):
-    cmd = "wsl.exe -d " + str(distro) + ' ' + \
-          "/bin/sh -c " + '"' + str(command) + '"'
+    cmd = "wsl.exe -d " + str(distro) + " " + "/bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
     return out
 
 
 def runo(distro, command):
-    cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + \
-          '"' + str(command) + '"'
+    cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
     return out
 
@@ -429,13 +437,14 @@ def runo(distro, command):
 def get_ip(machine):
     return runo3(
         machine,
-        """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")  # [0][:-1]
+        """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""",
+    )  # [0][:-1]
 
 
 def choose_machine():
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
     machines = os.popen("wsl.exe -l -q").read()  # lines()
-    machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+    machines = re.sub(r"[^a-zA-Z0-9./\n-]", r"", machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
     sett = iset.read()
@@ -454,9 +463,8 @@ def choose_machine():
         return machines[0]
     elif len(machines) > 7:
         return pymsgbox.confirm(
-            text='Select a WSL Machine',
-            title='Choose WSL Machine',
-            buttons=machines)
+            text="Select a WSL Machine", title="Choose WSL Machine", buttons=machines
+        )
 
     animator.animate("choose", [100, 0])
     machine = False
@@ -496,18 +504,22 @@ def choose_machine():
                 back = mini.copy()
                 back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                 ui.iris2(
-                    back, [
-                        0, 0], [
-                        WIDTH, HEIGHT], [
-                        0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                    back,
+                    [0, 0],
+                    [WIDTH, HEIGHT],
+                    [0, 0, 0],
+                    radius=10,
+                    shadow_enabled=False,
+                    resolution=50,
+                )
                 # mini = pygame.transform.smoothscale(mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
                 mini = pygame.transform.smoothscale(
-                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)]
+                )
 
                 b = pygame.Surface([WIDTH, HEIGHT])
                 draw(b)
-                lumen = pygame.Surface(
-                    [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask.fill([255, 0, 0])
 
@@ -516,17 +528,26 @@ def choose_machine():
         v = animator.get("choose")[0] / 100
 
         # canvas.fill([0, 0, 0, int((1 - v) * 255)])
-        ui.iris2(canvas, [0, 0], [WIDTH, HEIGHT], False, radius=10,
-                 shadow_enabled=False, resolution=30, alpha=int(v * 255))
+        ui.iris2(
+            canvas,
+            [0, 0],
+            [WIDTH, HEIGHT],
+            False,
+            radius=10,
+            shadow_enabled=False,
+            resolution=30,
+            alpha=int(v * 255),
+        )
 
         if not light:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+            )
         else:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80]
+            )
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -537,20 +558,31 @@ def choose_machine():
             txt = title_font.render("No WSL Distros Installed.", True, white)
 
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2,
-                          ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v),
+            ],
+        )
 
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt,
-                    [WIDTH - txt.get_width() - ui.inch2pix(0.3),
-                     ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH - txt.get_width() - ui.inch2pix(0.3),
+                ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v)),
+            ],
+        )
         hover = pygame.mouse.get_pos()
-        if hover[0] > WIDTH - txt.get_width() - \
-                ui.inch2pix(0.4) and hover[0] < WIDTH - ui.inch2pix(0.1):
+        if hover[0] > WIDTH - txt.get_width() - ui.inch2pix(0.4) and hover[
+            0
+        ] < WIDTH - ui.inch2pix(0.1):
             if hover[1] > ui.inch2pix(0.1) and hover[1] < ui.inch2pix(
-                    0.3) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
+                0.3
+            ) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
                 if mouse:
                     helper("machine chooser")
 
@@ -566,10 +598,16 @@ def choose_machine():
                 ni = ni.replace("-", " ")
                 txt = title_font.render(ni, True, white)
 
-                if hover[0] > (WIDTH / 2) - (txt.get_width() / 2) - ui.inch2pix(0.2) and hover[0] < (
-                        WIDTH / 2) - (txt.get_width() / 2) + txt.get_width() + ui.inch2pix(0.2):
+                if hover[0] > (WIDTH / 2) - (txt.get_width() / 2) - ui.inch2pix(
+                    0.2
+                ) and hover[0] < (WIDTH / 2) - (
+                    txt.get_width() / 2
+                ) + txt.get_width() + ui.inch2pix(
+                    0.2
+                ):
                     if hover[1] > h - ui.inch2pix(0.1) - int(v * d) + 1 and hover[
-                        1] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
+                        1
+                    ] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
                         if mouse:
                             machine = i
                             animator.animate("choose", [0, 0])
@@ -583,13 +621,11 @@ def choose_machine():
                 else:
                     txt.set_alpha(int((1 - s) * v * 255))
 
-                canvas.blit(
-                    txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
+                canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
                 if s2:
                     txt = title_font.render(ni, True, accent)
                     txt.set_alpha(int(s * v * 255))
-                    canvas.blit(
-                        txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
+                    canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
 
                 h += ui.inch2pix(0.3) + txt.get_height()
                 d += ui.inch2pix(0.1)
@@ -601,14 +637,28 @@ def choose_machine():
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT -
-                          ui.inch2pix(0.2) - txt.get_height() - int(v * d)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT - ui.inch2pix(0.2) - txt.get_height() - int(v * d),
+            ],
+        )
         if mouse:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
-                if mouse[1] > HEIGHT - ui.inch2pix(0.2) - txt.get_height() - ui.inch2pix(0.1) - int(v * d) and mouse[
-                    1] < HEIGHT - ui.inch2pix(0.2) - txt.get_height() + txt.get_height() + ui.inch2pix(0.1) - int(
-                    v * d):
+                0
+            ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                if mouse[1] > HEIGHT - ui.inch2pix(
+                    0.2
+                ) - txt.get_height() - ui.inch2pix(0.1) - int(v * d) and mouse[
+                    1
+                ] < HEIGHT - ui.inch2pix(
+                    0.2
+                ) - txt.get_height() + txt.get_height() + ui.inch2pix(
+                    0.1
+                ) - int(
+                    v * d
+                ):
                     machine = None
                     animator.animate("choose", [0, 0])
 
@@ -664,18 +714,22 @@ def about():
                 back = mini.copy()
                 back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                 ui.iris2(
-                    back, [
-                        0, 0], [
-                        WIDTH, HEIGHT], [
-                        0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                    back,
+                    [0, 0],
+                    [WIDTH, HEIGHT],
+                    [0, 0, 0],
+                    radius=10,
+                    shadow_enabled=False,
+                    resolution=50,
+                )
                 # mini = pygame.transform.smoothscale(mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
                 mini = pygame.transform.smoothscale(
-                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)]
+                )
 
                 b = pygame.Surface([WIDTH, HEIGHT])
                 draw(b)
-                lumen = pygame.Surface(
-                    [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask.fill([255, 0, 0])
 
@@ -684,20 +738,25 @@ def about():
         v = animator.get("choose")[0] / 100
 
         ui.iris2(
-            canvas, [
-                0, 0], [
-                WIDTH, HEIGHT], [
-                0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(
-                v * 255))
+            canvas,
+            [0, 0],
+            [WIDTH, HEIGHT],
+            [0, 0, 0],
+            radius=10,
+            shadow_enabled=False,
+            resolution=30,
+            alpha=int(v * 255),
+        )
 
         if not light:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+            )
         else:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80]
+            )
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -705,23 +764,30 @@ def about():
         txt = title_font.render("About GWSL", True, white)
 
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2,
-                          ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v),
+            ],
+        )
 
         d = ui.inch2pix(0.2)
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
         title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
         title_font.italic = False
 
-        machines = ["GWSL Version " + str(version),
-                    "© Copyright Paul-E/Opticos Studios 2020",
-                    "GWSL Uses:",
-                    "Python - Pyinstaller - SDL",
-                    "VCXSRV - Putty - Pillow",
-                    "Tcl/Tk - Paper Icon Pack",
-                    "Pymsgbox - OpticUI - Infi.Systray",
-                    "Visit Opticos Studios Website",
-                    "View Licenses"]
+        machines = [
+            "GWSL Version " + str(version),
+            "© Copyright Paul-E/Opticos Studios 2020",
+            "GWSL Uses:",
+            "Python - Pyinstaller - SDL",
+            "VCXSRV - Putty - Pillow",
+            "Tcl/Tk - Paper Icon Pack",
+            "Pymsgbox - OpticUI - Infi.Systray",
+            "Visit Opticos Studios Website",
+            "View Licenses",
+        ]
 
         if BUILD_MODE == "WIN32":
             machines[0] = "GWSL Version " + str(version) + " (win32)"
@@ -735,32 +801,48 @@ def about():
                 else:
                     txt = title_font.render(i, True, white)
                 txt.set_alpha(int(v * 255))
-                canvas.blit(
-                    txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
+                canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, h - int(v * d)])
                 if mouse:
-                    if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                        0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                    if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(
+                        0.2
+                    ) and mouse[
+                        0
+                    ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(
+                        0.2
+                    ):
                         if mouse[1] > h - ui.inch2pix(0.1) - int(v * d) and mouse[
-                            1] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
+                            1
+                        ] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
                             if i == "View Licenses":
                                 os.popen(app_path + "Licenses.txt")
                             elif i == "Visit Opticos Studios Website":
-                                webbrowser.get(
-                                    'windows-default').open('http://opticos.studio')
+                                webbrowser.get("windows-default").open(
+                                    "http://opticos.studio"
+                                )
 
                 h += ui.inch2pix(0.3) + txt.get_height()
                 d += ui.inch2pix(0.1)
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT -
-                          ui.inch2pix(0.4) - txt.get_height() - int((v - 1) * d)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int((v - 1) * d),
+            ],
+        )
         if mouse:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                0
+            ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
                 if mouse[1] > HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int(
-                        (v - 1) * d) and mouse[1] < HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int(
-                    (v - 1) * d) + txt.get_height() + ui.inch2pix(0.1):
+                    (v - 1) * d
+                ) and mouse[1] < HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int(
+                    (v - 1) * d
+                ) + txt.get_height() + ui.inch2pix(
+                    0.1
+                ):
                     machine = None
                     animator.animate("choose", [0, 0])
 
@@ -877,18 +959,22 @@ def configure_machine(machine):
                 back = mini.copy()
                 back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                 ui.iris2(
-                    back, [
-                        0, 0], [
-                        WIDTH, HEIGHT], [
-                        0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                    back,
+                    [0, 0],
+                    [WIDTH, HEIGHT],
+                    [0, 0, 0],
+                    radius=10,
+                    shadow_enabled=False,
+                    resolution=50,
+                )
                 # mini = pygame.transform.smoothscale(mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
                 mini = pygame.transform.smoothscale(
-                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)]
+                )
 
                 b = pygame.Surface([WIDTH, HEIGHT])
                 draw(b)
-                lumen = pygame.Surface(
-                    [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask.fill([255, 0, 0])
 
@@ -897,20 +983,25 @@ def configure_machine(machine):
         v = animator.get("choose")[0] / 100
 
         ui.iris2(
-            canvas, [
-                0, 0], [
-                WIDTH, HEIGHT], [
-                0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(
-                v * 255))
+            canvas,
+            [0, 0],
+            [WIDTH, HEIGHT],
+            [0, 0, 0],
+            radius=10,
+            shadow_enabled=False,
+            resolution=30,
+            alpha=int(v * 255),
+        )
 
         if not light:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+            )
         else:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80]
+            )
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -922,8 +1013,13 @@ def configure_machine(machine):
         txt = title_font.render("Configure " + str(ni), True, white)
 
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2,
-                          ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v),
+            ],
+        )
         # WIDTH / 2 - txt.get_width() / 2 + ui.inch2pix(0.1)
         w = ui.inch2pix(0.5)
         d = ui.inch2pix(0.2)
@@ -933,14 +1029,20 @@ def configure_machine(machine):
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt,
-                    [WIDTH - txt.get_width() - ui.inch2pix(0.3),
-                     ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH - txt.get_width() - ui.inch2pix(0.3),
+                ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v)),
+            ],
+        )
         hover = pygame.mouse.get_pos()
-        if hover[0] > WIDTH - txt.get_width() - \
-                ui.inch2pix(0.4) and hover[0] < WIDTH - ui.inch2pix(0.1):
+        if hover[0] > WIDTH - txt.get_width() - ui.inch2pix(0.4) and hover[
+            0
+        ] < WIDTH - ui.inch2pix(0.1):
             if hover[1] > ui.inch2pix(0.1) and hover[1] < ui.inch2pix(
-                    0.3) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
+                0.3
+            ) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
                 if mouse:
                     helper("configure")
 
@@ -959,22 +1061,21 @@ def configure_machine(machine):
 
             x_configured = True
             restart = pymsgbox.confirm(
-                text='Restart ' +
-                     machine +
-                     " To Apply Changes?",
-                title='Restart Machine?',
-                buttons=[
-                    "Yes",
-                    "No"])
+                text="Restart " + machine + " To Apply Changes?",
+                title="Restart Machine?",
+                buttons=["Yes", "No"],
+            )
             if restart == "Yes":
                 reboot(machine)
                 rebooter = True
                 machine = None
 
         def conf_dbus():
-            code = pymsgbox.password(text='Enter Sudo Password For ' +
-                                          str(machine.replace("-", " ")) +
-                                          ":", title='Authentication', mask='*')
+            code = pymsgbox.password(
+                text="Enter Sudo Password For " + str(machine.replace("-", " ")) + ":",
+                title="Authentication",
+                mask="*",
+            )
             if code is None:
                 return None
             passw = 'echo "' + code + '" | sudo -H -S '
@@ -1009,13 +1110,10 @@ def configure_machine(machine):
                 g_button = "LOW-DPI"
 
             restart = pymsgbox.confirm(
-                text='Restart ' +
-                     machine +
-                     " To Apply Changes?",
-                title='Restart Machine?',
-                buttons=[
-                    "Yes",
-                    "No"])
+                text="Restart " + machine + " To Apply Changes?",
+                title="Restart Machine?",
+                buttons=["Yes", "No"],
+            )
             if restart == "Yes":
                 reboot(machine)
                 rebooter = True
@@ -1039,13 +1137,10 @@ def configure_machine(machine):
                 q_button = "LOW-DPI"
 
             restart = pymsgbox.confirm(
-                text='Restart ' +
-                     machine +
-                     " To Apply Changes?",
-                title='Restart Machine?',
-                buttons=[
-                    "Yes",
-                    "No"])
+                text="Restart " + machine + " To Apply Changes?",
+                title="Restart Machine?",
+                buttons=["Yes", "No"],
+            )
             if restart == "Yes":
                 reboot(machine)
                 rebooter = True
@@ -1063,17 +1158,20 @@ def configure_machine(machine):
             nonlocal loading, them
             if themes != []:
                 s_theme = chooser(
-                    canvas,
-                    "Choose A GTK Theme:",
-                    [" Default Theme"] + themes)
+                    canvas, "Choose A GTK Theme:", [" Default Theme"] + themes
+                )
                 if s_theme is not None:
+
                     def th():
                         nonlocal them, s_theme
                         if s_theme != " Default Theme":
-                            run(machine,
-                                """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
-                            run(machine, """echo 'export GTK_THEME=""" +
-                                str(s_theme) + """' >> ~/.profile """)
+                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
+                            run(
+                                machine,
+                                """echo 'export GTK_THEME="""
+                                + str(s_theme)
+                                + """' >> ~/.profile """,
+                            )
                             them = "Default"
                             profile = tools.profile(machine)
                             pl = profile.split("\n")
@@ -1082,8 +1180,7 @@ def configure_machine(machine):
                                     them = i[17:]
 
                         else:
-                            run(machine,
-                                """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
+                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
                             them = "Default"
 
                     themer = threading.Thread(target=th)
@@ -1120,17 +1217,21 @@ def configure_machine(machine):
 
         buttons.append(["Reboot " + ni, reb, ""])
         click = None
-        v5 = (1 - animator.get("loading_c")[0] / 100)
+        v5 = 1 - animator.get("loading_c")[0] / 100
         hover = pygame.mouse.get_pos()
         selected = False
         for i in buttons:
             s2 = False
             if not loading:
                 txt = title_font.render(i[0], True, white)
-                if hover[0] > w and hover[0] < WIDTH / 2 - \
-                        txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
-                    if hover[1] > h - ui.inch2pix(0.1) - int(
-                            v * d) and hover[1] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
+                if hover[0] > w and hover[
+                    0
+                ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(
+                    0.2
+                ):
+                    if hover[1] > h - ui.inch2pix(0.1) - int(v * d) and hover[
+                        1
+                    ] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
                         if mouse:
                             click = i[1]
                         selected = True
@@ -1170,13 +1271,26 @@ def configure_machine(machine):
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT +
-                          ui.inch2pix(0.2) - txt.get_height() - int(v * d)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT + ui.inch2pix(0.2) - txt.get_height() - int(v * d),
+            ],
+        )
         if mouse:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
-                if mouse[1] > HEIGHT + ui.inch2pix(0.2) - txt.get_height() - int(v * d) and mouse[
-                    1] < HEIGHT + ui.inch2pix(0.2) + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
+                0
+            ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                if mouse[1] > HEIGHT + ui.inch2pix(0.2) - txt.get_height() - int(
+                    v * d
+                ) and mouse[1] < HEIGHT + ui.inch2pix(
+                    0.2
+                ) + txt.get_height() + ui.inch2pix(
+                    0.1
+                ) - int(
+                    v * d
+                ):
                     machine = None
                     animator.animate("choose", [0, 0])
 
@@ -1189,17 +1303,16 @@ def configure_machine(machine):
         txt2 = pygame.transform.rotozoom(loader, loading_angle, 0.22)
         txt2.set_alpha(int(v * 255))
         # canvas.blit(txt2, [ui.inch2pix(0.2) - txt2.get_width() / 2, HEIGHT - ui.inch2pix(0.3) - txt2.get_height() / 2 - int((v - 1) * ui.inch2pix(0.4))])
-        canvas.blit(txt2, [WIDTH /
-                           2 -
-                           txt2.get_width() /
-                           2, HEIGHT /
-                           2 -
-                           ui.inch2pix(0.2) -
-                           txt2.get_height() /
-                           2 -
-                           int((v -
-                                1) *
-                               ui.inch2pix(0.4))])
+        canvas.blit(
+            txt2,
+            [
+                WIDTH / 2 - txt2.get_width() / 2,
+                HEIGHT / 2
+                - ui.inch2pix(0.2)
+                - txt2.get_height() / 2
+                - int((v - 1) * ui.inch2pix(0.4)),
+            ],
+        )
 
         if click is not None:
             click()
@@ -1260,7 +1373,8 @@ def app_launcher(machine):
                 ico_name = name
 
             icon = pygame.transform.smoothscale(
-                ui.pygame_icon(ico_name, bundle_dir), [size, size])
+                ui.pygame_icon(ico_name, bundle_dir), [size, size]
+            )
             apper.update({name: {"icon": icon, "cmd": cmd, "icn": ico_name}})
         apps = apper
         app_list = sorted(apps)
@@ -1334,8 +1448,14 @@ def app_launcher(machine):
                 button = event.button
                 if list_length > HEIGHT - bottom_padding - top_padding:
                     if button == 5:  # down
-                        if scroll > -list_length + \
-                                ui.inch2pix(0.5) - HEIGHT - bottom_padding - top_padding:
+                        if (
+                            scroll
+                            > -list_length
+                            + ui.inch2pix(0.5)
+                            - HEIGHT
+                            - bottom_padding
+                            - top_padding
+                        ):
                             scroll2 -= ui.inch2pix(0.5)
                     elif button == 4:  # up
                         if scroll < -ui.inch2pix(0.4):
@@ -1358,18 +1478,22 @@ def app_launcher(machine):
                 back = mini.copy()
                 back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                 ui.iris2(
-                    back, [
-                        0, 0], [
-                        WIDTH, HEIGHT], [
-                        0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                    back,
+                    [0, 0],
+                    [WIDTH, HEIGHT],
+                    [0, 0, 0],
+                    radius=10,
+                    shadow_enabled=False,
+                    resolution=50,
+                )
                 # mini = pygame.transform.smoothscale(mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
                 mini = pygame.transform.smoothscale(
-                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)]
+                )
 
                 b = pygame.Surface([WIDTH, HEIGHT])
                 draw(b)
-                lumen = pygame.Surface(
-                    [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask.fill([255, 0, 0])
 
@@ -1403,65 +1527,90 @@ def app_launcher(machine):
         # draw top and bottom of background
         icon_surf.fill([0, 0, 0, 0])
         icon_surf.blit(b, [0, 0], [0, 0, WIDTH, top_padding])
-        icon_surf.blit(b, [0, HEIGHT - bottom_padding],
-                       [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding])
+        icon_surf.blit(
+            b,
+            [0, HEIGHT - bottom_padding],
+            [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding],
+        )
 
         v3 = animator.get("apps")[0] / 100
         for a in app_list:
             i = apps[a]
 
-            if h - int((v3 - 1) * d) + scroll > -1 * (ui.inch2pix(0.5)
-            ) and h - int((v3 - 1) * d) + scroll < HEIGHT:
+            if (
+                h - int((v3 - 1) * d) + scroll > -1 * (ui.inch2pix(0.5))
+                and h - int((v3 - 1) * d) + scroll < HEIGHT
+            ):
 
                 txt = title_font.render(a[0].upper() + a[1:], True, white)
                 txt.set_alpha(int(v3 * 255))
 
                 icon = i["icon"]
-                icon_surf.blit(icon, [w +
-                                      ui.inch2pix(0.4) -
-                                      icon.get_width() -
-                                      ui.inch2pix(0.1), h +
-                                      txt.get_height() /
-                                      2 -
-                                      icon.get_height() /
-                                      2 -
-                                      int((v3 -
-                                           1) *
-                                          d) +
-                                      scroll +
-                                      ui.inch2pix(0.03)], special_flags=pygame.BLEND_RGBA_ADD)
+                icon_surf.blit(
+                    icon,
+                    [
+                        w + ui.inch2pix(0.4) - icon.get_width() - ui.inch2pix(0.1),
+                        h
+                        + txt.get_height() / 2
+                        - icon.get_height() / 2
+                        - int((v3 - 1) * d)
+                        + scroll
+                        + ui.inch2pix(0.03),
+                    ],
+                    special_flags=pygame.BLEND_RGBA_ADD,
+                )
 
                 txt2 = icon_font.render("", True, white)
 
-                txt_width = WIDTH - \
-                            (w + ui.inch2pix(0.4) + txt2.get_width() + ui.inch2pix(0.6))
+                txt_width = WIDTH - (
+                    w + ui.inch2pix(0.4) + txt2.get_width() + ui.inch2pix(0.6)
+                )
                 ext = title_font.render("... ", True, white)
 
-                icon_surf.blit(txt,
-                               [w + ui.inch2pix(0.4),
-                                h - int((v3 - 1) * d) + scroll],
-                               [0,
-                                0,
-                                txt_width,
-                                txt.get_height()],
-                               special_flags=pygame.BLEND_RGBA_ADD)
+                icon_surf.blit(
+                    txt,
+                    [w + ui.inch2pix(0.4), h - int((v3 - 1) * d) + scroll],
+                    [0, 0, txt_width, txt.get_height()],
+                    special_flags=pygame.BLEND_RGBA_ADD,
+                )
                 if txt.get_width() > txt_width:
-                    icon_surf.blit(ext,
-                                   [w + ui.inch2pix(0.4) + txt_width,
-                                    h - int((v3 - 1) * d) + scroll],
-                                   special_flags=pygame.BLEND_RGBA_ADD)
+                    icon_surf.blit(
+                        ext,
+                        [
+                            w + ui.inch2pix(0.4) + txt_width,
+                            h - int((v3 - 1) * d) + scroll,
+                        ],
+                        special_flags=pygame.BLEND_RGBA_ADD,
+                    )
                     txt_width += ext.get_width()
 
-                icon_surf.blit(txt2,
-                               [WIDTH - txt2.get_width() - ui.inch2pix(0.3),
-                                h - int((v3 - 1) * d) + ui.inch2pix(0.06) + scroll],
-                               special_flags=pygame.BLEND_RGBA_ADD)
-                if mouse and mouse[1] >= top_padding and mouse[1] <= HEIGHT - \
-                        bottom_padding:
-                    if mouse[1] > h - ui.inch2pix(0.1) - int((v3 - 1) * d) + scroll and mouse[
-                        1] < h + txt.get_height() + ui.inch2pix(0.2) - int((v3 - 1) * d) + scroll:
-                        if mouse[0] > w + ui.inch2pix(0.4) - icon.get_width() - ui.inch2pix(
-                                0.1) and mouse[0] < w + ui.inch2pix(0.4) + txt_width:
+                icon_surf.blit(
+                    txt2,
+                    [
+                        WIDTH - txt2.get_width() - ui.inch2pix(0.3),
+                        h - int((v3 - 1) * d) + ui.inch2pix(0.06) + scroll,
+                    ],
+                    special_flags=pygame.BLEND_RGBA_ADD,
+                )
+                if (
+                    mouse
+                    and mouse[1] >= top_padding
+                    and mouse[1] <= HEIGHT - bottom_padding
+                ):
+                    if (
+                        mouse[1] > h - ui.inch2pix(0.1) - int((v3 - 1) * d) + scroll
+                        and mouse[1]
+                        < h
+                        + txt.get_height()
+                        + ui.inch2pix(0.2)
+                        - int((v3 - 1) * d)
+                        + scroll
+                    ):
+                        if (
+                            mouse[0]
+                            > w + ui.inch2pix(0.4) - icon.get_width() - ui.inch2pix(0.1)
+                            and mouse[0] < w + ui.inch2pix(0.4) + txt_width
+                        ):
                             spawn_n_run(
                                 machine,
                                 i["cmd"],
@@ -1469,15 +1618,23 @@ def app_launcher(machine):
                                 "Default",
                                 "Default",
                                 "Default",
-                                "None")
+                                "None",
+                            )
                             if animator.get("start")[0] == 100:
                                 animator.animate("start", [0, 0])
                                 animator.animate("start2", [0, 0])
                                 end = True
 
-                        elif mouse[0] > w + ui.inch2pix(0.4) + txt_width and mouse[0] < WIDTH:
-                            shortcut(name=a[0].upper() + a[1:],
-                                     cmd=i["cmd"], mach=machine, icn=i["icn"])
+                        elif (
+                            mouse[0] > w + ui.inch2pix(0.4) + txt_width
+                            and mouse[0] < WIDTH
+                        ):
+                            shortcut(
+                                name=a[0].upper() + a[1:],
+                                cmd=i["cmd"],
+                                mach=machine,
+                                icn=i["icn"],
+                            )
 
             h += ui.inch2pix(0.35) + txt.get_height()
             d += ui.inch2pix(0.1)
@@ -1488,43 +1645,62 @@ def app_launcher(machine):
         icon_surf.set_alpha(int(int(v3 * 255) / 4))
         canvas.blit(icon_surf, [0, 0], [0, 0, WIDTH, top_padding])
 
-        canvas.blit(icon_surf, [0, HEIGHT - bottom_padding],
-                    [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding])
+        canvas.blit(
+            icon_surf,
+            [0, HEIGHT - bottom_padding],
+            [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding],
+        )
 
         # blur
         ui.iris2(
-            canvas, [
-                0, 0], [
-                WIDTH, HEIGHT], [
-                0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(
-                v * 255))
+            canvas,
+            [0, 0],
+            [WIDTH, HEIGHT],
+            [0, 0, 0],
+            radius=10,
+            shadow_enabled=False,
+            resolution=30,
+            alpha=int(v * 255),
+        )
 
         # draw central items
         icon_surf.set_alpha(int(v3 * 255))
         canvas.blit(
-            icon_surf, [
-                0, top_padding], [
-                0, top_padding, WIDTH, HEIGHT - bottom_padding - top_padding])
+            icon_surf,
+            [0, top_padding],
+            [0, top_padding, WIDTH, HEIGHT - bottom_padding - top_padding],
+        )
 
         # Top title above blur
         title_font = ui.font(default_font, int(ui.inch2pix(0.21)))
 
         txt = title_font.render("Apps on " + str(ni), True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2,
-                          ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v),
+            ],
+        )
 
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt,
-                    [WIDTH - txt.get_width() - ui.inch2pix(0.3),
-                     ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH - txt.get_width() - ui.inch2pix(0.3),
+                ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v)),
+            ],
+        )
         hover = pygame.mouse.get_pos()
-        if hover[0] > WIDTH - txt.get_width() - \
-                ui.inch2pix(0.4) and hover[0] < WIDTH - ui.inch2pix(0.1):
+        if hover[0] > WIDTH - txt.get_width() - ui.inch2pix(0.4) and hover[
+            0
+        ] < WIDTH - ui.inch2pix(0.1):
             if hover[1] > ui.inch2pix(0.1) and hover[1] < ui.inch2pix(
-                    0.3) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
+                0.3
+            ) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
                 if mouse:
                     helper("launcher")
 
@@ -1535,63 +1711,68 @@ def app_launcher(machine):
             txt2 = pygame.transform.rotozoom(loader, loading_angle, 0.22)
             txt2.set_alpha(int(v * int(v2 * 255)))
 
-            canvas.blit(txt2, [WIDTH /
-                               2 -
-                               txt2.get_width() /
-                               2, HEIGHT /
-                               2 -
-                               txt2.get_height() /
-                               2 -
-                               int((v2 -
-                                    1) *
-                                   ui.inch2pix(0.4)) +
-                               ui.inch2pix(0)])
+            canvas.blit(
+                txt2,
+                [
+                    WIDTH / 2 - txt2.get_width() / 2,
+                    HEIGHT / 2
+                    - txt2.get_height() / 2
+                    - int((v2 - 1) * ui.inch2pix(0.4))
+                    + ui.inch2pix(0),
+                ],
+            )
 
         # error Message
         title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
         txt = title_font.render(message, True, white)
         txt.set_alpha(int(v * int(v2 * 255)))
-        canvas.blit(txt, [WIDTH /
-                          2 -
-                          txt.get_width() /
-                          2, HEIGHT /
-                          2 -
-                          txt.get_height() /
-                          2 -
-                          int((v2 -
-                               1) *
-                              ui.inch2pix(0.4)) +
-                          ui.inch2pix(0)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT / 2
+                - txt.get_height() / 2
+                - int((v2 - 1) * ui.inch2pix(0.4))
+                + ui.inch2pix(0),
+            ],
+        )
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH /
-                          2 -
-                          txt.get_width() /
-                          2, HEIGHT -
-                          ui.inch2pix(0.3) -
-                          txt.get_height() -
-                          int((v -
-                               1) *
-                              ui.inch2pix(0.4))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT
+                - ui.inch2pix(0.3)
+                - txt.get_height()
+                - int((v - 1) * ui.inch2pix(0.4)),
+            ],
+        )
         if mouse:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                0
+            ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
                 if mouse[1] > HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
-                        (v - 1) * ui.inch2pix(0.4)) and mouse[1] < HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
-                    (v - 1) * ui.inch2pix(0.4)) + txt.get_height() + ui.inch2pix(0.1):
+                    (v - 1) * ui.inch2pix(0.4)
+                ) and mouse[1] < HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
+                    (v - 1) * ui.inch2pix(0.4)
+                ) + txt.get_height() + ui.inch2pix(
+                    0.1
+                ):
                     machine = None
                     animator.animate("choose", [0, 0])
                     animator.animate("apps", [0, 0])
 
         if not light:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+            )
         else:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80]
+            )
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         fpsClock.tick(60)
         animator.update()
@@ -1619,7 +1800,8 @@ def chooser(backdrop, title, options):
     size = ui.inch2pix(0.4)
     ui.set_icons(asset_dir + "Paper/")
     iconer = pygame.transform.smoothscale(
-        ui.pygame_icon("paint", bundle_dir), [size, size])
+        ui.pygame_icon("paint", bundle_dir), [size, size]
+    )
 
     list_length = len(options) * (ui.inch2pix(0.35) + ui.inch2pix(0.25))
 
@@ -1670,7 +1852,8 @@ def chooser(backdrop, title, options):
                 if list_length > HEIGHT - bottom_padding - top_padding:
                     if button == 5:  # down
                         if scroll > -list_length + ui.inch2pix(
-                                0.5) + HEIGHT - top_padding - bottom_padding - ui.inch2pix(5):
+                            0.5
+                        ) + HEIGHT - top_padding - bottom_padding - ui.inch2pix(5):
                             scroll2 -= ui.inch2pix(0.5)
                     elif button == 4:  # up
                         if scroll < -ui.inch2pix(0.4):
@@ -1694,18 +1877,22 @@ def chooser(backdrop, title, options):
                 back = mini.copy()
                 back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                 ui.iris2(
-                    back, [
-                        0, 0], [
-                        WIDTH, HEIGHT], [
-                        0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                    back,
+                    [0, 0],
+                    [WIDTH, HEIGHT],
+                    [0, 0, 0],
+                    radius=10,
+                    shadow_enabled=False,
+                    resolution=50,
+                )
                 # mini = pygame.transform.smoothscale(mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
                 mini = pygame.transform.smoothscale(
-                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                    mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)]
+                )
 
                 b = pygame.Surface([WIDTH, HEIGHT])
                 draw(b)
-                lumen = pygame.Surface(
-                    [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                 # mask.fill([255, 0, 0])
 
@@ -1736,8 +1923,11 @@ def chooser(backdrop, title, options):
         # draw top and bottom of background
         icon_surf.fill([0, 0, 0, 0])
         icon_surf.blit(b, [0, 0], [0, 0, WIDTH, top_padding])
-        icon_surf.blit(b, [0, HEIGHT - bottom_padding],
-                       [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding])
+        icon_surf.blit(
+            b,
+            [0, HEIGHT - bottom_padding],
+            [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding],
+        )
 
         v3 = animator.get("choose1")[0] / 100
         old_key = ""
@@ -1754,51 +1944,72 @@ def chooser(backdrop, title, options):
             # ui.inch2pix(0.35) + txt.get_height()
             h2 = c * (ui.inch2pix(0.35) + ui.inch2pix(0.27))
 
-            if h - int((v3 - 1) * d) + scroll > -1 * (ui.inch2pix(0.5)
-            ) and h - int((v3 - 1) * d) + scroll < HEIGHT:
+            if (
+                h - int((v3 - 1) * d) + scroll > -1 * (ui.inch2pix(0.5))
+                and h - int((v3 - 1) * d) + scroll < HEIGHT
+            ):
 
                 txt = title_font.render(a, True, white)
                 txt.set_alpha(int(v3 * 255))
 
-                icon_surf.blit(iconer, [w +
-                                        ui.inch2pix(0.4) -
-                                        iconer.get_width() -
-                                        ui.inch2pix(0.1), h +
-                                        txt.get_height() /
-                                        2 -
-                                        iconer.get_height() /
-                                        2 -
-                                        int((v3 -
-                                             1) *
-                                            d) +
-                                        scroll +
-                                        ui.inch2pix(0.03)], special_flags=pygame.BLEND_RGBA_ADD)
+                icon_surf.blit(
+                    iconer,
+                    [
+                        w + ui.inch2pix(0.4) - iconer.get_width() - ui.inch2pix(0.1),
+                        h
+                        + txt.get_height() / 2
+                        - iconer.get_height() / 2
+                        - int((v3 - 1) * d)
+                        + scroll
+                        + ui.inch2pix(0.03),
+                    ],
+                    special_flags=pygame.BLEND_RGBA_ADD,
+                )
 
-                txt_width = WIDTH - \
-                            (w + ui.inch2pix(0.4) + ui.inch2pix(0.2) + ui.inch2pix(0.6))
+                txt_width = WIDTH - (
+                    w + ui.inch2pix(0.4) + ui.inch2pix(0.2) + ui.inch2pix(0.6)
+                )
                 ext = title_font.render("... ", True, white)
 
-                icon_surf.blit(txt,
-                               [w + ui.inch2pix(0.4),
-                                h - int((v3 - 1) * d) + scroll],
-                               [0,
-                                0,
-                                txt_width,
-                                txt.get_height()],
-                               special_flags=pygame.BLEND_RGBA_ADD)
+                icon_surf.blit(
+                    txt,
+                    [w + ui.inch2pix(0.4), h - int((v3 - 1) * d) + scroll],
+                    [0, 0, txt_width, txt.get_height()],
+                    special_flags=pygame.BLEND_RGBA_ADD,
+                )
                 if txt.get_width() > txt_width:
-                    icon_surf.blit(ext,
-                                   [w + ui.inch2pix(0.4) + txt_width,
-                                    h - int((v3 - 1) * d) + scroll],
-                                   special_flags=pygame.BLEND_RGBA_ADD)
+                    icon_surf.blit(
+                        ext,
+                        [
+                            w + ui.inch2pix(0.4) + txt_width,
+                            h - int((v3 - 1) * d) + scroll,
+                        ],
+                        special_flags=pygame.BLEND_RGBA_ADD,
+                    )
                     txt_width += ext.get_width()
 
-                if mouse and mouse[1] >= top_padding and mouse[1] <= HEIGHT - \
-                        bottom_padding:
-                    if mouse[1] > h - ui.inch2pix(0.1) - int((v3 - 1) * d) + scroll and mouse[
-                        1] < h + txt.get_height() + ui.inch2pix(0.2) - int((v3 - 1) * d) + scroll:
-                        if mouse[0] > w + ui.inch2pix(0.4) - iconer.get_width() - ui.inch2pix(
-                                0.1) and mouse[0] < w + ui.inch2pix(0.4) + txt_width:
+                if (
+                    mouse
+                    and mouse[1] >= top_padding
+                    and mouse[1] <= HEIGHT - bottom_padding
+                ):
+                    if (
+                        mouse[1] > h - ui.inch2pix(0.1) - int((v3 - 1) * d) + scroll
+                        and mouse[1]
+                        < h
+                        + txt.get_height()
+                        + ui.inch2pix(0.2)
+                        - int((v3 - 1) * d)
+                        + scroll
+                    ):
+                        if (
+                            mouse[0]
+                            > w
+                            + ui.inch2pix(0.4)
+                            - iconer.get_width()
+                            - ui.inch2pix(0.1)
+                            and mouse[0] < w + ui.inch2pix(0.4) + txt_width
+                        ):
                             choice = option_names[a]
                             animator.animate("choose1", [0, 0])
 
@@ -1810,74 +2021,100 @@ def chooser(backdrop, title, options):
         icon_surf.set_alpha(int(int(v3 * 255) / 4))
         canvas.blit(icon_surf, [0, 0], [0, 0, WIDTH, top_padding])
 
-        canvas.blit(icon_surf, [0, HEIGHT - bottom_padding],
-                    [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding])
+        canvas.blit(
+            icon_surf,
+            [0, HEIGHT - bottom_padding],
+            [0, (HEIGHT - bottom_padding), WIDTH, bottom_padding],
+        )
 
         # blur
         ui.iris2(
-            canvas, [
-                0, 0], [
-                WIDTH, HEIGHT], [
-                0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(
-                v * 255))
+            canvas,
+            [0, 0],
+            [WIDTH, HEIGHT],
+            [0, 0, 0],
+            radius=10,
+            shadow_enabled=False,
+            resolution=30,
+            alpha=int(v * 255),
+        )
 
         # draw central items
         icon_surf.set_alpha(int(v3 * 255))
         canvas.blit(
-            icon_surf, [
-                0, top_padding], [
-                0, top_padding, WIDTH, HEIGHT - bottom_padding - top_padding])
+            icon_surf,
+            [0, top_padding],
+            [0, top_padding, WIDTH, HEIGHT - bottom_padding - top_padding],
+        )
 
         # Top title above blur
         title_font = ui.font(default_font, int(ui.inch2pix(0.21)))
 
         txt = title_font.render(title, True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2,
-                          ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v),
+            ],
+        )
 
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt,
-                    [WIDTH - txt.get_width() - ui.inch2pix(0.3),
-                     ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH - txt.get_width() - ui.inch2pix(0.3),
+                ui.inch2pix(0.2) - int(ui.inch2pix(0.1) * (1 - v)),
+            ],
+        )
         hover = pygame.mouse.get_pos()
-        if hover[0] > WIDTH - txt.get_width() - \
-                ui.inch2pix(0.4) and hover[0] < WIDTH - ui.inch2pix(0.1):
+        if hover[0] > WIDTH - txt.get_width() - ui.inch2pix(0.4) and hover[
+            0
+        ] < WIDTH - ui.inch2pix(0.1):
             if hover[1] > ui.inch2pix(0.1) and hover[1] < ui.inch2pix(
-                    0.3) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
+                0.3
+            ) + txt.get_height() - int(ui.inch2pix(0.1) * (1 - v)):
                 if mouse:
                     helper("theme")
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH /
-                          2 -
-                          txt.get_width() /
-                          2, HEIGHT -
-                          ui.inch2pix(0.3) -
-                          txt.get_height() -
-                          int((v -
-                               1) *
-                              ui.inch2pix(0.4))])
+        canvas.blit(
+            txt,
+            [
+                WIDTH / 2 - txt.get_width() / 2,
+                HEIGHT
+                - ui.inch2pix(0.3)
+                - txt.get_height()
+                - int((v - 1) * ui.inch2pix(0.4)),
+            ],
+        )
         if mouse:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
-                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                0
+            ] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
                 if mouse[1] > HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
-                        (v - 1) * ui.inch2pix(0.4)) and mouse[1] < HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
-                    (v - 1) * ui.inch2pix(0.4)) + txt.get_height() + ui.inch2pix(0.1):
+                    (v - 1) * ui.inch2pix(0.4)
+                ) and mouse[1] < HEIGHT - ui.inch2pix(0.3) - txt.get_height() - int(
+                    (v - 1) * ui.inch2pix(0.4)
+                ) + txt.get_height() + ui.inch2pix(
+                    0.1
+                ):
                     choice = None
                     animator.animate("choose1", [0, 0])
 
         if not light:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+            )
         else:
             pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(
-                canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+                canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80]
+            )
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         fpsClock.tick(60)
         animator.update()
@@ -1901,7 +2138,7 @@ def create_shortcut(command, name, icon):
         # winshell.start_menu()
         shortcut_path = os.path.join(app_path, str(str(name) + ".lnk"))
         home = str(Path.home())
-        shell = Dispatch('WScript.Shell')
+        shell = Dispatch("WScript.Shell")
         shortcut = shell.CreateShortCut(shortcut_path)
 
         print("attempt create shortcut")
@@ -1913,10 +2150,13 @@ def create_shortcut(command, name, icon):
             CSIDL_COMMON_APPDATA = 28
 
             _SHGetFolderPath = windll.shell32.SHGetFolderPathW
-            _SHGetFolderPath.argtypes = [wintypes.HWND,
-                                         ctypes.c_int,
-                                         wintypes.HANDLE,
-                                         wintypes.DWORD, wintypes.LPCWSTR]
+            _SHGetFolderPath.argtypes = [
+                wintypes.HWND,
+                ctypes.c_int,
+                wintypes.HANDLE,
+                wintypes.DWORD,
+                wintypes.LPCWSTR,
+            ]
 
             path_buf = ctypes.create_unicode_buffer(wintypes.MAX_PATH)
             target_loc = path_buf.value + r"\\Microsoft\\WindowsApps\\"
@@ -1939,24 +2179,16 @@ def create_shortcut(command, name, icon):
             print("Shortcut Successfully Created")
         print(
             subprocess.getoutput(
-                'copy "' +
-                shortcut_path +
-                '" "' +
-                winshell.start_menu() +
-                '"'))
+                'copy "' + shortcut_path + '" "' + winshell.start_menu() + '"'
+            )
+        )
 
     except Exception:
         logger.exception("Exception occurred")
 
 
 def start_server(port, mode, clipboard):
-    default_arguments = [
-        "-ac",
-        "-wgl",
-        "-compositewm",
-        "-notrayicon",
-        "-dpi",
-        "auto"]
+    default_arguments = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
     if mode == "multi":
         default_arguments.append("-multiwindow")
     elif mode == "full":
@@ -1969,38 +2201,42 @@ def start_server(port, mode, clipboard):
         default_arguments.append("-noprimary")
 
     proc = subprocess.Popen(
-        ["VCXSRV/GWSL_instance.exe", ":" + str(port)] + default_arguments)
+        ["VCXSRV/GWSL_instance.exe", ":" + str(port)] + default_arguments
+    )
     return proc.pid
 
 
 def get_light():
     registry = ConnectRegistry(None, HKEY_CURRENT_USER)
     key = OpenKey(
-        registry,
-        r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-    key_value = QueryValueEx(key, 'AppsUseLightTheme')
+        registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    )
+    key_value = QueryValueEx(key, "AppsUseLightTheme")
     k = int(key_value[0])
     return k
 
 
 def spawn_n_run(
-        machine,
-        command,
-        w_mode,
-        w_clipboard,
-        GTK,
-        QT,
-        appends,
-        cmd=False,
-        theme="Follow Windows",
-        root="False",
-        dbus="False",
-        keep="False"):
+    machine,
+    command,
+    w_mode,
+    w_clipboard,
+    GTK,
+    QT,
+    appends,
+    cmd=False,
+    theme="Follow Windows",
+    root="False",
+    dbus="False",
+    keep="False",
+):
     ver = get_version(machine)
     if root == "True":
-        code = pymsgbox.password(text='Enter Sudo Password For ' +
-                                      str(machine.replace("-", " ")) +
-                                      ":", title='Authentication', mask='*')
+        code = pymsgbox.password(
+            text="Enter Sudo Password For " + str(machine.replace("-", " ")) + ":",
+            title="Authentication",
+            mask="*",
+        )
         if code is None:
             return None
         passw = "echo '" + code + "' | sudo -H -S "
@@ -2013,15 +2249,13 @@ def spawn_n_run(
         if passw == "":
             code = pymsgbox.password(
                 text="Enter Sudo Password To Start DBus:",
-                title='DBus Not Started.',
-                mask='*')
+                title="DBus Not Started.",
+                mask="*",
+            )
 
             runo3(
-                machine,
-                "echo '" +
-                code +
-                "' | sudo -H -S " +
-                "/etc/init.d/dbus start")
+                machine, "echo '" + code + "' | sudo -H -S " + "/etc/init.d/dbus start"
+            )
         else:
             runo3(machine, passw + "/etc/init.d/dbus start")
 
@@ -2075,26 +2309,22 @@ def spawn_n_run(
             if ver == 1:
                 runs(
                     machine,
-                    passw +
-                    l_mode +
-                    "DISPLAY=:0 " +
-                    qt +
-                    gtk +
-                    command +
-                    append)
+                    passw + l_mode + "DISPLAY=:0 " + qt + gtk + command + append,
+                )
             else:
                 ip = get_ip(machine)
                 runs(
                     machine,
-                    passw +
-                    l_mode +
-                    "DISPLAY=" +
-                    str(ip) +
-                    ":0 " +
-                    qt +
-                    gtk +
-                    command +
-                    append)
+                    passw
+                    + l_mode
+                    + "DISPLAY="
+                    + str(ip)
+                    + ":0 "
+                    + qt
+                    + gtk
+                    + command
+                    + append,
+                )
 
         else:
             # In this case, we need to start a new server, run in a new thread
@@ -2146,32 +2376,36 @@ def spawn_n_run(
                     print(
                         runs(
                             machine,
-                            passw +
-                            l_mode +
-                            "DISPLAY=:" +
-                            port +
-                            " " +
-                            qt +
-                            gtk +
-                            command +
-                            append))
+                            passw
+                            + l_mode
+                            + "DISPLAY=:"
+                            + port
+                            + " "
+                            + qt
+                            + gtk
+                            + command
+                            + append,
+                        )
+                    )
 
                 elif ver == 2:
                     ip = get_ip(machine)
                     print(
                         runs(
                             machine,
-                            passw +
-                            l_mode +
-                            "DISPLAY=" +
-                            str(ip) +
-                            ":" +
-                            port +
-                            " " +
-                            qt +
-                            gtk +
-                            command +
-                            append))
+                            passw
+                            + l_mode
+                            + "DISPLAY="
+                            + str(ip)
+                            + ":"
+                            + port
+                            + " "
+                            + qt
+                            + gtk
+                            + command
+                            + append,
+                        )
+                    )
 
                 while True:
                     time.sleep(2)
@@ -2182,8 +2416,9 @@ def spawn_n_run(
                         break
                 if keep == "False":
                     print(
-                        f"All of {command} terminated. Killing Server Instance on port {port}")
-                    print(subprocess.getoutput('taskkill /F /PID ' + str(PID)))
+                        f"All of {command} terminated. Killing Server Instance on port {port}"
+                    )
+                    print(subprocess.getoutput("taskkill /F /PID " + str(PID)))
                 else:
                     print(f"XServer do not kill. Keeping X on port {port}")
 
@@ -2191,31 +2426,33 @@ def spawn_n_run(
                 if ver == 1:
                     runs(
                         machine,
-                        passw +
-                        l_mode +
-                        "DISPLAY=:" +
-                        port +
-                        " " +
-                        qt +
-                        gtk +
-                        command +
-                        append)
+                        passw
+                        + l_mode
+                        + "DISPLAY=:"
+                        + port
+                        + " "
+                        + qt
+                        + gtk
+                        + command
+                        + append,
+                    )
 
                 elif ver == 2:
                     ip = get_ip(machine)
                     runs(
                         machine,
-                        passw +
-                        l_mode +
-                        "DISPLAY=" +
-                        str(ip) +
-                        ":" +
-                        port +
-                        " " +
-                        qt +
-                        gtk +
-                        command +
-                        append)
+                        passw
+                        + l_mode
+                        + "DISPLAY="
+                        + str(ip)
+                        + ":"
+                        + port
+                        + " "
+                        + qt
+                        + gtk
+                        + command
+                        + append,
+                    )
 
             else:
                 if not cmd:
@@ -2278,13 +2515,7 @@ def get_login(machine):
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(
-        frame_1,
-        text="Username: ").grid(
-        row=0,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
@@ -2292,13 +2523,7 @@ def get_login(machine):
 
     link_user.focus_force()
 
-    tk.Label(
-        frame_1,
-        text="Password: ").grid(
-        row=1,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
 
     link_pass = ttk.Entry(frame_1, show="*")
 
@@ -2368,8 +2593,9 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
 
-    lbl = tk.Label(boxRoot, text="Create a Start Menu Shortcut:",
-                   justify=CENTER)  # , font=("Helvetica", 16))
+    lbl = tk.Label(
+        boxRoot, text="Create a Start Menu Shortcut:", justify=CENTER
+    )  # , font=("Helvetica", 16))
     lbl.grid(row=0, padx=10, pady=10, sticky="EW")
     boxRoot.grid_rowconfigure(0, weight=0)
 
@@ -2393,7 +2619,8 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
                 theme=color_chooser.get(),
                 root=root_chooser.get(),
                 dbus=dbus_chooser.get(),
-                keep=kill_chooser.get())
+                keep=kill_chooser.get(),
+            )
 
     def create():
         nonlocal machine
@@ -2409,10 +2636,25 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
                 append = ""
             else:
                 append = append_chooser.get()
-            command = '--r --wsl_machine="' + str(machine) + '" --wsl_cmd="' + command + '" --w_mode="' + str(
-                mode_chooser.get()) + '" --clip_enabled="' + str(clip_chooser.get())
-            command += '" --gtk_scale="' + str(GTK_chooser.get()) + '" --qt_scale="' + str(
-                QT_chooser.get()) + '" --append="' + str(append) + '"'
+            command = (
+                '--r --wsl_machine="'
+                + str(machine)
+                + '" --wsl_cmd="'
+                + command
+                + '" --w_mode="'
+                + str(mode_chooser.get())
+                + '" --clip_enabled="'
+                + str(clip_chooser.get())
+            )
+            command += (
+                '" --gtk_scale="'
+                + str(GTK_chooser.get())
+                + '" --qt_scale="'
+                + str(QT_chooser.get())
+                + '" --append="'
+                + str(append)
+                + '"'
+            )
             t = color_chooser.get()
             if t == "Follow Windows":
                 command += ' --theme="follow"'
@@ -2427,23 +2669,25 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
             command += ' --keep="' + kill_chooser.get().lower() + '"'
 
-            imager.save(app_path + "\\" + str(link_label.get()) + ".ico",
-                        sizes=[(24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (255, 255)])
+            imager.save(
+                app_path + "\\" + str(link_label.get()) + ".ico",
+                sizes=[(24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (255, 255)],
+            )
             if root_chooser.get() == "False":
-                create_shortcut(command, link_label.get() +
-                                " on " +
-                                str(machine.replace("-", " ")), app_path +
-                                "\\" +
-                                str(link_label.get()) +
-                                ".ico")
+                create_shortcut(
+                    command,
+                    link_label.get() + " on " + str(machine.replace("-", " ")),
+                    app_path + "\\" + str(link_label.get()) + ".ico",
+                )
             else:
-                create_shortcut(command, "(root) " +
-                                link_label.get() +
-                                " on " +
-                                str(machine.replace("-", " ")), app_path +
-                                "\\" +
-                                str(link_label.get()) +
-                                ".ico")
+                create_shortcut(
+                    command,
+                    "(root) "
+                    + link_label.get()
+                    + " on "
+                    + str(machine.replace("-", " ")),
+                    app_path + "\\" + str(link_label.get()) + ".ico",
+                )
             quitter()
 
     def reseticon():
@@ -2472,13 +2716,9 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         labelm.image = img
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(
-        frame_1,
-        text="Shortcut Label: ").grid(
-        row=0,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Shortcut Label: ").grid(
+        row=0, column=1, padx=10, sticky="W"
+    )
 
     link_label = ttk.Entry(frame_1)
     if name is not None:
@@ -2487,30 +2727,21 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
     link_label.focus_force()
 
-    tk.Label(
-        frame_1,
-        text="Shortcut Command: ").grid(
-        row=1,
-        column=1,
-        padx=10,
-        sticky="W")
+    tk.Label(frame_1, text="Shortcut Command: ").grid(
+        row=1, column=1, padx=10, sticky="W"
+    )
 
     link_command = ttk.Entry(frame_1)
     if name is not None:
         link_command.insert(0, cmd)
     link_command.grid(row=1, column=2, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_1,
-        text="Run In: ").grid(
-        row=2,
-        column=1,
-        padx=10,
-        pady=7,
-        sticky="W")
+    tk.Label(frame_1, text="Run In: ").grid(
+        row=2, column=1, padx=10, pady=7, sticky="W"
+    )
 
     machines = os.popen("wsl.exe -l -q").read()
-    machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+    machines = re.sub(r"[^a-zA-Z0-9./\n-]", r"", machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
     sett = iset.read()
@@ -2528,8 +2759,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     if mach is None:
         if len(machines) > 1:
             # animator.animate("start", [0, 0])
-            machine_chooser = ttk.Combobox(
-                frame_1, values=machines, state="readonly")
+            machine_chooser = ttk.Combobox(frame_1, values=machines, state="readonly")
             machine_chooser.current(0)
             machine_chooser.grid(row=2, column=2, padx=10, sticky="WE")
         elif len(machines) == 1:
@@ -2539,9 +2769,10 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
             machine_chooser.grid(row=2, column=2, padx=10, sticky="WE")
         else:
             pymsgbox.alert(
-                text='No WSL Distros Found',
-                title='Please Install a WSL Distro',
-                button='OK')
+                text="No WSL Distros Found",
+                title="Please Install a WSL Distro",
+                button="OK",
+            )
             quitter()
             return None
     else:
@@ -2563,156 +2794,93 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
     frame_2 = cpane(frame_1, "Less Options", "More Options")
 
-    tk.Label(
-        frame_2.frame,
-        text="Display Mode: ").grid(
-        row=0,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Display Mode: ").grid(
+        row=0, column=0, pady=7, sticky="WN"
+    )
 
     mode_chooser = ttk.Combobox(
         frame_2.frame,
-        values=[
-            "Default",
-            "Multi Window",
-            "Single Window",
-            "Fullscreen"],
-        state="readonly")
+        values=["Default", "Multi Window", "Single Window", "Fullscreen"],
+        state="readonly",
+    )
     mode_chooser.current(0)
     mode_chooser.grid(row=0, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text="GTK Scale Mode: ").grid(
-        row=1,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="GTK Scale Mode: ").grid(
+        row=1, column=0, pady=7, sticky="WN"
+    )
     GTK_chooser = ttk.Combobox(
-        frame_2.frame,
-        values=[
-            "Default",
-            "1",
-            "2",
-            "3"],
-        state="readonly")
+        frame_2.frame, values=["Default", "1", "2", "3"], state="readonly"
+    )
     GTK_chooser.current(0)
     GTK_chooser.grid(row=1, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text="QT Scale Mode: ").grid(
-        row=2,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="QT Scale Mode: ").grid(
+        row=2, column=0, pady=7, sticky="WN"
+    )
     QT_chooser = ttk.Combobox(
-        frame_2.frame,
-        values=[
-            "Default",
-            "1",
-            "2",
-            "3"],
-        state="readonly")
+        frame_2.frame, values=["Default", "1", "2", "3"], state="readonly"
+    )
     QT_chooser.current(0)
     QT_chooser.grid(row=2, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text="Shared Clipboard: ").grid(
-        row=3,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Shared Clipboard: ").grid(
+        row=3, column=0, pady=7, sticky="WN"
+    )
     clip_chooser = ttk.Combobox(
-        frame_2.frame,
-        values=[
-            "Default",
-            "Enabled",
-            "Disabled"],
-        state="readonly")
+        frame_2.frame, values=["Default", "Enabled", "Disabled"], state="readonly"
+    )
     clip_chooser.current(0)
     clip_chooser.grid(row=3, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text="Color Mode: ").grid(
-        row=4,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Color Mode: ").grid(
+        row=4, column=0, pady=7, sticky="WN"
+    )
     color_chooser = ttk.Combobox(
         frame_2.frame,
-        values=[
-            "Follow Windows",
-            "Light Mode",
-            "Dark Mode"],
-        state="readonly")
+        values=["Follow Windows", "Light Mode", "Dark Mode"],
+        state="readonly",
+    )
     color_chooser.current(0)
     color_chooser.grid(row=4, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text='Run As Root:').grid(
-        row=5,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Run As Root:").grid(
+        row=5, column=0, pady=7, sticky="WN"
+    )
     root_chooser = ttk.Combobox(
-        frame_2.frame, values=[
-            "True", "False"], state="readonly")
+        frame_2.frame, values=["True", "False"], state="readonly"
+    )
     root_chooser.current(1)
     root_chooser.grid(row=5, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text='Experimental Features:').grid(
-        row=6,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Experimental Features:").grid(
+        row=6, column=0, pady=7, sticky="WN"
+    )
 
-    tk.Label(
-        frame_2.frame,
-        text='Use DBus (Sudo Required):').grid(
-        row=7,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Use DBus (Sudo Required):").grid(
+        row=7, column=0, pady=7, sticky="WN"
+    )
     dbus_chooser = ttk.Combobox(
-        frame_2.frame, values=[
-            "True", "False"], state="readonly")
+        frame_2.frame, values=["True", "False"], state="readonly"
+    )
     dbus_chooser.current(1)
     dbus_chooser.grid(row=7, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text='Experimental Flags:').grid(
-        row=8,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Experimental Flags:").grid(
+        row=8, column=0, pady=7, sticky="WN"
+    )
     append_chooser = ttk.Combobox(
-        frame_2.frame,
-        values=[
-            "None",
-            "--zoom=2",
-            "--scale=2"],
-        state="readonly")
+        frame_2.frame, values=["None", "--zoom=2", "--scale=2"], state="readonly"
+    )
     append_chooser.current(0)
     append_chooser.grid(row=8, column=1, padx=10, sticky="WE")
 
-    tk.Label(
-        frame_2.frame,
-        text="Keep XServer Instance:").grid(
-        row=9,
-        column=0,
-        pady=7,
-        sticky="WN")
+    tk.Label(frame_2.frame, text="Keep XServer Instance:").grid(
+        row=9, column=0, pady=7, sticky="WN"
+    )
     kill_chooser = ttk.Combobox(
-        frame_2.frame, values=[
-            "True", "False"], state="readonly")
+        frame_2.frame, values=["True", "False"], state="readonly"
+    )
     kill_chooser.current(1)
     kill_chooser.grid(row=9, column=1, padx=10, sticky="WE")
 
@@ -2805,8 +2973,9 @@ def putty():
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
 
-    lbl = tk.Label(boxRoot, text="Graphical SSH Tools:",
-                   justify=CENTER)  # , font=("Helvetica", 16))
+    lbl = tk.Label(
+        boxRoot, text="Graphical SSH Tools:", justify=CENTER
+    )  # , font=("Helvetica", 16))
     lbl.grid(row=0, padx=10, pady=10, sticky="EW")
     boxRoot.grid_rowconfigure(0, weight=0)
 
@@ -2833,11 +3002,8 @@ def putty():
 
             print(command)
             create_shortcut(
-                command,
-                "Graphical SSH on " +
-                ip.get(),
-                asset_dir +
-                "computer.ico")
+                command, "Graphical SSH on " + ip.get(), asset_dir + "computer.ico"
+            )
             quitter()
 
     # First frame
@@ -2852,14 +3018,9 @@ def putty():
 
     labelm.grid(row=0, padx=10, pady=0, sticky="EW", rowspan=2)
 
-    tk.Label(
-        frame_1,
-        text="Remote IP: ").grid(
-        row=0,
-        column=1,
-        padx=10,
-        rowspan=2,
-        sticky="W")
+    tk.Label(frame_1, text="Remote IP: ").grid(
+        row=0, column=1, padx=10, rowspan=2, sticky="W"
+    )
 
     ip = ttk.Entry(frame_1)
 
@@ -2918,7 +3079,7 @@ def putty():
 
 
 def get_running(process):
-    proc_list = os.popen('tasklist').readlines()
+    proc_list = os.popen("tasklist").readlines()
     for proc in proc_list:
         if process in proc:
             return True
@@ -2929,7 +3090,7 @@ def update_running():
     global running, service_loaded, white, light, accent
     if get_running("GWSL_service") == False:
         try:
-            subprocess.Popen('GWSL_service.exe')
+            subprocess.Popen("GWSL_service.exe")
             service_loaded = True
         except Exception:
             logger.exception("Exception occurred")
@@ -2946,9 +3107,9 @@ def update_running():
         #    running = False
         registry = ConnectRegistry(None, HKEY_CURRENT_USER)
         key = OpenKey(
-            registry,
-            r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key, 'SystemUsesLightTheme')
+            registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+        )
+        key_value = QueryValueEx(key, "SystemUsesLightTheme")
         k = int(key_value[0])
         light = False
         white = [255, 255, 255]
@@ -2977,15 +3138,18 @@ def draw(canvas, mouse=False):
         hover = pygame.mouse.get_pos()
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
         # canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
-        win32gui.MoveWindow(HWND,
-                            winpos,
-                            screensize[1] - taskbar - int(HEIGHT * launch),
-                            WIDTH,
-                            HEIGHT,
-                            1)
+        win32gui.MoveWindow(
+            HWND,
+            winpos,
+            screensize[1] - taskbar - int(HEIGHT * launch),
+            WIDTH,
+            HEIGHT,
+            1,
+        )
         lumen_opac = 0
-        win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(
-            *fuchsia), int(launch * 255), win32con.LWA_ALPHA)
+        win32gui.SetLayeredWindowAttributes(
+            hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA
+        )
 
     else:
         if about_open:
@@ -2993,16 +3157,11 @@ def draw(canvas, mouse=False):
             about()
         # canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
         win32gui.MoveWindow(
-            HWND,
-            winpos,
-            screensize[1] -
-            taskbar -
-            int(HEIGHT),
-            WIDTH,
-            HEIGHT,
-            True)
-        win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(
-            *fuchsia), int(launch * 255), win32con.LWA_ALPHA)
+            HWND, winpos, screensize[1] - taskbar - int(HEIGHT), WIDTH, HEIGHT, True
+        )
+        win32gui.SetLayeredWindowAttributes(
+            hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA
+        )
         animator.animate("start2", [100, 0])
         if service_loaded:
             animator.animate("loading", [100, 0])
@@ -3021,22 +3180,23 @@ def draw(canvas, mouse=False):
 
     if not light:
         pygame.gfxdraw.rectangle(
-            canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100]
+        )
 
-        pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd,
-                            l_h, [180, 180, 180, int(80 * launch)])
+        pygame.gfxdraw.line(
+            canvas, padd, l_h, WIDTH - padd, l_h, [180, 180, 180, int(80 * launch)]
+        )
 
     else:
         pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [255, 255, 255, 200])
         pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, 50])
 
-        pygame.gfxdraw.rectangle(
-            canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-        pygame.gfxdraw.rectangle(
-            canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+        pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
+        pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
-        pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd,
-                            l_h, [0, 0, 0, int(80 * launch)])
+        pygame.gfxdraw.line(
+            canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)]
+        )
 
     # canvas.fill(fuchsia)
 
@@ -3044,8 +3204,9 @@ def draw(canvas, mouse=False):
 
     sett = icon_font.render("", True, white)
     sett.set_alpha(int(launch * 255))
-    canvas.blit(sett, [ui.inch2pix(0.3), ui.inch2pix(
-        0.28) + (1 - launch) * ui.inch2pix(0.1)])
+    canvas.blit(
+        sett, [ui.inch2pix(0.3), ui.inch2pix(0.28) + (1 - launch) * ui.inch2pix(0.1)]
+    )
 
     title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
     title_font.bold = False
@@ -3060,8 +3221,9 @@ def draw(canvas, mouse=False):
         txt = title_font.render("Error. Please Check Logs", True, white)
 
     txt.set_alpha(int(launch * 255))
-    canvas.blit(txt, [ui.inch2pix(1), ui.inch2pix(
-        0.35) + (1 - launch) * ui.inch2pix(0.1)])
+    canvas.blit(
+        txt, [ui.inch2pix(1), ui.inch2pix(0.35) + (1 - launch) * ui.inch2pix(0.1)]
+    )
 
     # canvas.blit(txt, [ui.inch2pix(0.5), ui.inch2pix(0.35) + (1 - launch) * ui.inch2pix(0.1)])
 
@@ -3145,24 +3307,30 @@ def draw(canvas, mouse=False):
             app_launcher(machine)
 
     def donate():
-        webbrowser.get(
-            'windows-default').open('https://sites.google.com/bartimee.com/opticos-studios/donate')
+        webbrowser.get("windows-default").open(
+            "https://sites.google.com/bartimee.com/opticos-studios/donate"
+        )
 
     def wsl_installer():
-        webbrowser.get(
-            'windows-default').open("https://docs.microsoft.com/en-us/windows/wsl/install-win10")
+        webbrowser.get("windows-default").open(
+            "https://docs.microsoft.com/en-us/windows/wsl/install-win10"
+        )
 
     if installed:
-        buttons = [["GWSL Distro Tools", "", setter],
-                   ["Shortcut Creator", "", short],
-                   ["Linux Apps", "", apper],
-                   ["Linux Shell", "", shells],
-                   ["Graphical SSH Connection", "", putty],
-                   ["Donate With PayPal", "", donate]]
+        buttons = [
+            ["GWSL Distro Tools", "", setter],
+            ["Shortcut Creator", "", short],
+            ["Linux Apps", "", apper],
+            ["Linux Shell", "", shells],
+            ["Graphical SSH Connection", "", putty],
+            ["Donate With PayPal", "", donate],
+        ]
     else:
-        buttons = [["Graphical SSH Connection", "", putty],
-                   ["Install WSL for More Features", "", wsl_installer],
-                   ["Donate With PayPal", "", donate]]  # 
+        buttons = [
+            ["Graphical SSH Connection", "", putty],
+            ["Install WSL for More Features", "", wsl_installer],
+            ["Donate With PayPal", "", donate],
+        ]  # 
 
     selected = False
     q = 0
@@ -3170,8 +3338,9 @@ def draw(canvas, mouse=False):
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
         if hover[0] > ui.inch2pix(0.1) and hover[0] < WIDTH - ui.inch2pix(0.1):
-            if hover[1] > pos[1] + \
-                    ui.inch2pix(0.1) and hover[1] < pos[1] + ui.inch2pix(0.3) + ui.inch2pix(0.3):
+            if hover[1] > pos[1] + ui.inch2pix(0.1) and hover[1] < pos[1] + ui.inch2pix(
+                0.3
+            ) + ui.inch2pix(0.3):
                 if mouse:
                     i[2]()
                 selected = True
@@ -3194,32 +3363,28 @@ def draw(canvas, mouse=False):
             sett.set_alpha(int(launch * 255))
 
         canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2])
-        canvas.blit(txt, [pos[0] +
-                          sett.get_width() +
-                          ui.inch2pix(0.2), pos[1] +
-                          box /
-                          2 -
-                          txt.get_height() /
-                          2 -
-                          ui.inch2pix(0.025)])
+        canvas.blit(
+            txt,
+            [
+                pos[0] + sett.get_width() + ui.inch2pix(0.2),
+                pos[1] + box / 2 - txt.get_height() / 2 - ui.inch2pix(0.025),
+            ],
+        )
 
         # unselected
         if s2 or q == last:
             sett = icon_font.render(i[1], True, accent)
             sett.set_alpha(int(launch * 255 * s3))
-            canvas.blit(
-                sett, [
-                    pos[0], pos[1] + box / 2 - sett.get_height() / 2])
+            canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2])
             txt = title_font.render(i[0], True, accent)
             txt.set_alpha(int(launch * 255 * s3))
-            canvas.blit(txt, [pos[0] +
-                              sett.get_width() +
-                              ui.inch2pix(0.2), pos[1] +
-                              box /
-                              2 -
-                              txt.get_height() /
-                              2 -
-                              ui.inch2pix(0.025)])
+            canvas.blit(
+                txt,
+                [
+                    pos[0] + sett.get_width() + ui.inch2pix(0.2),
+                    pos[1] + box / 2 - txt.get_height() / 2 - ui.inch2pix(0.025),
+                ],
+            )
 
         # square(mask, [ui.inch2pix(0.1), pos[1]], [WIDTH - ui.inch2pix(0.1) * 2,
         # ui.inch2pix(0.3) + ui.inch2pix(0.4)], width=2)
@@ -3246,49 +3411,72 @@ def draw(canvas, mouse=False):
 
     txt = title_font.render("Help", True, white)
     txt.set_alpha(int(launch * 255))
-    canvas.blit(txt, [WIDTH - ui.inch2pix(1.3), HEIGHT -
-                      ui.inch2pix(0.5) + (1 - launch) * 60])
+    canvas.blit(
+        txt, [WIDTH - ui.inch2pix(1.3), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60]
+    )
 
     # square(mask, [WIDTH - ui.inch2pix(1.35), HEIGHT - ui.inch2pix(0.55) + (1 - launch) * 60],
     #       [txt.get_width() + ui.inch2pix(0.1), txt.get_height() + ui.inch2pix(0.1)], width=2)
 
-    if hover[0] > WIDTH - ui.inch2pix(1.35) and hover[0] < WIDTH - \
-            ui.inch2pix(1.35) + txt.get_width() + ui.inch2pix(0.1):
-        if hover[1] > HEIGHT - ui.inch2pix(0.55) + (
-                1 - launch) * 60 and hover[1] < HEIGHT - ui.inch2pix(0.55) + (
-                1 - launch) * 60 + txt.get_height() + ui.inch2pix(0.1):
+    if hover[0] > WIDTH - ui.inch2pix(1.35) and hover[0] < WIDTH - ui.inch2pix(
+        1.35
+    ) + txt.get_width() + ui.inch2pix(0.1):
+        if hover[1] > HEIGHT - ui.inch2pix(0.55) + (1 - launch) * 60 and hover[
+            1
+        ] < HEIGHT - ui.inch2pix(0.55) + (
+            1 - launch
+        ) * 60 + txt.get_height() + ui.inch2pix(
+            0.1
+        ):
             # webbrowser.open("GWSLHELP.com")#, new=0, autoraise=True)
             if mouse:
-                webbrowser.get(
-                    'windows-default').open('https://opticos.github.io/gwsl/help.html')
+                webbrowser.get("windows-default").open(
+                    "https://opticos.github.io/gwsl/help.html"
+                )
             selected = True
             txt = title_font.render("Help", True, accent)
             txt.set_alpha(int(launch * 255 * s))
-            canvas.blit(txt, [WIDTH - ui.inch2pix(1.3),
-                              HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60])
+            canvas.blit(
+                txt,
+                [
+                    WIDTH - ui.inch2pix(1.3),
+                    HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60,
+                ],
+            )
             last = 100
 
     txt = title_font.render("About", True, white)
     txt.set_alpha(int(launch * 255))
-    canvas.blit(txt, [WIDTH - ui.inch2pix(0.7), HEIGHT -
-                      ui.inch2pix(0.5) + (1 - launch) * 80])
+    canvas.blit(
+        txt, [WIDTH - ui.inch2pix(0.7), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80]
+    )
 
     # square(mask, [WIDTH - ui.inch2pix(0.8), HEIGHT - ui.inch2pix(0.55) + (1 - launch) * 60],
     #       [txt.get_width() + ui.inch2pix(0.17), txt.get_height() + ui.inch2pix(0.1)], width=2)
 
-    if hover[0] > WIDTH - ui.inch2pix(0.8) and hover[0] < WIDTH - \
-            ui.inch2pix(0.8) + txt.get_width() + ui.inch2pix(0.17):
-        if hover[1] > HEIGHT - ui.inch2pix(0.55) + (
-                1 - launch) * 60 and hover[1] < HEIGHT - ui.inch2pix(0.55) + (
-                1 - launch) * 60 + txt.get_height() + ui.inch2pix(0.1):
+    if hover[0] > WIDTH - ui.inch2pix(0.8) and hover[0] < WIDTH - ui.inch2pix(
+        0.8
+    ) + txt.get_width() + ui.inch2pix(0.17):
+        if hover[1] > HEIGHT - ui.inch2pix(0.55) + (1 - launch) * 60 and hover[
+            1
+        ] < HEIGHT - ui.inch2pix(0.55) + (
+            1 - launch
+        ) * 60 + txt.get_height() + ui.inch2pix(
+            0.1
+        ):
             if mouse:
                 about()
             selected = True
             last = 100
             txt = title_font.render("About", True, accent)
             txt.set_alpha(int(launch * 255 * s))
-            canvas.blit(txt, [WIDTH - ui.inch2pix(0.7),
-                              HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80])
+            canvas.blit(
+                txt,
+                [
+                    WIDTH - ui.inch2pix(0.7),
+                    HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80,
+                ],
+            )
 
     if selected:
         animator.animate("select", [100, 0])
@@ -3380,8 +3568,16 @@ def draw(canvas, mouse=False):
     v = animator.get("start")[0] / 100
 
     txt2.set_alpha(int(v * int(v2 * 255)))
-    canvas.blit(txt2, [ui.inch2pix(0.55), HEIGHT - txt2.get_height() /
-                       2 - int((v2 - 1) * ui.inch2pix(0.6)) - ui.inch2pix(0.39)])
+    canvas.blit(
+        txt2,
+        [
+            ui.inch2pix(0.55),
+            HEIGHT
+            - txt2.get_height() / 2
+            - int((v2 - 1) * ui.inch2pix(0.6))
+            - ui.inch2pix(0.39),
+        ],
+    )
 
     if service_loaded != "bad":
         txt2 = pygame.transform.rotozoom(loader, loading_angle, 0.22)
@@ -3389,15 +3585,16 @@ def draw(canvas, mouse=False):
         txt2 = loader
 
     txt2.set_alpha(int(v * int(v2 * 255)))
-    canvas.blit(txt2, [ui.inch2pix(0.35) -
-                       txt2.get_width() /
-                       2, HEIGHT -
-                       ui.inch2pix(0.38) -
-                       txt2.get_height() /
-                       2 -
-                       int((v2 -
-                            1) *
-                           ui.inch2pix(0.4))])
+    canvas.blit(
+        txt2,
+        [
+            ui.inch2pix(0.35) - txt2.get_width() / 2,
+            HEIGHT
+            - ui.inch2pix(0.38)
+            - txt2.get_height() / 2
+            - int((v2 - 1) * ui.inch2pix(0.4)),
+        ],
+    )
 
     #
     # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, int(((animator.get("darken")[0] / 100)) * 200)])
@@ -3410,32 +3607,58 @@ def draw(canvas, mouse=False):
 def square(mask, pos, size, width=1, filled=False, color=False):
     if not color:
         if not filled:
-            pygame.draw.polygon(mask, [0, 255, 0], [pos,
-                                                    [pos[0] + size[0], pos[1]],
-                                                    [pos[0] + size[0], pos[1] + size[1]],
-                                                    [pos[0], pos[1] + size[1]]], width)
+            pygame.draw.polygon(
+                mask,
+                [0, 255, 0],
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                width,
+            )
         elif filled:
-            pygame.gfxdraw.filled_polygon(mask, [pos,
-                                                 [pos[0] + size[0], pos[1]],
-                                                 [pos[0] + size[0], pos[1] + size[1]],
-                                                 [pos[0], pos[1] + size[1]]], [0, 255, 0])
+            pygame.gfxdraw.filled_polygon(
+                mask,
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                [0, 255, 0],
+            )
     else:
         if not filled:
-            pygame.gfxdraw.polygon(mask, [pos,
-                                          [pos[0] + size[0], pos[1]],
-                                          [pos[0] + size[0], pos[1] + size[1]],
-                                          [pos[0], pos[1] + size[1]]], color)
+            pygame.gfxdraw.polygon(
+                mask,
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                color,
+            )
         elif filled:
-            pygame.gfxdraw.filled_polygon(mask, [pos,
-                                                 [pos[0] + size[0], pos[1]],
-                                                 [pos[0] + size[0], pos[1] + size[1]],
-                                                 [pos[0], pos[1] + size[1]]], color)
+            pygame.gfxdraw.filled_polygon(
+                mask,
+                [
+                    pos,
+                    [pos[0] + size[0], pos[1]],
+                    [pos[0] + size[0], pos[1] + size[1]],
+                    [pos[0], pos[1] + size[1]],
+                ],
+                color,
+            )
 
 
 # `print("hmmm", args)
 
 
 if "--r" not in args:
+
     class cpane(ttk.Frame):
         def __init__(self, MainWindow, expanded_text, collapsed_text):
             ttk.Frame.__init__(self, MainWindow)
@@ -3450,10 +3673,8 @@ if "--r" not in args:
             self._variable = tk.IntVar()
             # Creating Checkbutton
             self._button = ttk.Checkbutton(
-                self,
-                variable=self._variable,
-                command=self._activate,
-                style="TButton")
+                self, variable=self._variable, command=self._activate, style="TButton"
+            )
             self._button.grid(row=0, column=0)
             # Create a Horizontal line
             # self._separator = ttk.Separator(self, orient="horizontal")
@@ -3477,6 +3698,7 @@ if "--r" not in args:
         def toggle(self):
             self._variable.set(not self._variable.get())
             self._activate()
+
 
 if "--r" not in args:
     running = True
@@ -3538,24 +3760,32 @@ if "--r" not in args:
                         if HEIGHT < ui.inch2pix(5):
                             HEIGHT = ui.inch2pix(5)
 
-                        canvas = pygame.display.set_mode(
-                            [WIDTH, HEIGHT], RESIZABLE)
+                        canvas = pygame.display.set_mode([WIDTH, HEIGHT], RESIZABLE)
                         # ui.set_size([WIDTH, HEIGHT])
                         # mini = pygame.image.load(bak).convert()
                         mini = pygame.transform.smoothscale(
-                            mini1, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                            mini1,
+                            [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)],
+                        )
 
                         back = mini.copy()
                         back = pygame.transform.scale(back, [WIDTH, HEIGHT])
                         ui.iris2(
-                            back, [
-                                0, 0], [
-                                WIDTH, HEIGHT], [
-                                0, 0, 0], radius=10, shadow_enabled=False, resolution=50)
+                            back,
+                            [0, 0],
+                            [WIDTH, HEIGHT],
+                            [0, 0, 0],
+                            radius=10,
+                            shadow_enabled=False,
+                            resolution=50,
+                        )
                         mini = pygame.transform.smoothscale(
-                            mini, [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)])
+                            mini,
+                            [display.get_width() - ui.inch2pix(0.1), ui.inch2pix(0.55)],
+                        )
                         lumen = pygame.Surface(
-                            [WIDTH, HEIGHT], SRCALPHA).convert_alpha()
+                            [WIDTH, HEIGHT], SRCALPHA
+                        ).convert_alpha()
                         # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
                         # mask.fill([255, 0, 0])
 
@@ -3568,12 +3798,12 @@ if "--r" not in args:
         choice = pymsgbox.confirm(
             text="WSL is not configured. Please install it and get some distros.",
             title="Cannot Find WSL!",
-            buttons=[
-                "Ok",
-                "Online Help"])
+            buttons=["Ok", "Online Help"],
+        )
         if choice == "Online Help":
-            webbrowser.get('windows-default').open(
-                "https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/2-enable-and-install")
+            webbrowser.get("windows-default").open(
+                "https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/2-enable-and-install"
+            )
 
 
 elif args[1] == "--r" and "--ssh" not in args:
@@ -3643,24 +3873,24 @@ elif args[1] == "--r" and "--ssh" not in args:
 
         if get_running("GWSL_service") != True:
             try:
-                subprocess.Popen('GWSL_service.exe')
+                subprocess.Popen("GWSL_service.exe")
             except Exception as e:
                 logger.exception("Exception occurred")
                 print("Can't run service...")
 
         print("keep", keeper)
         machines = os.popen("wsl.exe -l -q").read()  # lines()
-        machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+        machines = re.sub(r"[^a-zA-Z0-9./\n-]", r"", machines).splitlines()
         machines[:] = (value for value in machines if value != "")
 
         if machine not in machines:
             choice = pymsgbox.confirm(
-                text='Hmmm... The WSL machine ' +
-                     str(machine) +
-                     " does not exist. You can delete this shortcut.",
-                title='Cannot Find Machine: ' +
-                      str(machine),
-                buttons=["Ok"])
+                text="Hmmm... The WSL machine "
+                + str(machine)
+                + " does not exist. You can delete this shortcut.",
+                title="Cannot Find Machine: " + str(machine),
+                buttons=["Ok"],
+            )
         else:
             if True:
                 spawn_n_run(
@@ -3675,12 +3905,14 @@ elif args[1] == "--r" and "--ssh" not in args:
                     theme=themer,
                     root=rooter,
                     dbus=dbuser,
-                    keep=keeper)
+                    keep=keeper,
+                )
             else:
                 choice = pymsgbox.confirm(
-                    text='Hmmm... This shortcut does not seem to work. Try deleting it and making a new one.',
-                    title='Bad Shortcut',
-                    buttons=["Ok"])
+                    text="Hmmm... This shortcut does not seem to work. Try deleting it and making a new one.",
+                    title="Bad Shortcut",
+                    buttons=["Ok"],
+                )
     except Exception as e:
         logger.exception("Exception occurred")
 
@@ -3716,7 +3948,7 @@ elif args[1] == "--r" and "--ssh" in args:
 
         if get_running("GWSL_service") != True:
             try:
-                subprocess.Popen('GWSL_service.exe')
+                subprocess.Popen("GWSL_service.exe")
             except Exception as e:
                 logger.exception("Exception occurred")
                 print("Can't run service...")
@@ -3731,22 +3963,23 @@ elif args[1] == "--r" and "--ssh" in args:
                     "-pw",
                     f"{password}",
                     "-X",
-                    "-batch"])
+                    "-batch",
+                ]
+            )
 
             if rooter == "true":
                 prog.run(
-                    'echo "' +
-                    password +
-                    '" | sudo -H -S ' +
-                    f"xauth add $(xauth -f ~{user}/.Xauthority list | tail -1)")
+                    'echo "'
+                    + password
+                    + '" | sudo -H -S '
+                    + f"xauth add $(xauth -f ~{user}/.Xauthority list | tail -1)"
+                )
 
                 prog.run(
-                    'echo "' +
-                    password +
-                    '" | sudo -H -S ' +
-                    command,
+                    'echo "' + password + '" | sudo -H -S ' + command,
                     wait=True,
-                    ident=command)
+                    ident=command,
+                )
             else:
                 prog.run(command=command, wait=True, ident=command)
             ignore = False
@@ -3773,8 +4006,10 @@ elif args[1] == "--r" and "--ssh" in args:
                     f"{user}@{ip}",
                     "-pw",
                     f"{password}",
-                    "-X"],
-                console=True)
+                    "-X",
+                ],
+                console=True,
+            )
 
     except Exception as e:
         logger.exception("Exception occurred")

@@ -28,14 +28,17 @@ class Animation:
             vel.append(0)
             if self.pos[axis] != self.new_pos[axis]:
                 if func == "ease":
-                    if self.pos[axis] < self.new_pos[axis] - \
-                            (self.new_pos[axis] - self.pos[axis] / 2 * scale):
-                        vel[axis] = (self.new_pos[axis] -
-                                     self.pos[axis]) / (2 * scale)
+                    if self.pos[axis] < self.new_pos[axis] - (
+                        self.new_pos[axis] - self.pos[axis] / 2 * scale
+                    ):
+                        vel[axis] = (self.new_pos[axis] - self.pos[axis]) / (2 * scale)
 
-                    elif self.pos[axis] > self.new_pos[axis] + (self.pos[axis] - self.new_pos[axis] / 2 * scale):
-                        vel[axis] = -1 * (self.pos[axis] -
-                                          self.new_pos[axis]) / (2 * scale)
+                    elif self.pos[axis] > self.new_pos[axis] + (
+                        self.pos[axis] - self.new_pos[axis] / 2 * scale
+                    ):
+                        vel[axis] = (
+                            -1 * (self.pos[axis] - self.new_pos[axis]) / (2 * scale)
+                        )
                 elif func == "old":
                     if self.pos[axis] < self.new_pos[axis]:
                         vel[axis] = 1 * scale
