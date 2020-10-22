@@ -2,12 +2,13 @@
 # Copyright Paul-E andOpticos Studios 2020
 
 
-import PIL
 import ctypes
-import imtools
 import os
-from PIL import Image
 from winreg import *
+
+import PIL
+import imtools
+from PIL import Image
 
 # from io import BytesIO
 # import cairosvg
@@ -45,11 +46,9 @@ def get_color():
         key = OpenKey(
             registry,
             r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent')
-        key_value = QueryValueEx(key, 'StartColorMenu')
         key_value2 = QueryValueEx(key, 'AccentPalette')
         value = key_value2[0]
         import codecs
-        c = codecs.encode(value, "hex")
 
         bins = str(" ".join([hex(ch)[2:] for ch in value])).split(" ")
         bins = [b + "0" if b == "0" else b for b in bins]
@@ -88,7 +87,6 @@ def icon(name, spec=None):
     filename = None  # "assets/chat.png"
     name = name.lower()
     names = None
-    n = 0
     if " " in name:
         names = name.split(" ")
         name = names[0]
@@ -160,7 +158,6 @@ def pygame_icon(name, spec=None):
     filename = None  # "assets/chat.png"
     name = name.lower()
     names = None
-    n = 0
     if " " in name:
         names = name.split(" ")
         name = names[0]
@@ -277,7 +274,7 @@ def iris_light(
 
     size2 = s.get_size()
     pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [
-                                  0, size2[1]]], tint + [intensity])
+        0, size2[1]]], tint + [intensity])
     rad = radius
     b = pygame.image.tostring(s, "RGBA", False)
     b = PIL.Image.frombytes("RGBA", size2, b)
@@ -353,7 +350,7 @@ def iris2(
         intensity = 0
     size = [int(size[0]), int(size[1])]
     if not fancy:
-        tnt = list(pygame.transform.average_color(canvas, [0, 0, 50, 50]))[:3]
+        pass
 
     # percentage of pixels per inch to use. If one inch is 300 pixels, use 150
     # is var is set to 50%
@@ -387,7 +384,7 @@ def iris2(
         size2 = s.get_size()
         if tint:
             pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [
-                                          0, size2[1]]], tint + [intensity])
+                0, size2[1]]], tint + [intensity])
         if mode == "light":
             pygame.gfxdraw.filled_polygon(s, [[0, 0], [size2[0], 0], size2, [0, size2[1]]],
                                           [255, 255, 255] + [int(70 * (alpha / 255))])
@@ -535,9 +532,9 @@ def drop_shadow(canvas, surface, posit, radius=2, alpha=255, resolution=100):
     global fancy, mode
     intensity = int((alpha / 255) * 30)
     if intensity > 255:
-        intensity = 255
+        pass
     elif intensity < 0:
-        intensity = 0
+        pass
 
     size = surface.get_size()
 
@@ -681,11 +678,7 @@ class iris_efficient:
             canvas,
             pos,
             size,
-            tint,
-            radius=10,
-            shadow_enabled=True,
-            shadow_size=0.08,
-            alpha=255):
+            tint):
         iris_light(
             canvas,
             pos,
@@ -756,7 +749,7 @@ def inch2pix(inches):
 def h(proportion):
     global WIDTH, HEIGHT
     if scalemode == "dpi":
-        p = (proportion) * ppi * scale
+        p = proportion * ppi * scale
     elif scalemode == "stretch":
         p = float(proportion) * (HEIGHT / 600.0)
 
@@ -766,7 +759,7 @@ def h(proportion):
 def w(proportion):
     global WIDTH, HEIGHT
     if scalemode == "dpi":
-        p = (proportion) * ppi * scale
+        p = proportion * ppi * scale
     elif scalemode == "stretch":
         p = float(proportion) * (WIDTH / 900.0)
 

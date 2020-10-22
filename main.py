@@ -3,19 +3,19 @@
 # Copyright Paul-E/Opticos Studios 2020
 # https://www.opticos.studio
 
-import sys
-import keyboard
 import os
-import pymsgbox
 import subprocess
+import sys
 import time
-from infi.systray import SysTrayIcon as tray
 from winreg import *
+
+import key
+import pymsgbox
+from infi.systray import SysTrayIcon as tray
 
 import iset
 
 cwd = os.getcwd()
-
 
 frozen = 'not'
 if getattr(sys, 'frozen', False):
@@ -31,22 +31,22 @@ systray = None
 exiter = False
 
 
-def open_about(systray):
+def open_about():
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe --about")
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
-def open_dashboard(*args):
+def open_dashboard():
     print("dash")
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe")
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
-def quits(systray):
+def quits():
     global exiter
     exiter = True
     # use this to exit
@@ -80,7 +80,7 @@ def toggle_clipboard(systray, force="toggle"):
             time.sleep(0.2)
 
             if mode == "multi":
-                message = "GWSL - Multi Window Mode"
+                pass
             if mode == "full":
                 message = "GWSL - Fullscreen Mode"
             else:
@@ -124,7 +124,7 @@ def toggle_clipboard(systray, force="toggle"):
             systray.shutdown()
 
             if mode == "multi":
-                message = "GWSL - Multi Window Mode"
+                pass
             if mode == "full":
                 message = "GWSL - Fullscreen Mode"
             else:
@@ -141,7 +141,7 @@ def toggle_clipboard(systray, force="toggle"):
             restart_server()
         else:
             pass
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
@@ -198,7 +198,7 @@ def full_mode(systray):
 
             mode = "full"
             restart_server()
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
@@ -214,7 +214,7 @@ def multi_mode(systray):
             sett["graphics"]["window_mode"] = "multi"
             iset.set(sett)
             restart_server()
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
@@ -231,7 +231,7 @@ def single_mode(systray):
             sett["graphics"]["window_mode"] = "single"
             iset.set(sett)
             restart_server()
-    except Exception as e:
+    except Exception:
         logger.exception("Exception occurred")
 
 
@@ -334,8 +334,8 @@ def main():
                     ic = "logodark.ico"
                     systray.update(
                         icon=bundle_dir +
-                        "\\assets\\" +
-                        "logodark.ico")
+                             "\\assets\\" +
+                             "logodark.ico")
 
             if exiter:
                 kill_server()
@@ -348,7 +348,7 @@ def main():
         #    subprocess.getoutput('taskkill /F /IM GWSL.exe')
         #    sys.exit()
 
-        except Exception as e:
+        except Exception:
             logger.exception("Exception occurred")
         time.sleep(2)
 
@@ -436,7 +436,7 @@ if __name__ == "__main__":
                 ("GWSL Dashboard", None, open_dashboard),
                 ("About", None, open_about),
                 ("Quit", None, quits))
-        keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
+        key.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
         main()
     except Exception as e:
         logger.exception("Exception occurred")

@@ -5,7 +5,7 @@ import pygame.gfxdraw
 """
 
 
-class animation:
+class Animation:
     def __init__(self, pos, identifier):
         self.pos = pos
         self.new_pos = pos
@@ -13,15 +13,13 @@ class animation:
         self.vel = []
 
     def get(self):
-        pos = [round(self.pos[0]), round(self.pos[1])]
         return self.pos
 
     def update(self, func, clock):
         axes = len(self.pos)
         vel = []
-        bounce = 0
-        FPS = clock.get_fps()
-        scale = (FPS / 60.0) * 2.0
+        fps = clock.get_fps()
+        scale = (fps / 60.0) * 2.0
 
         if scale <= 0.2:
             scale = 3
@@ -31,11 +29,11 @@ class animation:
             if self.pos[axis] != self.new_pos[axis]:
                 if func == "ease":
                     if self.pos[axis] < self.new_pos[axis] - \
-                            (((self.new_pos[axis] - self.pos[axis]) / (2 * scale))):
+                            (self.new_pos[axis] - self.pos[axis] / 2 * scale):
                         vel[axis] = (self.new_pos[axis] -
                                      self.pos[axis]) / (2 * scale)
 
-                    elif self.pos[axis] > self.new_pos[axis] + (((self.pos[axis] - self.new_pos[axis]) / (2 * scale))):
+                    elif self.pos[axis] > self.new_pos[axis] + (self.pos[axis] - self.new_pos[axis] / 2 * scale):
                         vel[axis] = -1 * (self.pos[axis] -
                                           self.new_pos[axis]) / (2 * scale)
                 elif func == "old":
@@ -73,14 +71,14 @@ class animation:
         self.pos = new_pos
 
 
-class animator:
-    def __init__(self, fpsClock):
+class Animator:
+    def __init__(self, fpsclock):
         self.animations = set()
         self.func = "ease"
-        self.clock = fpsClock
+        self.clock = fpsclock
 
     def register(self, identifier, init_pos):
-        animation_object = animation(init_pos, identifier)
+        animation_object = Animation(init_pos, identifier)
         self.animations.add(animation_object)
 
     def update(self):

@@ -6,7 +6,7 @@ from subprocess import PIPE, Popen
 from threading import Thread
 
 
-class cmd:
+class Cmd:
     def __init__(self, command, console=False):
         self.proc = None
         self.console = console
@@ -32,9 +32,9 @@ class cmd:
                 startupinfo=startupinfo,
                 universal_newlines=True)
 
-            def listener(out, queue):
+            def listener(out, newqueue):
                 for line in iter(out.readline, b''):
-                    queue.put(line)
+                    newqueue.put(line)
                 out.close()
 
             def active_listener():
@@ -77,7 +77,7 @@ class cmd:
             queue.start()
 
         else:
-            p = Popen(command, bufsize=1, universal_newlines=True)
+            pass
 
             # print(p.pid)
             # while True:
@@ -91,7 +91,7 @@ class cmd:
         self.proc.kill()
 
     def run(self, command, wait=False, ident=None):
-        if self.proc is not None and self.console == False:
+        if self.proc is not None and self.console is False:
             if wait:
                 command += " &"
             if " " in command:

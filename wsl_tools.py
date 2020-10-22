@@ -16,7 +16,7 @@ def pat_con(path):
 
 def get_themes(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-        str(pat_con(script)) + '" listthemes'
+          str(pat_con(script)) + '" listthemes'
     read = os.popen(cmd).read()
     read = read.split(":theme:")
     read[:] = (value for value in read if value != "\n")
@@ -44,7 +44,7 @@ def get_apps(machine):
     # except:
     #    pass
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-        str(pat_con(script)) + '" listapps'
+          str(pat_con(script)) + '" listapps'
     read = os.popen(cmd).read()
     # print("copy")
     # cmd2 = 'wsl.exe -d ' + str(machine) + ' cp ~/.scanapps ' + str(pat_con(script[:-15]))
@@ -93,7 +93,7 @@ def get_apps(machine):
 def gtk(machine, scale):
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-            str(pat_con(script)) + '" gtk' + str(scale)
+              str(pat_con(script)) + '" gtk' + str(scale)
         print(os.popen(cmd).read()[:-1])
 
 
@@ -105,7 +105,7 @@ def dbus(machine):
 def qt(machine, scale):
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-            str(pat_con(script)) + '" qt' + str(scale)
+              str(pat_con(script)) + '" qt' + str(scale)
         print(os.popen(cmd).read()[:-1])
 
 
@@ -113,11 +113,11 @@ def export(machine):  # , version):
     version = 1
     if version == 1 or version == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-            str(pat_con(script)) + '" export'
+              str(pat_con(script)) + '" export'
         print(os.popen(cmd).read()[:-1])
 
 
 def profile(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + \
-        str(pat_con(script)) + '" profile'
+          str(pat_con(script)) + '" profile'
     return os.popen(cmd).read()

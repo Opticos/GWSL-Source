@@ -1,13 +1,13 @@
-import PIL.ImageTk
-import PIL
-from PIL import Image
 import time
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 
-root = None
+import PIL
+import PIL.ImageTk
+from PIL import Image
 
+root = None
 
 asset_dir = "Assets/"
 
@@ -27,7 +27,7 @@ def get_login(machine):
         boxRoot.running = False
         return None
 
-    def login(*args):
+    def login():
         nonlocal creds
         passw = link_pass.get()
         user = link_user.get()
@@ -46,7 +46,6 @@ def get_login(machine):
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
 
     # , font=("Helvetica", 16))
-    lbl = tk.Label(boxRoot, text="Login:", justify=LEFT)
     # lbl.grid(row=0, padx=10, sticky="W")
     boxRoot.grid_rowconfigure(0, weight=0)
 
@@ -85,8 +84,6 @@ def get_login(machine):
     link_pass = ttk.Entry(frame_1, show="*")
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
-
-    machines = []
 
     frame_1.grid(row=1, column=0, padx=20, sticky="SWE", columnspan=2)
     frame_1.grid_columnconfigure(2, weight=1)
