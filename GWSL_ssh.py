@@ -1,3 +1,6 @@
+import PIL.ImageTk
+import PIL
+from PIL import Image
 import time
 import tkinter as tk
 from tkinter import *
@@ -5,9 +8,6 @@ from tkinter import ttk
 
 root = None
 
-from PIL import Image
-import PIL
-import PIL.ImageTk
 
 asset_dir = "Assets/"
 
@@ -45,7 +45,8 @@ def get_login(machine):
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
 
-    lbl = tk.Label(boxRoot, text="Login:", justify=LEFT)  # , font=("Helvetica", 16))
+    # , font=("Helvetica", 16))
+    lbl = tk.Label(boxRoot, text="Login:", justify=LEFT)
     # lbl.grid(row=0, padx=10, sticky="W")
     boxRoot.grid_rowconfigure(0, weight=0)
 
@@ -59,7 +60,13 @@ def get_login(machine):
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
+    tk.Label(
+        frame_1,
+        text="Username: ").grid(
+        row=0,
+        column=1,
+        padx=10,
+        sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
@@ -67,7 +74,13 @@ def get_login(machine):
 
     link_user.focus_force()
 
-    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
+    tk.Label(
+        frame_1,
+        text="Password: ").grid(
+        row=1,
+        column=1,
+        padx=10,
+        sticky="W")
 
     link_pass = ttk.Entry(frame_1, show="*")
 
@@ -108,7 +121,7 @@ def get_login(machine):
         # draw(canvas, mouse=False)
         time.sleep(0.05)
         boxRoot.update()
-        if boxRoot.running == False:
+        if not boxRoot.running:
             break
         if creds != {}:
             return creds
