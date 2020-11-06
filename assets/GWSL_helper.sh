@@ -4,11 +4,7 @@
 cd ~
 
 exporter='#GWSL_EXPORT_DISPLAY
-ipconfig_exec=$(wslpath "C:\\Windows\\System32\\ipconfig.exe")
-if [ -x $(which ipconfig.exe) ]
-then
-    ipconfig_exec=$(which ipconfig.exe)
-fi
+ipconfig_exec=$(which ipconfig.exe || wslpath "C:\\Windows\\System32\\ipconfig.exe")
 
 wsl2_d_tmp=$($ipconfig_exec | grep -n -m 1 "Default Gateway.*: [0-9a-z]" | cut -d : -f 1)
 if [ -n $wsl2_d_tmp ]
