@@ -779,7 +779,7 @@ def configure_machine(machine):
             g_button = "LOW-DPI"
 
         ver = get_version(machine)
-        if "#GWSL_EXPORT_DISPLAY" in profile:
+        if "export DISPLAY=" in profile:
             x_configured = True
 
         try:
