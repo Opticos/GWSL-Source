@@ -1,13 +1,12 @@
 #!/bin/bash
-# GWSL Helper Script v2
+# GWSL Helper Script v3
 
 cd ~
 
 
-
 for i in "$*"
 do
-    if [ "export" == $i ] #Export Display = ip 
+    if [ "export2" == $i ] #Export Display = ip 
 	then
 		echo "exporting DISPLAY for WSL2"
 		sed -i.bak '/DISPLAY=/d' ~/.profile

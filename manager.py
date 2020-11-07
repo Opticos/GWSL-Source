@@ -112,7 +112,7 @@ try:
         #make sure the script is up to date
         scr = open(app_path + "GWSL_helper.sh", "r")
         lines = scr.read()
-        if "v2" in lines:
+        if "v3" in lines:
             print("Script is up to date")
         else:
             print("Updating Script")
@@ -906,12 +906,12 @@ def configure_machine(machine):
             #if x_configured == False:
             ver = get_version(machine)
     
-            #if ver == 1:
+            if ver == 1:
                 #WSL1
-            tools.export(machine)#, 1)
-            #elif ver == 2:
+                tools.export(machine, 1)
+            elif ver == 2:
             #    #WSL2
-            #    tools.export(machine, 2)
+                tools.export(machine, 2)
                 
             x_configured = True
             restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?', buttons=["Yes", "No"])
