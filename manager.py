@@ -2631,7 +2631,7 @@ def draw(canvas, mouse=False):
     canvas.fill([0, 0, 0, 0])
 
     
-    
+    #print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
     if mouse == False:
@@ -2640,7 +2640,7 @@ def draw(canvas, mouse=False):
         #canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
         win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT * launch), WIDTH, HEIGHT, 1)
         lumen_opac = 0
-        win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
+        win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
 
 
     

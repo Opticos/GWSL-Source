@@ -57,16 +57,32 @@ def get_color():
         color = 4
         
         color = color * 3
-        return list(hex_to_rgb('#'+bins[color] + bins[color + 1] + bins[color + 2]))
+        rgb = list(hex_to_rgb('#'+bins[color] + bins[color + 1] + bins[color + 2]))
 
+        rgb = rgb[:3]
+
+        if len(rgb) > 3:
+            rgb = [rgb[0], rgb[1], rgb[2]]
+        
+        if rgb[0] < 0 or rgb[0] > 255 or rgb[1] < 0 or rgb[1] > 255 or rgb[2] < 0 or rgb[2] > 255:
+            rgb = [0, 150, 150]
+
+            
+        return rgb
+    
         #Convert the interger to Hex and remove its offset
         accent_int = key_value[0]
         accent_hex = hex(accent_int + 4278190080) #Remove FF offset and convert to HEX again
         accent_hex = str(accent_hex)[5:]#-1] #Remove prefix and suffix
 
         accent = accent_hex[4:6]+accent_hex[2:4]+accent_hex[0:2]
+        rgb = hex_to_rgb('#'+accent)
+        rgb = rgb[:2]
         
-        return hex_to_rgb('#'+accent)
+        if rgb[0] < 0 or rgb[0] > 255 or rgb[1] < 0 or rgb[1] > 255 or rgb[2] < 0 or rgb[2] > 255:
+            rgb = [0, 200, 200] 
+
+        return rgb
     except:
         return [0, 200, 200]
 

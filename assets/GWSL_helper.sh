@@ -3,22 +3,6 @@
 
 cd ~
 
-exporter='#GWSL_EXPORT_DISPLAY
-ipconfig_exec=$(wslpath "C:\\Windows\\System32\\ipconfig.exe")
-if [ -x $(which ipconfig.exe) ]
-then
-    ipconfig_exec=$(which ipconfig.exe)
-fi
-
-wsl2_d_tmp=$($ipconfig_exec | grep -n -m 1 "Default Gateway.*: [0-9a-z]" | cut -d : -f 1)
-if [ -n $wsl2_d_tmp ]
-then
-    first_line=$(expr $wsl2_d_tmp - 4)
-    wsl2_d_tmp=$($ipconfig_exec | sed $first_line,$wsl2_d_tmp!d | grep IPv4 | cut -d : -f 2 | sed -e "s|\s||g" -e "s|\r||g")
-    export DISPLAY="$wsl2_d_tmp:0"
-else
-    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk "{print $2}"):0
-fi'
 
 
 for i in "$*"
@@ -26,14 +10,12 @@ do
     if [ "export" == $i ] #Export Display = ip 
 	then
 		echo "exporting DISPLAY for WSL2"
-		#sed -i.bak '/DISPLAY=/d' ~/.profile
-		#echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
-		echo "$exporter" >> ~/.profile
+		sed -i.bak '/DISPLAY=/d' ~/.profile
+		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
 
 		
-		#sed -i.bak '/DISPLAY=/d' ~/.bashrc
-		#echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
-		echo "$exporter" >> ~/.bashrc
+		sed -i.bak '/DISPLAY=/d' ~/.bashrc
+		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
 	
 	
 	elif [ "export1" == $i ] #Export Display = 0  this is old. remove when sure it is unneeded
