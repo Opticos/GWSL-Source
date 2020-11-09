@@ -106,10 +106,9 @@ def qt(machine, scale):
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" qt' + str(scale)
         print(os.popen(cmd).read()[:-1])
 
-def export(machine):#, version):
-    version = 1
+def export(machine, version):
     if version == 1 or version == 2:
-        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export'
+        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export' + str(version)
         print(os.popen(cmd).read()[:-1])
 
 def profile(machine):

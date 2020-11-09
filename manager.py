@@ -22,7 +22,7 @@
 BUILD_MODE = "WIN32" #MSIX or WIN32
 
 
-version = "1.3.6"
+version = "1.3.7"
 
 import os, sys, win32, subprocess, sys, time, threading, iset, re, pymsgbox, random
 import winshell
@@ -112,7 +112,7 @@ try:
         #make sure the script is up to date
         scr = open(app_path + "GWSL_helper.sh", "r")
         lines = scr.read()
-        if "v2" in lines:
+        if "v3" in lines:
             print("Script is up to date")
         else:
             print("Updating Script")
@@ -149,6 +149,38 @@ import PIL.ImageTk
 import win32con, win32api
 
 
+def get_system_light():
+    global light, white, accent
+    try:
+        registry = ConnectRegistry(None,HKEY_CURRENT_USER)
+        key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
+        key_value = QueryValueEx(key,'SystemUsesLightTheme')
+        k = int(key_value[0])
+        light = False
+        white = [255, 255, 255]
+        if k == 1:
+            light = True
+            white = [0, 0, 0]
+            for i in range(3):
+                if accent[i] > 50:
+                    accent[i] -= 50
+    except:
+        white = [255, 255, 255]
+        light = False
+
+
+
+
+#import gettext
+#zh = gettext.translation('manager', localedir='locale', languages=['zh'])
+#zh.install()
+#_ = #zh.gettext
+_ = lambda s: s
+
+
+default_font = asset_dir + "segoeui.ttf"
+
+#default_font = asset_dir + "NotoSans-Regular.ttf"#"msyh.ttc"
 
 
 
@@ -270,7 +302,6 @@ if "--r" not in args:
         ico = pygame.image.load(asset_dir + "icon.png").convert_alpha()
         pygame.display.set_icon(ico)
         fpsClock = pygame.time.Clock()
-        default_font = asset_dir + "segoeui.ttf"
         lumen_opac = 6
         #light_source = pygame.image.load(asset_dir + "lumens/7.png").convert_alpha()
         ico_font = asset_dir + "SEGMDL2.TTF"
@@ -303,18 +334,7 @@ if "--r" not in args:
         
         
         
-        registry = ConnectRegistry(None,HKEY_CURRENT_USER)
-        key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key,'SystemUsesLightTheme')
-        k = int(key_value[0])
-        light = False
-        white = [255, 255, 255]
-        if k == 1:
-            light = True
-            white = [0, 0, 0]
-            for i in range(3):
-                if accent[i] > 50:
-                    accent[i] -= 50
+        get_system_light()
                 
             
             
@@ -440,7 +460,7 @@ def choose_machine():
     if len(machines) == 1:
         return machines[0]
     elif len(machines) > 7:
-        return pymsgbox.confirm(text='Select a WSL Machine', title='Choose WSL Machine', buttons=machines)
+        return pymsgbox.confirm(text=_('Select a WSL Machine'), title=_('Choose WSL Machine'), buttons=machines)
 
     animator.animate("choose", [100, 0])
     machine = False
@@ -512,9 +532,9 @@ def choose_machine():
         
         title_font = ui.font(default_font, int(ui.inch2pix(0.21)))
         if len(machines) != 0:
-            txt = title_font.render("Choose A WSL Distro:", True, white)
+            txt = title_font.render(_("Choose A WSL Distro:"), True, white)
         else:
-            txt = title_font.render("No WSL Distros Installed.", True, white)
+            txt = title_font.render(_("No WSL Distros Installed."), True, white)
     
                 
         txt.set_alpha(int(v * 255))
@@ -575,7 +595,7 @@ def choose_machine():
         else:
             animator.animate("select", [0, 0])
         
-        txt = title_font.render("Cancel", True, white)
+        txt = title_font.render(_("Cancel"), True, white)
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT - ui.inch2pix(0.2) - txt.get_height() - int(v * d)])
         if mouse != False:
@@ -668,7 +688,7 @@ def about():
         #pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
         
         title_font = ui.font(default_font, int(ui.inch2pix(0.21)))
-        txt = title_font.render("About GWSL", True, white)
+        txt = title_font.render(_("About GWSL"), True, white)
           
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
@@ -678,7 +698,7 @@ def about():
         title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
         title_font.italic = False
 
-        machines = ["GWSL Version " + str(version),
+        machines = ["GWSL Version" + " " + str(version),
                     "© Copyright Paul-E/Opticos Studios 2020",
                     "GWSL Uses:",
                     "Python - Pyinstaller - SDL",
@@ -689,9 +709,9 @@ def about():
                     "View Licenses"]
         
         if BUILD_MODE == "WIN32":
-            machines[0] = "GWSL Version " + str(version) + " (win32)"
+            machines[0] = _("GWSL Version ") + str(version) + " (win32)"
         else:
-            machines[0] = "GWSL Version " + str(version) + " (store)"
+            machines[0] = _("GWSL Version ") + str(version) + _(" (store)")
             
         
         if len(machines) != 0:
@@ -717,7 +737,7 @@ def about():
           
 
         
-        txt = title_font.render("Cancel", True, white)
+        txt = title_font.render(_("Cancel"), True, white)
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int((v - 1) * d)])
         if mouse != False:
@@ -906,12 +926,12 @@ def configure_machine(machine):
             #if x_configured == False:
             ver = get_version(machine)
     
-            #if ver == 1:
+            if ver == 1:
                 #WSL1
-            tools.export(machine)#, 1)
-            #elif ver == 2:
-            #    #WSL2
-            #    tools.export(machine, 2)
+                tools.export(machine, 1)
+            elif ver == 2:
+                #WSL2
+                tools.export(machine, 2)
                 
             x_configured = True
             restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?', buttons=["Yes", "No"])
@@ -2606,15 +2626,7 @@ def update_running():
         #    running = True
         #else:
         #    running = False
-        registry = ConnectRegistry(None,HKEY_CURRENT_USER)
-        key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key,'SystemUsesLightTheme')
-        k = int(key_value[0])
-        light = False
-        white = [255, 255, 255]
-        if k == 1:
-            light = True
-            white = [0, 0, 0]
+        get_system_light()
 
         accent = ui.get_color()        
         if light == True:
@@ -2624,13 +2636,19 @@ def update_running():
         
 
 last = 0
-            
+heartbeat = 0
+
 def draw(canvas, mouse=False):
-    global mask, light_source, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
+    global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
     #mask.fill([255, 0, 0])
     canvas.fill([0, 0, 0, 0])
 
-    
+    heartbeat += 1
+    if heartbeat > 100:
+        heartbeat = 0
+        animator.animate("donate", [random.randrange(0, 255),
+                                        random.randrange(0, 255),
+                                        random.randrange(0, 255)])
     #print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
@@ -2706,11 +2724,11 @@ def draw(canvas, mouse=False):
     
     if service_loaded != "bad":    
         if running == False:
-            txt = title_font.render("GWSL Dashboard", True, white)
+            txt = title_font.render(_("GWSL Dashboard"), True, white)
         else:
-            txt = title_font.render("X Running On locahost : 0.0", True, white)
+            txt = title_font.render(_("X Running On localhost : 0.0"), True, white)
     else:
-        txt = title_font.render("Error. Please Check Logs", True, white)
+        txt = title_font.render(_("Error. Please Check Logs"), True, white)
         
     txt.set_alpha(int(launch * 255))
     canvas.blit(txt, [ui.inch2pix(1), ui.inch2pix(0.35) + (1 - launch) * ui.inch2pix(0.1)])
@@ -2817,23 +2835,31 @@ def draw(canvas, mouse=False):
     def wsl_updater():
         webbrowser.get('windows-default').open("https://support.microsoft.com/en-us/help/4028685/windows-10-get-the-update")
     
-    
-    if installed == True:  
-        buttons = [["GWSL Distro Tools", "", setter],
-               ["Shortcut Creator", "", short],
-               ["Linux Apps", "", apper],
-               ["Linux Shell", "", shells],
-               ["Graphical SSH Connection", "", putty],
-               ["Donate With PayPal", "", donate]]
-    else:
-        buttons = [["Graphical SSH Connection", "", putty],
-                   ["Install WSL for More Features", "", wsl_installer],
-               ["Donate With PayPal", "", donate]]#
-    
 
+    heart = ""
+    if installed == True:  
+        buttons = [[_("GWSL Distro Tools"), "", setter],
+               [_("Shortcut Creator"), "", short],
+               [_("Linux Apps"), "", apper],
+               [_("Linux Shell"), "", shells],
+               [_("Graphical SSH Connection"), "", putty],
+               [_("Donate With PayPal"), "", donate]]
+    else:
+        buttons = [[_("Graphical SSH Connection"), "", putty],
+                   [_("Install WSL for More Features"), "", wsl_installer],
+               [_("Donate With PayPal"), "", donate]]#
+    
+    
     selected = False
     q = 0
     s2 = False
+    day = time.localtime().tm_wday
+    
+    if day == 1 or day == 3 or day == 5:
+        donate_asker = True
+        animator.register("donate", [255, 0, 0])
+    else:
+        donate_asker = False
     for i in buttons:
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
@@ -2852,6 +2878,13 @@ def draw(canvas, mouse=False):
         #selected
         sett = icon_font.render(i[1], True, white)
         txt = title_font.render(i[0], True, white)
+        
+        if i[1] == heart and donate_asker == True:
+            colo = animator.get("donate")
+            sett = icon_font.render(i[1], True, colo)
+            txt = title_font.render(i[0], True, colo)
+            
+        
         if s2 == True or q == last:
             txt.set_alpha(int(launch * 255 * (1 - s3)))
             sett.set_alpha(int(launch * 255 * (1 - s3)))
@@ -2890,18 +2923,18 @@ def draw(canvas, mouse=False):
     title_font.bold = False
     title_font.italic = False
 
-    txt = title_font.render("GWSL Dashboard", True, white)
-    txt.set_alpha(int(launch * 200))
+    #txt = title_font.render("GWSL Dashboard", True, white)
+    #txt.set_alpha(int(launch * 200))
     #canvas.blit(txt, [WIDTH - ui.inch2pix(1.8), HEIGHT - ui.inch2pix(1.15) + (1 - launch) * 40])
 
-    txt = title_font.render("Version 1.3", True, white)
-    txt.set_alpha(int(launch * 200))
+    #txt = title_font.render("Version 1.3", True, white)
+    #txt.set_alpha(int(launch * 200))
     #canvas.blit(txt, [WIDTH - ui.inch2pix(1.5), HEIGHT - ui.inch2pix(0.85) + (1 - launch) * 50])
 
     #title_font.italic = True
     s = animator.get("select")[0] / 100
         
-    txt = title_font.render("Help", True, white)
+    txt = title_font.render(_("Help"), True, white)
     txt.set_alpha(int(launch * 255))
     canvas.blit(txt, [WIDTH - ui.inch2pix(1.3), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60])
     
@@ -2914,14 +2947,14 @@ def draw(canvas, mouse=False):
             if mouse != False:
                 webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
             selected = True
-            txt = title_font.render("Help", True, accent)
+            txt = title_font.render(_("Help"), True, accent)
             txt.set_alpha(int(launch * 255 * s))
             canvas.blit(txt, [WIDTH - ui.inch2pix(1.3), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60])
             last = 100
 
     
 
-    txt = title_font.render("About", True, white)
+    txt = title_font.render(_("About"), True, white)
     txt.set_alpha(int(launch * 255))
     canvas.blit(txt, [WIDTH - ui.inch2pix(0.7), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80])
 
@@ -2935,7 +2968,7 @@ def draw(canvas, mouse=False):
                 about()
             selected = True
             last = 100
-            txt = title_font.render("About", True, accent)
+            txt = title_font.render(_("About"), True, accent)
             txt.set_alpha(int(launch * 255 * s))
             canvas.blit(txt, [WIDTH - ui.inch2pix(0.7), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80])
 
@@ -2952,7 +2985,7 @@ def draw(canvas, mouse=False):
     #canvas.blit(pay, [ui.inch2pix(0.15), HEIGHT - ui.inch2pix(0.25) - pay.get_height() + (1 - launch) * 20])
 
     title_font.italic = True
-    txt = title_font.render("Donate", True, [240, 240, 240])
+    txt = title_font.render(_("Donate"), True, [240, 240, 240])
     txt.set_alpha(int(launch * 220))
     #canvas.blit(txt, [ui.inch2pix(0.2), HEIGHT - pay.get_height() - txt.get_height() - ui.inch2pix(0.3) + (1 - launch) * 80])
 
@@ -3021,15 +3054,15 @@ def draw(canvas, mouse=False):
     title_font.italic = False
     
     if service_loaded == False:
-        txt2 = title_font.render("Starting Service", True, white)
+        txt2 = title_font.render(_("Starting Service"), True, white)
     elif service_loaded == "bad":
-        txt2 = title_font.render("Error Starting Service", True, white)
+        txt2 = title_font.render(_("Error Starting Service"), True, white)
         loading_angle = 0
         icon_font = ui.font(ico_font, int(ui.inch2pix(0.22))) #0.19
         loader = icon_font.render("", True, white)
         
     else:
-        txt2 = title_font.render("Starting Service", True, white)
+        txt2 = title_font.render(_("Starting Service"), True, white)
 
     v2 = 1 - (animator.get("loading")[0] / 100)
     v = animator.get("start")[0] / 100

@@ -1,0 +1,112 @@
+# Copyright (C) YEAR ORGANIZATION
+#
+# Pololot64 <pefbartimee.com@outlook.com>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-11-08 13:55-0500\n"
+"PO-Revision-Date: 2020-11-08 14:51-0500\n"
+"Last-Translator: Pololot64 <pefbartimee.com@outlook.com>\n"
+"Language-Team: English <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=windows-1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 20.08.3\n"
+
+#: manager.py:449
+msgid "Choose WSL Machine"
+msgstr "?? WSL ?"
+
+#: manager.py:449
+msgid "Select a WSL Machine"
+msgstr "?? WSL ??"
+
+#: manager.py:521
+msgid "Choose A WSL Distro:"
+msgstr "???? WSL ????"
+
+#: manager.py:523
+msgid "No WSL Distros Installed."
+msgstr "???? WSL ????"
+
+#: manager.py:584 manager.py:726
+msgid "Cancel"
+msgstr "??"
+
+#: manager.py:677
+msgid "About GWSL"
+msgstr "?? GWSL"
+
+#: manager.py:698 manager.py:700
+msgid "GWSL Version "
+msgstr "GWSL ??"
+
+#: manager.py:700
+msgid " (store)"
+msgstr "????"
+
+#: manager.py:2713
+msgid "GWSL Dashboard"
+msgstr "GWSL ???"
+
+#: manager.py:2715
+msgid "X Running On localhost : 0.0"
+msgstr "X ? localhost ????0.0"
+
+#: manager.py:2717
+msgid "Error. Please Check Logs"
+msgstr "????????"
+
+#: manager.py:2827
+msgid "GWSL Distro Tools"
+msgstr "GWSL ????"
+
+#: manager.py:2828
+msgid "Shortcut Creator"
+msgstr "?????"
+
+#: manager.py:2829
+msgid "Linux Apps"
+msgstr "Linux ????"
+
+#: manager.py:2830
+msgid "Linux Shell"
+msgstr "Linux Shell"
+
+#: manager.py:2831 manager.py:2834
+msgid "Graphical SSH Connection"
+msgstr "??? SSH ??"
+
+#: manager.py:2832 manager.py:2836
+msgid "Donate With PayPal"
+msgstr "?????"
+
+#: manager.py:2835
+msgid "Install WSL for More Features"
+msgstr "?? WSL ???????"
+
+#: manager.py:2923 manager.py:2936
+msgid "Help"
+msgstr "??"
+
+#: manager.py:2943 manager.py:2957
+msgid "About"
+msgstr "??"
+
+#: manager.py:2974
+msgid "Donate"
+msgstr "?"
+
+#: manager.py:3043 manager.py:3051
+msgid "Starting Service"
+msgstr ""
+""
+"????"
+
+#: manager.py:3045
+msgid "Error Starting Service"
+msgstr "???????"
+
