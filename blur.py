@@ -1,8 +1,10 @@
-#WIN32BLUR
+# WIN32BLUR
 import ctypes
 from enum import IntEnum, Enum
+
 user32 = ctypes.windll.user32
 c_ulong = ctypes.c_ulong
+
 
 class ACCENTSTATE(ctypes.c_int):
     ACCENT_DISABLED = 0
@@ -12,6 +14,7 @@ class ACCENTSTATE(ctypes.c_int):
     ACCENT_ENABLE_ACRYLICBLURBEHIND = 4
     ACCENT_INVALID_STATE = 5
 
+
 class ACCENTPOLICY(ctypes.Structure):
     _fields_ = [
         ("AccentState", ACCENTSTATE),
@@ -20,7 +23,8 @@ class ACCENTPOLICY(ctypes.Structure):
         ("AnimationId", ctypes.c_uint)
     ]
 
-class WINDOWCOMPOSITIONATTRIB (ctypes.c_int): #look into this type
+
+class WINDOWCOMPOSITIONATTRIB(ctypes.c_int):  # look into this type
     WCA_UNDEFINED = 0
     WCA_NCRENDERING_ENABLED = 1
     WCA_NCRENDERING_POLICY = 2
@@ -50,7 +54,7 @@ class WINDOWCOMPOSITIONATTRIB (ctypes.c_int): #look into this type
     WCA_USEDARKMODECOLORS = 26
     WCA_LAST = 27
 
-    
+
 class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
     _fields_ = [
         ("Attribute", WINDOWCOMPOSITIONATTRIB),
@@ -58,11 +62,12 @@ class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
         ("SizeOfData", ctypes.c_size_t)
     ]
 
+
 accent = ACCENTPOLICY()
 
 accent.AccentState = ACCENTSTATE.ACCENT_ENABLE_ACRYLICBLURBEHIND
 accent.GradientColor = ctypes.c_uint(0xCC000000)
-#accent.AccentFlags = 0
+# accent.AccentFlags = 0
 accentStructSize = ctypes.sizeof(accent)
 
 data = WINDOWCOMPOSITIONATTRIBDATA()
@@ -71,11 +76,7 @@ data.Attribute = WINDOWCOMPOSITIONATTRIB.WCA_ACCENT_POLICY
 data.SizeOfData = accentStructSize
 data.Data = ctypes.cast(ctypes.pointer(accent), ctypes.POINTER(ctypes.c_int))
 
+
 def blur(HWND):
     return user32.SetWindowCompositionAttribute(ctypes.cast(HWND, ctypes.POINTER(ctypes.c_int)), ctypes.byref(data))
-    #print(ctypes.GetLastError())
-
-
-
-
-    
+    # print(ctypes.GetLastError())
