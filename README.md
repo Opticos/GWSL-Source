@@ -21,6 +21,7 @@ wsl_tools.py # Python tools to work with WSL
 
 
 # Dependencies (all can be installed with pip)
+```
 pygame
 pywin32
 winshell
@@ -28,6 +29,7 @@ Pillow
 imtools
 infi.systray #TODO
 keyboard
+```
 
 The official build currently runs on Python 3.7
 
