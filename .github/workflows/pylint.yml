@@ -19,4 +19,4 @@ jobs:
           pip install pylint
       - name: Analysing the code with pylint
         run: |
-          pylint manager.py main.py animator.py blur.py exe_layer.py GWSL_ssh.py iset.py OpticUI.py wsl_tools.py
+          pylint --errors-only manager.py main.py animator.py blur.py exe_layer.py GWSL_ssh.py iset.py OpticUI.py wsl_tools.py
