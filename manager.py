@@ -544,7 +544,8 @@ def runo(distro, command):
 def get_ip(machine):
     return runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")#[0][:-1]
 
-
+def test_x():
+    subprocess.Popen("VCXSRV/xclock -display localhost:0")
 
 def choose_machine():
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
@@ -801,10 +802,35 @@ def about():
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
 
-        d = ui.inch2pix(0.2)
-        h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
+
         title_font = ui.font(default_font, int(ui.inch2pix(0.15))) #used to be 0.17
         title_font.italic = False
+
+        
+        icon_font = ui.font(ico_font, int(ui.inch2pix(0.16)))
+
+        sett = icon_font.render("", True, white) #
+        sett.set_alpha(int(v * 255))
+        canvas.blit(sett, [WIDTH - sett.get_width() - ui.inch2pix(0.3), ui.inch2pix(0.395) - int(ui.inch2pix(0.1) * v)])
+
+        txt = title_font.render(_("XClock"), True, white)
+          
+        txt.set_alpha(int(v * 255))
+        canvas.blit(txt, [WIDTH - sett.get_width() - ui.inch2pix(0.37) - txt.get_width(), ui.inch2pix(0.36) - int(ui.inch2pix(0.1) * v)])
+
+
+        
+        if mouse != False:
+            if mouse[0] > WIDTH - sett.get_width() - ui.inch2pix(0.39) - txt.get_width() and mouse[0] < WIDTH - ui.inch2pix(0.25):
+                if mouse[1] > ui.inch2pix(0.38) - int(ui.inch2pix(0.1) * v) and mouse[1] < ui.inch2pix(0.41) - int(ui.inch2pix(0.1) * v) + sett.get_height():
+                    test_x()
+                                
+        
+
+
+        d = ui.inch2pix(0.2)
+        h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
+        
 
         machines = ["GWSL Version" + " " + str(version),
                     "© Copyright Paul-E/Opticos Studios 2020",
@@ -2884,8 +2910,7 @@ def draw(canvas, mouse=False):
 
 
 
-
-
+    
 
     title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
 
