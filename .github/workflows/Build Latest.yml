@@ -37,6 +37,7 @@ jobs:
           pip install imtools
           pip install infi.systray
           pip install keyboard
+          pip install pyinstaller==3.5
       - name: Building GWSL_service...
         run: |
           echo "pyinstaller"
