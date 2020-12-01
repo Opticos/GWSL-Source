@@ -37,6 +37,15 @@ jobs:
           pip install imtools
           pip install infi.systray
           pip install keyboard
-      - name: Analysing the code with pylint
+      - name: Building GWSL_service...
         run: |
-          pyinstaller
+          echo "pyinstaller"
+      - name: Building GWSL...
+        run: |
+          echo "pyinstaller"
+      - name: Merging Results...
+        run: |
+          echo "pyinstaller"
+      - name: Copying Assets...
+        run: |
+          echo "pyinstaller"
