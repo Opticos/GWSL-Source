@@ -5,7 +5,7 @@ Release: 1.20.8.1
 OS: Windows NT 6.2 build 9200 (64-bit)
 Contact: marha@users.sourceforge.net
 
-Unrecognized option: -dpi auto
+Unrecognized option: exec
 Usage...
 Vcxsrv [:<display>] [option]
 

@@ -24,7 +24,13 @@ BUILD_MODE = "WIN32" #MSIX or WIN32
 
 version = "1.3.7"
 
-import os, sys, win32, subprocess, sys, time, threading, iset, re, pymsgbox, random
+lc_name = "Licenses137.txt"
+
+import time
+
+
+
+import os, sys, win32, subprocess, sys, threading, iset, re, pymsgbox, random
 import winshell
 from win32com.client import Dispatch
 import winreg
@@ -32,8 +38,7 @@ from winreg import *
 from exe_layer import cmd
 
 
-
-
+debug = False
 
 args = sys.argv
 
@@ -46,11 +51,13 @@ if getattr(sys, 'frozen', False):
 else:
         # we are running in a normal Python environment
         bundle_dir = os.path.dirname(os.path.abspath(__file__))
-print( 'we are',frozen,'frozen')
-print( 'bundle dir is', bundle_dir )
-print( 'sys.argv[0] is', sys.argv[0] )
-print( 'sys.executable is', sys.executable )
-print( 'os.getcwd is', os.getcwd() )
+
+if debug == True:
+    print( 'we are',frozen,'frozen')
+    print( 'bundle dir is', bundle_dir )
+    print( 'sys.argv[0] is', sys.argv[0] )
+    print( 'sys.executable is', sys.executable )
+    print( 'os.getcwd is', os.getcwd() )
 
 
 asset_dir = bundle_dir + "\\assets\\"
@@ -66,18 +73,38 @@ if os.path.isdir(app_path) == False:
     #os.mkdir(app_path)
     print(subprocess.getoutput('mkdir "' + app_path + '"'))
     print("creating appdata directory")
-        
+
+#EMERCENCY LOG DELETER FOR 1.3.6. Delete in 1.3.8
+if os.path.exists(app_path + "GWSL_helper.sh") == True:
+    scr = open(app_path + "GWSL_helper.sh", "r")
+    lines = scr.read()
+    if "v3" not in lines:
+        print("Cleaning Logs...")
+        os.remove(app_path + 'dashboard.log')
+    
+
+
+            
 import logging
-logger = logging.getLogger(__name__)
+
+logger = logging.Logger("GWSL " + version, level=0)
+#logger = logging.getLogger("GWSL " + version)
 # Create handlers
 f_handler = logging.FileHandler(app_path + 'dashboard.log')
-f_handler.setLevel(logging.ERROR)
+
+#f_handler.setLevel(10)
 
 f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 f_handler.setFormatter(f_format)
 
 # Add handlers to the logger
 logger.addHandler(f_handler)
+
+
+
+
+
+
 
 try:
     iset.path = app_path + "settings.json"
@@ -92,7 +119,8 @@ try:
             print("Updating settings")
         else:
             if sett["conf_ver"] >= 3:
-                print("Settings up to date")
+                if debug == True:
+                    print("Settings up to date")
             else:
                 print("Updating settings")
                 iset.create(app_path + "\\settings.json")
@@ -113,17 +141,21 @@ try:
         scr = open(app_path + "GWSL_helper.sh", "r")
         lines = scr.read()
         if "v3" in lines:
-            print("Script is up to date")
+            if debug == True:
+                print("Script is up to date")
         else:
             print("Updating Script")
             print(subprocess.getoutput('copy "' + bundle_dir + "\\assets\GWSL_helper.sh" + '" "' + app_path + '"'))
+           
 
-    if os.path.exists(app_path + "Licenses.txt") == False:
+    if os.path.exists(app_path + lc_name) == False:
         #print("Moving Licenses")
-        print(subprocess.getoutput('copy "' + bundle_dir + "\\assets\Licenses.txt" + '" "' + app_path + '"'))
+        print(subprocess.getoutput('copy "' + bundle_dir + "\\assets\\" + lc_name + '" "' + app_path + '"'))
 except Exception as e:
     logger.exception("Exception occurred")
     sys.exit()
+
+
 
 
 tools.script = app_path + "\\GWSL_helper.sh"
@@ -136,17 +168,21 @@ try:
 except Exception as e:
     logger.exception("Exception occurred")            
 
+
+
 import tkinter as tk
 
 from tkinter import *
 from tkinter import ttk
-root = tk.Tk()
-root.withdraw()
+root = None #tk.Tk() #this is intensive... import as needed?
+#root.withdraw()
 from PIL import Image, ImageTk
 import PIL, win32gui
 import PIL.ImageTk
 
 import win32con, win32api
+
+
 
 
 def get_system_light():
@@ -186,13 +222,16 @@ default_font = asset_dir + "segoeui.ttf"
 
 if "--r" not in args:
     os.environ["PBR_VERSION"] = "4.0.2"
-    from tendo import singleton
+    
+
+    import singleton
+    
+    
     try:
         instance = singleton.SingleInstance()
     except singleton.SingleInstanceException:
         print("quit")
         try:
-            import win32gui
             def windowEnumerationHandler(hwnd, top_windows):
                 top_windows.append((hwnd, win32gui.GetWindowText(hwnd)))
             results = []
@@ -210,7 +249,6 @@ if "--r" not in args:
     except PermissionError:
         print("quit")
         try:
-            import win32gui
             def windowEnumerationHandler(hwnd, top_windows):
                 top_windows.append((hwnd, win32gui.GetWindowText(hwnd)))
             results = []
@@ -226,19 +264,29 @@ if "--r" not in args:
             pass
 
         sys.exit()
-        
+
+    
     try:
+
+        from win10toast import ToastNotifier
+        toaster = ToastNotifier()
         
+
         
+
+        dd = [random.randrange(0,8), random.randrange(0,8)] #pick a random date to ask for donations
         
         
         #DISPLAY ones
         import OpticUI as ui
 
+
         
+        os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "4.0.2"
+
         
         import pygame, webbrowser
-
+        #print("whoops")
             
         import animator as anima
         
@@ -247,7 +295,7 @@ if "--r" not in args:
         
         t = time.perf_counter()
         import pygame.gfxdraw
-        ui.init("dpi", tk, root)
+        ui.init("dpi")#, tk, root)
         from ctypes import wintypes, windll
 
         if int(platform.release()) >= 8:
@@ -263,10 +311,30 @@ if "--r" not in args:
         monitor_area = monitor_info.get("Monitor")
         work_area = monitor_info.get("Work")
         taskbar = int(monitor_area[3] - work_area[3])
-        
 
+        pos_config = "bottom" #loc of taskbar
+
+        if work_area[1] != 0:
+            taskbar = work_area[1]
+            pos_config = "top"
+        
+        elif work_area[0] != 0:
+            taskbar = work_area[0]
+            pos_config = "left"
+
+        elif work_area[2] != monitor_area[2]:
+            taskbar = monitor_area[2] - work_area[2]
+            pos_config = "right"
+
+        else:
+            taskbar = int(monitor_area[3] - work_area[3])
+            pos_config = "bottom"
+
+            
         ui.set_scale(1)
-        pygame.init()
+
+        #pygame init takes a long time...
+        #pygame.display.init()
         
         user32 = ctypes.windll.user32
         screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -275,14 +343,44 @@ if "--r" not in args:
 
         WIDTH, HEIGHT = ui.inch2pix(3.8), ui.inch2pix(5.7)##ui.inch2pix(7.9), ui.inch2pix(5)
 
-        sett = iset.read()
-        side = sett["general"]["position"]
-        if side == "left":
-            winpos = 0#screensize[0] - WIDTH
-        else:
-            winpos = screensize[0] - WIDTH
         
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (winpos, screensize[1])#screensize[1] - taskbar)
+
+        if pos_config == "top":
+            winpos = screensize[0] - WIDTH
+            winh = taskbar - HEIGHT
+        elif pos_config == "bottom":
+            winpos = screensize[0] - WIDTH
+            winh = screensize[1]
+        elif pos_config == "right":
+            winpos = screensize[0] - WIDTH
+            winh = screensize[1]
+        elif pos_config == "left":
+            winpos = taskbar
+            winh = screensize[1]
+            
+        sett = iset.read()
+           
+        start_menu = sett["general"]["start_menu_mode"]
+
+        if start_menu == True:
+            if pos_config == "top":
+                winpos = 0
+                winh = taskbar - HEIGHT
+            elif pos_config == "bottom":
+                winpos = 0
+                winh = screensize[1]
+            elif pos_config == "right":
+                winpos = screensize[0] - WIDTH
+                winh = screensize[1]
+            elif pos_config == "left":
+                winpos = taskbar
+                winh = screensize[1]
+        
+        
+        
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (winpos, winh)#screensize[1] - taskbar)
+        
+        
 
         
         
@@ -292,7 +390,7 @@ if "--r" not in args:
         
         HWND = pygame.display.get_wm_info()["window"]
         #win32gui.MoveWindow(HWND, screensize[0] - WIDTH, screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
-
+        
 
         canvas = pygame.Surface([WIDTH, HEIGHT])#, pygame.SRCALPHA)
                     
@@ -360,7 +458,7 @@ if "--r" not in args:
         logger.exception("Exception occurred")
         
 
-    
+
 
 
 def get_version(machine):
@@ -416,21 +514,31 @@ def runs(distro, command):
     
 
 def run(distro, command):
-    out = subprocess.getoutput("wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"')#.readlines()
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"'
+    out = subprocess.getoutput(cmd)#.readlines()
+    logger.info("(run) WSL SHELL $ f{cmd}")
+    logger.info("WSL OUTPUT > f{out}")
     return out
 
 def runo3(distro, command):
-    out = subprocess.getoutput("wsl.exe ~ -d " + str(distro) + " . ~/.profile;/bin/sh -c " + '"' + str(command) + '"')#.readlines()
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;/bin/sh -c " + '"' + str(command) + '"'
+    out = subprocess.getoutput(cmd)#.readlines()
+    logger.info("(runo3) WSL SHELL $ f{cmd}")
+    logger.info("WSL OUTPUT > f{out}")
     return out
 
 def runo2(distro, command):
     cmd = "wsl.exe -d " + str(distro) + ' ' + "/bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
+    logger.info("(runo2) WSL SHELL $ f{cmd}")
+    logger.info("WSL OUTPUT > f{out}")
     return out
 
 def runo(distro, command):
     cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
+    logger.info("(runo) WSL SHELL $ f{cmd}")
+    logger.info("WSL OUTPUT > f{out}")
     return out
 
 def get_ip(machine):
@@ -695,7 +803,7 @@ def about():
 
         d = ui.inch2pix(0.2)
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
-        title_font = ui.font(default_font, int(ui.inch2pix(0.17)))
+        title_font = ui.font(default_font, int(ui.inch2pix(0.15))) #used to be 0.17
         title_font.italic = False
 
         machines = ["GWSL Version" + " " + str(version),
@@ -706,7 +814,9 @@ def about():
                     "Tcl/Tk - Paper Icon Pack",
                     "Pymsgbox - OpticUI - Infi.Systray",
                     "Visit Opticos Studios Website",
-                    "View Licenses"]
+                    "View Licenses",
+                    "Edit Configuration",
+                    "View Logs"]
         
         if BUILD_MODE == "WIN32":
             machines[0] = _("GWSL Version ") + str(version) + " (win32)"
@@ -716,7 +826,7 @@ def about():
         
         if len(machines) != 0:
             for i in machines:
-                if i == "View Licenses" or i == "Visit Opticos Studios Website":
+                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or i == "View Logs":
                     txt = title_font.render(i, True, accent)#[0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -726,13 +836,19 @@ def about():
                     if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
                         if mouse[1] > h - ui.inch2pix(0.1) - int(v * d) and mouse[1] < h + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
                             if i == "View Licenses":
-                                os.popen(app_path + "Licenses.txt")
+                                os.popen(app_path + lc_name)
                             elif i == "Visit Opticos Studios Website":
                                 webbrowser.get('windows-default').open('http://opticos.studio')
-
+                            elif i == "View Logs":
+                                os.chdir(app_path)
+                                os.popen("notepad service.log|notepad dashboard.log")
+                            elif i == "Edit Configuration":
+                                os.chdir(app_path)
+                                os.popen("settings.json")
+                               
                             
                             
-                h += ui.inch2pix(0.3) + txt.get_height()
+                h += ui.inch2pix(0.27) + txt.get_height() #used to be 0.3
                 d += ui.inch2pix(0.1)
           
 
@@ -934,6 +1050,12 @@ def configure_machine(machine):
                 tools.export(machine, 2)
                 
             x_configured = True
+            toaster.show_toast("Display Exported",
+                           str(machine) + " is set to forward X through port 0.",
+                           icon_path=asset_dir + "icon.ico",
+                           duration=7,
+                           threaded=True)
+            
             restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?', buttons=["Yes", "No"])
             if restart == "Yes":
                 reboot(machine)
@@ -2012,13 +2134,15 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
 
 def get_login(machine):
-    
+    global root
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)#, fg="red", bg="black")
         boxRoot.withdraw()
     else:
-        boxRoot = tk.Tk()
+        root = tk.Tk()
+        root.withdraw()
+        boxRoot = tk.Toplevel(master=root)
         boxRoot.withdraw()
         
     def quitter():
@@ -2134,12 +2258,15 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     ui.set_icons(asset_dir + "Paper/")
     k = get_light()
     
+    global root
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)#, fg="red", bg="black")
         boxRoot.withdraw()
     else:
-        boxRoot = tk.Tk()
+        root = tk.Tk()
+        root.withdraw()
+        boxRoot = tk.Toplevel(master=root)
         boxRoot.withdraw()
         
     def quitter():
@@ -2449,14 +2576,15 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
 def putty():
     
+    global root
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)#, fg="red", bg="black")
-        #boxRoot.attributes("-transparentcolor", "red")
-        #boxRoot.attributes("-alpha", 0.5)
         boxRoot.withdraw()
     else:
-        boxRoot = tk.Tk()
+        root = tk.Tk()
+        root.withdraw()
+        boxRoot = tk.Toplevel(master=root)
         boxRoot.withdraw()
         
     def quitter():
@@ -2614,8 +2742,9 @@ def update_running():
             subprocess.Popen('GWSL_service.exe')
             service_loaded = True
         except Exception as e:
-            logger.exception("Exception occurred")
-            print("Can't run service...")
+            logger.exception("Cannot start service...")
+            if debug == True:
+                print("Can't run service...")
             service_loaded = "bad"
     else:
         service_loaded = True
@@ -2656,7 +2785,15 @@ def draw(canvas, mouse=False):
         hover = pygame.mouse.get_pos()
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
         #canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
-        win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT * launch), WIDTH, HEIGHT, 1)
+        if pos_config == "bottom":
+            win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT * launch), WIDTH, HEIGHT, 1)
+        elif pos_config == "top":
+            win32gui.MoveWindow(HWND, winpos, taskbar - HEIGHT + int(HEIGHT * launch), WIDTH, HEIGHT, 1)
+        elif pos_config == "right":
+            win32gui.MoveWindow(HWND, winpos - taskbar + WIDTH - int(WIDTH * launch), screensize[1] - HEIGHT, WIDTH, HEIGHT, 1)
+        elif pos_config == "left":
+            win32gui.MoveWindow(HWND, taskbar - WIDTH + int(WIDTH * launch), screensize[1] - HEIGHT, WIDTH, HEIGHT, 1)
+                
         lumen_opac = 0
         win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
 
@@ -2667,7 +2804,16 @@ def draw(canvas, mouse=False):
             about_open = False
             about()
         #canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
-        win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT), WIDTH, HEIGHT, True)
+        if pos_config == "bottom":
+            win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT), WIDTH, HEIGHT, True)
+        elif pos_config == "top":
+            win32gui.MoveWindow(HWND, winpos, taskbar, WIDTH, HEIGHT, 1)
+        elif pos_config == "right":
+            win32gui.MoveWindow(HWND, winpos - taskbar, screensize[1] - HEIGHT, WIDTH, HEIGHT, 1)
+        elif pos_config == "left":
+            win32gui.MoveWindow(HWND, taskbar, screensize[1] - HEIGHT, WIDTH, HEIGHT, 1)
+                
+   
         win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
         animator.animate("start2", [100, 0])
         if service_loaded == True:
@@ -2854,8 +3000,7 @@ def draw(canvas, mouse=False):
     q = 0
     s2 = False
     day = time.localtime().tm_wday
-    
-    if day == 1 or day == 3 or day == 5:
+    if day in dd:
         donate_asker = True
         animator.register("donate", [255, 0, 0])
     else:

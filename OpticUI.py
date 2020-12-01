@@ -651,15 +651,16 @@ def get_ppi():
     #root = tkinter.Tk()
     #root.withdraw()
     ppi = 96
-    sf = ctypes.windll.user32.GetDpiForWindow(root.winfo_id()) / 96
+    sysDpi = ctypes.windll.user32.GetDpiForSystem()
+    sf = sysDpi / 96#root.winfo_id()) / 96
     ppi *= sf
     return ppi
     
 
-def init(scale_mode, tk, tk_root):
-    global WIDTH, HEIGHT, scalemode, ppi, font_scale, tkinter, root
-    root = tk_root
-    tkinter = tk
+def init(scale_mode):#, tk, tk_root):
+    global WIDTH, HEIGHT, scalemode, ppi, font_scale#, tkinter, root
+    #root = tk_root
+    #tkinter = tk
     scalemode = scale_mode
     ppi = get_ppi()
     
