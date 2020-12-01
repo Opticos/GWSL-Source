@@ -48,6 +48,17 @@ def quits(systray):
     # use this to exit
     pass
 
+def build_menu():
+    menu = (("Default Window Mode", None,
+                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
+                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
+                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
+                    (clip + " Shared Clipboard", None, toggle_clipboard),
+                    ("GWSL Dashboard", None, open_dashboard),
+                    ("About", None, open_about),
+                    ("Quit", None, quits))
+    
+    return menu
 
 def toggle_clipboard(systray, force="toggle"):
     global menu, clipboard
@@ -63,14 +74,7 @@ def toggle_clipboard(systray, force="toggle"):
             else:
                 clip = "Enable"
 
-            menu = (("Default Window Mode", None,
-                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                    (clip + " Shared Clipboard", None, toggle_clipboard),
-                    ("GWSL Dashboard", None, open_dashboard),
-                    ("About", None, open_about),
-                    ("Quit", None, quits))
+            menu = build_menu()
 
             systray.shutdown()
             time.sleep(0.2)
@@ -102,14 +106,7 @@ def toggle_clipboard(systray, force="toggle"):
             else:
                 clip = "Enable"
 
-            menu = (("Default Window Mode", None,
-                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                    (clip + " Shared Clipboard", None, toggle_clipboard),
-                    ("GWSL Dashboard", None, open_dashboard),
-                    ("About", None, open_about),
-                    ("Quit", None, quits))
+            menu = build_menu()
 
             systray.shutdown()
 
@@ -382,14 +379,8 @@ if __name__ == "__main__":
         else:
             clip = "Disable"
 
-        menu = (("Default Window Mode", None,
-                 [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                  ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                  ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                (clip + " Shared Clipboard", None, toggle_clipboard),
-                ("GWSL Dashboard", None, open_dashboard),
-                ("About", None, open_about),
-                ("Quit", None, quits))
+        menu = build_menu()
+        
         keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
         main()
     except Exception as e:

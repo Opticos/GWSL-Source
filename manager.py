@@ -2771,7 +2771,7 @@ def draw(canvas, mouse=False):
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.33)))
     box = ui.inch2pix(0.7)
 
-    start = ui.inch2pix(1.1)
+    start = ui.inch2pix(1.0)
     s = ui.inch2pix(0.25)
 
     def setter():
@@ -2786,7 +2786,12 @@ def draw(canvas, mouse=False):
     def shells():
         machine = choose_machine()
         if machine != None:
-            subprocess.Popen("wsl.exe ~ -d " + str(machine))  # + ". ~/.profile;bash")
+            sett = iset.read()
+            shell_ui = sett["general"]["shell_gui"]
+            if shell_ui == "cmd":
+                subprocess.Popen("wsl.exe ~ -d " + str(machine))
+            else:
+                subprocess.Popen(f'wt -p "{machine}"')
 
     def apper():
         machine = choose_machine()

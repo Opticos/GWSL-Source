@@ -6,7 +6,7 @@ path = None
 def create(path):
     with open(path, "w") as obj:
         app = {"conf_ver":3,
-               "general":{"clipboard":True, "start_menu_mode":False},
+               "general":{"clipboard":True, "start_menu_mode":False, "shell_gui":"cmd"},
                "graphics":{"window_mode":"multi"},
                "putty":{"ip":None},
                "distro_blacklist":["docker"],
