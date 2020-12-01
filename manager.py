@@ -75,12 +75,15 @@ if os.path.isdir(app_path) == False:
     print("creating appdata directory")
 
 #EMERCENCY LOG DELETER FOR 1.3.6. Delete in 1.3.8
-if os.path.exists(app_path + "GWSL_helper.sh") == True:
-    scr = open(app_path + "GWSL_helper.sh", "r")
-    lines = scr.read()
-    if "v3" not in lines:
-        print("Cleaning Logs...")
-        os.remove(app_path + 'dashboard.log')
+try:
+    if os.path.exists(app_path + "GWSL_helper.sh") == True:
+        scr = open(app_path + "GWSL_helper.sh", "r")
+        lines = scr.read()
+        if "v3" not in lines:
+            print("Cleaning Logs...")
+            os.remove(app_path + 'dashboard.log')
+except:
+    pass
     
 
 

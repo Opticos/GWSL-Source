@@ -44,6 +44,9 @@ https://www.pygame.org/docs/LGPL.txt
 https://sourceforge.net/projects/vcxsrv/
 GNU General Public License version 3.0 (GPLv3)
 
+#PulseAudio --
+https://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/LICENSE
+
 #Tendo --
 https://tendo.readthedocs.org/en/latest/
 

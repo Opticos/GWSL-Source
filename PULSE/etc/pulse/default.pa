@@ -1,0 +1,68 @@
+#!/usr/i686-w64-mingw32/sys-root/mingw/bin/pulseaudio.exe -nF
+#
+# This file is part of PulseAudio.
+#
+# PulseAudio is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# PulseAudio is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with PulseAudio; if not, write to the Free Software Foundation,
+# Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+
+# This startup script is used only if PulseAudio is started per-user
+# (i.e. not in system mode)
+
+.nofail
+
+### Load something into the sample cache
+load-sample x11-bell %WINDIR%\Media\ding.wav
+load-sample-dir-lazy %WINDIR%\Media\*.wav
+
+.fail
+
+### Automatically restore the volume of streams and devices
+load-module module-device-restore
+load-module module-stream-restore
+load-module module-card-restore
+
+### Automatically augment property information from .desktop files
+### stored in /usr/share/application
+load-module module-augment-properties
+
+### Load audio drivers statically
+### (it's probably better to not load these drivers manually, but instead
+### use module-udev-detect -- see below -- for doing this automatically)
+load-module module-waveout sink_name=output source_name=input record=0
+#load-module module-null-sink
+
+### Automatically load driver modules depending on the hardware available
+.ifexists module-detect.so
+### Use the static hardware detection module (for systems that lack udev/hal support)
+load-module module-detect
+.endif
+
+### Automatically connect sink and source if JACK server is present
+.ifexists module-jackdbus-detect.so
+load-module module-jackdbus-detect
+.endif
+
+
+
+### Network access (may be configured with paprefs, so leave this commented
+### here if you plan to use paprefs)
+#load-module module-esound-protocol-tcp
+load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1
+
+
+
+
+### Make some devices default
+#set-default-sink output
+#set-default-source input
