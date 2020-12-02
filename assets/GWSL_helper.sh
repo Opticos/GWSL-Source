@@ -3,7 +3,6 @@
 
 cd ~
 
-
 for i in "$*"
 do
     if [ "export2" == $i ] #Export Display = ip 
