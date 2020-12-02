@@ -26,4 +26,4 @@ jobs:
           pip install keyboard
       - name: Analysing the code with pylint
         run: |
-          pylint --errors-only manager.py main.py animator.py blur.py exe_layer.py GWSL_ssh.py iset.py OpticUI.py wsl_tools.py
+          pylint manager.py main.py animator.py blur.py exe_layer.py GWSL_ssh.py iset.py OpticUI.py wsl_tools.py
