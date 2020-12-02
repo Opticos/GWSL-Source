@@ -437,7 +437,9 @@ def help_ssh():
 
 
 def runs(distro, command):
-    subprocess.Popen("wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"',
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
+    logger.info(f"(runos) WSL SHELL $ {cmd}")
+    subprocess.Popen(cmd,
                      shell=True)  # .readlines()
     return None
 
@@ -445,32 +447,32 @@ def runs(distro, command):
 def run(distro, command):
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"'
     out = subprocess.getoutput(cmd)  # .readlines()
-    logger.info("(run) WSL SHELL $ f{cmd}")
-    logger.info("WSL OUTPUT > f{out}")
+    logger.info(f"(run) WSL SHELL $ {cmd}")
+    logger.info(f"WSL OUTPUT > {out}")
     return out
 
 
 def runo3(distro, command):
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;/bin/sh -c " + '"' + str(command) + '"'
     out = subprocess.getoutput(cmd)  # .readlines()
-    logger.info("(runo3) WSL SHELL $ f{cmd}")
-    logger.info("WSL OUTPUT > f{out}")
+    logger.info(f"(runo3) WSL SHELL $ {cmd}")
+    logger.info(f"WSL OUTPUT > {out}")
     return out
 
 
 def runo2(distro, command):
     cmd = "wsl.exe -d " + str(distro) + ' ' + "/bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
-    logger.info("(runo2) WSL SHELL $ f{cmd}")
-    logger.info("WSL OUTPUT > f{out}")
+    logger.info(f"(runo2) WSL SHELL $ {cmd}")
+    logger.info(f"WSL OUTPUT > {out}")
     return out
 
 
 def runo(distro, command):
     cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
-    logger.info("(runo) WSL SHELL $ f{cmd}")
-    logger.info("WSL OUTPUT > f{out}")
+    logger.info(f"(runo) WSL SHELL $ {cmd}")
+    logger.info(f"WSL OUTPUT > {out}")
     return out
 
 
