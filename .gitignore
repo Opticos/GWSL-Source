@@ -4,3 +4,13 @@ wsl.exe
 venv/
 
 .idea/
+
+build/
+
+GWSL.spec
+
+GWSL_service.spec
+
+dist/
+
+build.py
