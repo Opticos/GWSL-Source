@@ -1,5 +1,14 @@
-# GWSL-Source
-The actual code for GWSL. And some premade binaries.
+# GWSL Source
+
+## What is GWSL?
+GWSL automates the process of running X on top of WSL and over SSH:
+*  It lets you easily run graphical Linux apps on Windows 10.
+*  It lets you run graphical apps located on remote Linux machines.
+*  It provides a simple UI for launching Linux apps, managing them graphicaly, and creating customized Windows shortcuts for them.
+*  All this at the click of a button! No memorization of commands necessary. *Easy!*
+
+
+This is the actual code for GWSL. And some premade binaries.
 
 See assets/liceses.txt to see licenses for dependencies (VCXSRV and PUTTY) etc.
 
@@ -35,6 +44,7 @@ pyinstaller==3.5
 # Building GWSL
 Clone the source from here, install the dependencies with pip, and run ```build.py```.
 
+It will build to ```dist/GWSL_'version'/```.
 
 
 The official build currently runs on Python 3.7
