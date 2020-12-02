@@ -6,10 +6,10 @@
 from winreg import *
 
 import os, sys, win32, subprocess, sys, time, threading, iset, pymsgbox, json
-from infi.systray import SysTrayIcon as tray
+from systray import SysTrayIcon as tray
 
 cwd = os.getcwd()
-import win32ui, win32con, keyboard
+import win32ui, win32con, keyboard# , win32gui
 
 import sys, os
 
@@ -37,7 +37,7 @@ def open_about(systray):
 def open_dashboard(*args):
     print("dash")
     try:
-        subprocess.Popen(bundle_dir + "\\GWSL.exe")
+        subprocess.Popen(bundle_dir + "\\GWSL.exe")          
         
     except Exception as e:
         logger.exception("Exception occurred")

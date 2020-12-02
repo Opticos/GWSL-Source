@@ -2801,7 +2801,7 @@ def draw(canvas, mouse=False):
             app_launcher(machine)
 
     def donate():
-        webbrowser.get('windows-default').open('https://sites.google.com/bartimee.com/opticos-studios/donate')
+        webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/#donate')#https://sites.google.com/bartimee.com/opticos-studios/donate')
 
     def wsl_installer():
         webbrowser.get('windows-default').open("https://docs.microsoft.com/en-us/windows/wsl/install-win10")

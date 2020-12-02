@@ -27,7 +27,6 @@ pywin32
 winshell
 Pillow
 imtools
-infi.systray #TODO
 keyboard
 ```
 
