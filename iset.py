@@ -1,19 +1,23 @@
-#Get Settings
+# Get Settings
 import json, copy
 
 path = None
 
+
 def create(path):
     with open(path, "w") as obj:
-        app = {"conf_ver":3,
-               "general":{"clipboard":True, "position":"right"},
-               "graphics":{"window_mode":"multi"},
-               "putty":{"ip":None},
-               "distro_blacklist":["docker"],
-               "app_blacklist":["exampleblock"]}
+        app = {"conf_ver": 3,
+               "general": {"clipboard": True, "start_menu_mode": False, "shell_gui": "cmd"},
+               "graphics": {"window_mode": "multi"},
+               "putty": {"ip": None},
+               "distro_blacklist": ["docker"],
+               "app_blacklist": ["exampleblock"],
+               "vcxsrv_profiles": {"default": []
+                                   }}
 
         json.dump(app, obj, indent=True)
         obj.close()
+
 
 """
 def get(setting):
@@ -29,15 +33,15 @@ def get(setting):
             return None
 """
 
+
 def read():
     with open(path, "r") as obj:
         current = json.load(obj)
         obj.close()
         return current
 
+
 def set(json_f):
     with open(path, "w") as obj:
         json.dump(json_f, obj, indent=True)
         obj.close()
-        
-

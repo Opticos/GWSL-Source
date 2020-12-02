@@ -17,7 +17,7 @@ do
 		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
 	
 	
-	elif [ "export1" == $i ] #Export Display = 0  this is old. remove when sure it is unneeded
+	elif [ "export1" == $i ] #Export Display = 0 
 	then
 		echo "exporting DISPLAY for WSL1"
 		sed -i.bak '/DISPLAY=/d' ~/.profile

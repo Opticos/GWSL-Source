@@ -1,0 +1,109 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-08 13:55-0500\n"
+"PO-Revision-Date: 2020-11-08 20:17+0000\n"
+"Last-Translator: Pololot64 <pefbartimee.com@outlook.com>\n"
+"Language-Team: Chinese (China)\n"
+"Language: zh-CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=windows-1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: en_US\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
+
+#: manager.py:449
+msgid "Choose WSL Machine"
+msgstr "选择 WSL 机"
+
+#: manager.py:449
+msgid "Select a WSL Machine"
+msgstr "选择 WSL 机器"
+
+#: manager.py:521
+msgid "Choose A WSL Distro:"
+msgstr "选择一个 WSL 发行版："
+
+#: manager.py:523
+msgid "No WSL Distros Installed."
+msgstr "没有安装 WSL 发行版。"
+
+#: manager.py:584 manager.py:726
+msgid "Cancel"
+msgstr "取消"
+
+#: manager.py:677
+msgid "About GWSL"
+msgstr "关于 GWSL"
+
+#: manager.py:698 manager.py:700
+msgid "GWSL Version "
+msgstr "GWSL 版本"
+
+#: manager.py:700
+msgid " (store)"
+msgstr "（商店）"
+
+#: manager.py:2713
+msgid "GWSL Dashboard"
+msgstr "GWSL 仪表板"
+
+#: manager.py:2715
+msgid "X Running On localhost : 0.0"
+msgstr "X 在 localhost 上运行：0.0"
+
+#: manager.py:2717
+msgid "Error. Please Check Logs"
+msgstr "错误。请检查日志"
+
+#: manager.py:2827
+msgid "GWSL Distro Tools"
+msgstr "GWSL 发行工具"
+
+#: manager.py:2828
+msgid "Shortcut Creator"
+msgstr "捷径创作者"
+
+#: manager.py:2829
+msgid "Linux Apps"
+msgstr "Linux 应用程式"
+
+#: manager.py:2830
+msgid "Linux Shell"
+msgstr "Linux Shell"
+
+#: manager.py:2831 manager.py:2834
+msgid "Graphical SSH Connection"
+msgstr "图形化 SSH 连接"
+
+#: manager.py:2832 manager.py:2836
+msgid "Donate With PayPal"
+msgstr "与贝宝捐款"
+
+#: manager.py:2835
+msgid "Install WSL for More Features"
+msgstr "安装 WSL 以获取更多功能"
+
+#: manager.py:2923 manager.py:2936
+msgid "Help"
+msgstr "救命"
+
+#: manager.py:2943 manager.py:2957
+msgid "About"
+msgstr "关于"
+
+#: manager.py:2974
+msgid "Donate"
+msgstr "捐"
+
+#: manager.py:3043 manager.py:3051
+msgid "Starting Service"
+msgstr "启动服务"
+
+#: manager.py:3045
+msgid "Error Starting Service"
+msgstr "启动服务时出错"

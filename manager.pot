@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-11-08 14:21-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: manager.py:454
+msgid "Choose WSL Machine"
+msgstr ""
+
+#: manager.py:454
+msgid "Select a WSL Machine"
+msgstr ""
+
+#: manager.py:526
+msgid "Choose A WSL Distro:"
+msgstr ""
+
+#: manager.py:528
+msgid "No WSL Distros Installed."
+msgstr ""
+
+#: manager.py:589 manager.py:731
+msgid "Cancel"
+msgstr ""
+
+#: manager.py:682
+msgid "About GWSL"
+msgstr ""
+
+#: manager.py:703 manager.py:705
+msgid "GWSL Version "
+msgstr ""
+
+#: manager.py:705
+msgid " (store)"
+msgstr ""
+
+#: manager.py:2718
+msgid "GWSL Dashboard"
+msgstr ""
+
+#: manager.py:2720
+msgid "X Running On localhost : 0.0"
+msgstr ""
+
+#: manager.py:2722
+msgid "Error. Please Check Logs"
+msgstr ""
+
+#: manager.py:2832
+msgid "GWSL Distro Tools"
+msgstr ""
+
+#: manager.py:2833
+msgid "Shortcut Creator"
+msgstr ""
+
+#: manager.py:2834
+msgid "Linux Apps"
+msgstr ""
+
+#: manager.py:2835
+msgid "Linux Shell"
+msgstr ""
+
+#: manager.py:2836 manager.py:2839
+msgid "Graphical SSH Connection"
+msgstr ""
+
+#: manager.py:2837 manager.py:2841
+msgid "Donate With PayPal"
+msgstr ""
+
+#: manager.py:2840
+msgid "Install WSL for More Features"
+msgstr ""
+
+#: manager.py:2928 manager.py:2941
+msgid "Help"
+msgstr ""
+
+#: manager.py:2948 manager.py:2962
+msgid "About"
+msgstr ""
+
+#: manager.py:2979
+msgid "Donate"
+msgstr ""
+
+#: manager.py:3048 manager.py:3056
+msgid "Starting Service"
+msgstr ""
+
+#: manager.py:3050
+msgid "Error Starting Service"
+msgstr ""
+
