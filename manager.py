@@ -2608,20 +2608,53 @@ def update_running():
 
 
 last = 0
-heartbeat = 0
+heartbeat = time.perf_counter()
 
+colores = [[255, 0, 0],
+        [154, 59, 180],
+        [1, 142, 253],
+        [249, 179, 26],
+        [184, 150, 9],
+        [6, 141, 155],
+        [255, 0, 0],
+        [214, 125, 241],
+        [249, 34, 181],
+        [227, 188, 12],
+        [167, 47, 230],
+        [124, 97, 232],
+        [71, 21, 248],
+        [157, 29, 141],
+        [40, 235, 52],
+        [253, 57, 204],
+        [1, 246, 192],
+        [48, 75, 202],
+        [149, 243, 64],
+        [246, 180, 61],
+        [40, 100, 11],
+        [83, 219, 37],
+        [228, 122, 43],
+        [234, 26, 136],
+        [10, 213, 2],
+        [105, 217, 11],
+        [106, 215, 231],
+        [233, 116, 30],
+        [158, 250, 221],
+        [233, 26, 38],
+        [210, 21, 229]]
 
+        
 def draw(canvas, mouse=False):
     global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
     # mask.fill([255, 0, 0])
     canvas.fill([0, 0, 0, 0])
 
-    heartbeat += 1
-    if heartbeat > 100:
-        heartbeat = 0
-        animator.animate("donate", [random.randrange(0, 255),
-                                    random.randrange(0, 255),
-                                    random.randrange(0, 255)])
+    #print(time.perf_counter() - heartbeat)
+    if time.perf_counter() - heartbeat > 1.2:
+        heartbeat = time.perf_counter()
+        animator.animate("donate", random.choice(colores))
+
+
+        
     # print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
@@ -2828,12 +2861,7 @@ def draw(canvas, mouse=False):
     selected = False
     q = 0
     s2 = False
-    day = time.localtime().tm_wday
-    if day in dd:
-        donate_asker = True
-        animator.register("donate", [255, 0, 0])
-    else:
-        donate_asker = False
+    
     for i in buttons:
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
@@ -2882,7 +2910,7 @@ def draw(canvas, mouse=False):
         # square(mask, [ui.inch2pix(0.1), pos[1]], [WIDTH - ui.inch2pix(0.1) * 2,
         #                                                            ui.inch2pix(0.3) + ui.inch2pix(0.4)], width=2)
         start += ui.inch2pix(0.3) + ui.inch2pix(0.5) - ui.inch2pix(0.15)
-        s += ui.inch2pix(0.17)
+        s += ui.inch2pix(0.17) #used to be 0.17
         q += 1
 
     # logo.set_alpha(int(launch * 200))
@@ -3152,6 +3180,14 @@ if "--r" not in args:
         loading_angle = 0
         icon_font = ui.font(ico_font, int(ui.inch2pix(1)))  # 0.19
         loader = icon_font.render("", True, white)
+
+        day = time.localtime().tm_wday
+        if day in dd:
+            donate_asker = True
+            animator.register("donate", [255, 0, 0])
+        else:
+            donate_asker = False
+    
 
         while True:
             try:
