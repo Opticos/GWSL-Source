@@ -17,6 +17,7 @@ iset.py # Handles the GWSL configuration file
 OpticUI.py # Custom Graphics Library
 singleton.py # From Tendo (https://tendo.readthedocs.io/en/latest/_modules/tendo/singleton.html). Edited to start faster.
 wsl_tools.py # Python tools to work with WSL
+build.py # Build the packages with PyInstaller
 ```
 
 
@@ -28,7 +29,13 @@ winshell
 Pillow
 imtools
 keyboard
+pyinstaller==3.5
 ```
+
+# Building GWSL
+Clone the source from here, install the dependencies with pip, and run ```build.py```.
+
+
 
 The official build currently runs on Python 3.7
 
