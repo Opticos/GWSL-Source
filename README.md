@@ -49,5 +49,11 @@ It will build to ```dist/GWSL_'version'/```.
 
 The official build currently runs on Python 3.7
 
+# Donate
+
+If you enjoy GWSL, please consider buying me a cup of coffee. I worked hard to make it free and plan to spend alot of time supporting it. Donations are greaty appreciated.
+
+[Donate with PayPal (Any amount helps!)](https://www.paypal.com/donate/?cmd=_donations&business=VV8W4XA2PZ5R8&item_name=GWSL+Donation&currency_code=USD&Z3JncnB0=)
+
 # GWSL Website
 https://opticos.github.io/gwsl/
