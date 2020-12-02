@@ -239,7 +239,7 @@ if "--r" not in args:
 
         toaster = ToastNotifier()
 
-        dd = [random.randrange(0, 8), random.randrange(0, 8)]  # pick a random date to ask for donations
+        dd = [random.randrange(0, 8), random.randrange(0, 8), random.randrange(0, 8)]  # pick a random date to ask for donations
 
         # DISPLAY ones
         import OpticUI as ui
@@ -776,7 +776,7 @@ def about():
 
         if len(machines) != 0:
             for i in machines:
-                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or i == "View Logs":
+                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or i == "View Logs" or i == "Add to Startup":
                     txt = title_font.render(i, True, accent)  # [0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -797,8 +797,10 @@ def about():
                             elif i == "Edit Configuration":
                                 os.chdir(app_path)
                                 os.popen("settings.json")
+                                
+                            
 
-                h += ui.inch2pix(0.27) + txt.get_height()  # used to be 0.3
+                h += ui.inch2pix(0.29) + txt.get_height()  # used to be 0.3
                 d += ui.inch2pix(0.1)
 
         txt = title_font.render(_("Cancel"), True, white)
@@ -3205,6 +3207,19 @@ if "--r" not in args:
             webbrowser.get('windows-default').open(
                 "https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/2-enable-and-install")
 
+elif args[1] == "--r" and "--startup" in args:
+    try:
+        print("started")
+        if get_running("GWSL_service") != True:
+            try:
+                subprocess.Popen('GWSL_service.exe')
+            except Exception as e:
+                logger.exception("Startup Mode. Cannot start service...")
+                print("Can't run service...")
+
+        
+    except Exception as e:
+        logger.exception("Exception occurred")
 
 elif args[1] == "--r" and "--ssh" not in args:
     try:

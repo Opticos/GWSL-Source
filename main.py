@@ -38,6 +38,7 @@ def open_dashboard(*args):
     print("dash")
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe")
+        
     except Exception as e:
         logger.exception("Exception occurred")
 
