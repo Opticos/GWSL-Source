@@ -22,7 +22,7 @@ animator.py # Handles Smooth Animations
 blur.py # Applies Windows Acrylic to GWSL
 exe_layer.py # Some Tools for SSH
 GWSL_ssh.py # GUI for GWSL SSH Functionality
-GWSL_profiles.py # GUI XServer Profile Creation
+GWSL_profiles.py # GUI for XServer Profile Creation
 iset.py # Handles the GWSL configuration file
 OpticUI.py # Custom Graphics Library
 singleton.py # From Tendo (https://tendo.readthedocs.io/en/latest/_modules/tendo/singleton.html). Edited to start faster.
