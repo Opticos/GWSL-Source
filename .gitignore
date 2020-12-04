@@ -13,3 +13,7 @@ GWSL_service.spec
 
 dist/
 
+GIMP/
+
+new_service_debug.py
+
