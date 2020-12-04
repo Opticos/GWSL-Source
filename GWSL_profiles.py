@@ -31,6 +31,8 @@ def add():
         nonlocal options
         passw = link_pass.get()
         user = link_user.get()
+        if var.get() == 1:
+            passw += (" -notrayicon")
         if user != "" and passw != "":
             options = {"name": user, "args": passw}
             boxRoot.quit()
@@ -70,9 +72,21 @@ def add():
     link_pass = ttk.Entry(frame_1)
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
-    tk.Label(frame_1, text='(Please leave the display port number untouched and do not use -ac)').grid(row=2, column=1,
+
+    tk.Label(frame_1, text="Hide VcXsrv Systray Icon: ").grid(row=2, column=1, padx=10, sticky="W")
+
+    var = tk.IntVar(root)
+    hide_systray = ttk.Checkbutton(frame_1, variable=var)
+
+    var.set(1)
+
+    #hide_systray.configure(state='enabled')
+
+    hide_systray.grid(row=2, column=2, columnspan=4, padx=10, sticky="WE")
+    
+    tk.Label(frame_1, text='(Please leave the display port number untouched and do not use -ac or -[no]trayicon)').grid(row=3, column=1,
                                                                                                        columnspan=4,
-                                                                                                       padx=10,
+                                                                                                 padx=10,
                                                                                                        sticky="W")
 
     machines = []
