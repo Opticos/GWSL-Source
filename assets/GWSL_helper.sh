@@ -9,11 +9,11 @@ do
 	then
 		echo "exporting DISPLAY for WSL2"
 		sed -i.bak '/DISPLAY=/d' ~/.profile
-		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
+		echo "export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
 
 		
 		sed -i.bak '/DISPLAY=/d' ~/.bashrc
-		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
+		echo "export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
 	
 	
 	elif [ "export1" == $i ] #Export Display = 0 
