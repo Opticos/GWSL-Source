@@ -12,7 +12,7 @@ def create(path):
                "putty": {"ip": None},
                "distro_blacklist": ["docker"],
                "app_blacklist": ["exampleblock"],
-               "vcxsrv_profiles": {"default": []
+               "xserver_profiles": {"Plain VCXSRV": []
                                    }}
 
         json.dump(app, obj, indent=True)

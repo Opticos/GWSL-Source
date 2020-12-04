@@ -1,17 +1,10 @@
-# GWSL *lets do this*
+# GWSL Service
 
 # Copyright Paul-E/Opticos Studios 2020
-# https://www.opticos.studio
-
-from winreg import *
-
-import os, sys, win32, subprocess, sys, time, threading, iset, pymsgbox, json
+# https://opticos.github.io/gwsl/
+import os, sys, subprocess, sys, time, threading, iset, pymsgbox, keyboard
 from systray import SysTrayIcon as tray
 
-cwd = os.getcwd()
-import win32ui, win32con, keyboard# , win32gui
-
-import sys, os
 
 frozen = 'not'
 if getattr(sys, 'frozen', False):
@@ -26,6 +19,33 @@ else:
 systray = None
 exiter = False
 
+# Globals
+clipboard = True
+
+display_mode = "m"
+
+hashtag_the_most_default = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
+
+default_profiles = {"m":hashtag_the_most_default + ["-multiwindow"],
+                    "s":hashtag_the_most_default,
+                    "f":hashtag_the_most_default + ["-fullscreen"]}
+
+current_custom_profile = None
+
+profile_dict = {}
+custom_profiles = []
+
+def rescan(systray=False):
+    global profile_dict, custom_profiles
+    sett = iset.read()
+    profile_dict = sett["xserver_profiles"]
+    if systray != False:
+        menu = build_menu()
+        systray.update(menu_options=menu)
+    custom_profiles = list(profile_dict)
+
+def get_args(profile_name):
+    return profile_dict[profile_name]
 
 def open_about(systray):
     try:
@@ -35,101 +55,132 @@ def open_about(systray):
 
 
 def open_dashboard(*args):
-    print("dash")
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe")          
-        
     except Exception as e:
         logger.exception("Exception occurred")
 
-
-def quits(systray):
+def shutdown(systray):
     global exiter
     exiter = True
-    # use this to exit
-    pass
 
-def build_menu():
-    menu = (("Default Window Mode", None,
-                     [("Switch to Multi Window Mode", bundle_dir + "\\assets\\" + "multi.ico", multi_mode),
-                      ("Switch to Single Window Mode", bundle_dir + "\\assets\\" + "single.ico", single_mode),
-                      ("Switch to Fullscreen Mode", bundle_dir + "\\assets\\" + "full.ico", full_mode)]),
-                    (clip + " Shared Clipboard", None, toggle_clipboard),
-                    ("GWSL Dashboard", None, open_dashboard),
-                    ("About", None, open_about),
-                    ("Quit", None, quits))
+def icon(name):
+    return f"{bundle_dir}\\assets\\systray\\{name}.ico"
+
+def set_custom_profile(systray, profile):
+    global current_custom_profile, display_mode
+    if profile == current_custom_profile:
+        return True
+    if ask():
+        sett = iset.read()
+        sett["graphics"]["window_mode"] = profile
+        iset.set(sett)
+        display_mode = "c"
+        current_custom_profile = profile
+        
+        menu = build_menu()
+        systray.update(hover_text=f"GWSL Running - {profile}", menu_options=menu)
+        print("setting", profile)
+
+        restart_server()
+
+def set_default_profile(systray, mode_type):
+    global current_custom_profile, display_mode
+    if mode_type == display_mode:
+        return True
+    if ask():
+        sett = iset.read()
+        mode_names = {"m":"multi", "s":"single", "f":"full"}
+        sett["graphics"]["window_mode"] = mode_names[mode_type]
+        iset.set(sett)
+        display_mode = mode_type
+        current_custom_profile = ""
+        
+        menu = build_menu()
+        mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen"}
+        name = mode_names[display_mode]
+        systray.update(hover_text=f"GWSL Running - {name}", menu_options=menu)
+
+        restart_server()
+
+def toggle_clipboard(systray, state):
+    global clipboard
+    if state == True:
+        phrase = "Enable"
+    else:
+        phrase = "Disable"
+    if ask_clip(phrase):
+        clipboard = state
+        menu = build_menu()
+        systray.update(menu_options=menu)
+        sett = iset.read()
+        sett["general"]["clipboard"] = clipboard
+        iset.set(sett)
+
+        restart_server()
+
+
+def config(systray):
+    os.chdir(os.getenv('APPDATA') + "\\GWSL")
+    os.popen("settings.json")
+
+def open_logs(systray):
+    os.chdir(os.getenv('APPDATA') + "\\GWSL")
+    os.popen("notepad service.log|notepad dashboard.log")
+
+def open_help(s):
+    import webbrowser
+    webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
     
+def build_menu():
+    menu = []
+
+    modes = {"m":"multi", "s":"single", "f":"full", "c":"custom"}
+
+    mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen", "c":current_custom_profile}
+    
+    defaults = [("Multi Window Mode", icon("multi"), set_default_profile, "m"),
+                ("Single Window Mode", icon("single"), set_default_profile, "s"),
+                ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
+
+    options = [("Configure GWSL", icon("config"), config),
+               ("View Logs", icon("logs"), open_logs),
+                ("Dashboard", icon("dashboard"), open_dashboard),
+                ("About", icon("info"), open_about),
+                ("Help", icon("help"), open_help),
+                ("Exit", icon("quit"), shutdown)]
+  
+    current_icon = icon(modes[display_mode])
+
+    profiles = []
+    for profile in custom_profiles:
+        text = "Custom - " + str(profile)
+        prof = (text, icon("custom"), set_custom_profile, profile)
+        profiles.append(prof)
+
+    mode_name = mode_names[display_mode]
+    menu.append((f"XServer Profiles ({mode_name})", current_icon, defaults + profiles))
+
+    menu.append(("Rescan Profiles", icon("refresh"), rescan))
+    
+    if display_mode != "c":
+        if clipboard == True:
+            ico = icon("check")
+            command = False
+            phrase = "On"
+        else:
+            ico = icon("quit")
+            command = True
+            phrase = "Off"
+        menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
+    
+    menu += options
     return menu
-
-def toggle_clipboard(systray, force="toggle"):
-    global menu, clipboard
-    try:
-        if force == "toggle":
-            do = ask_clip()
-        else:
-            do = False
-            clipboard = force
-
-            if clipboard == True:
-                clip = "Disable"
-            else:
-                clip = "Enable"
-
-            menu = build_menu()
-
-            systray.shutdown()
-            time.sleep(0.2)
-
-            if mode == "multi":
-                message = "GWSL - Multi Window Mode"
-            if mode == "full":
-                message = "GWSL - Fullscreen Mode"
-            else:
-                message = "GWSL - Single Window Mode"
-
-            systray = tray(bundle_dir + "\\assets\\" + ic, message, menu, default_menu_index=5)
-            systray.start()
-            restart_server()
-
-        if do == True:
-            if clipboard == True:
-                clipboard = False
-
-            else:
-                clipboard = True
-
-            sett = iset.read()
-            sett["general"]["clipboard"] = clipboard
-            iset.set(sett)
-
-            if clipboard == True:
-                clip = "Disable"
-            else:
-                clip = "Enable"
-
-            menu = build_menu()
-
-            systray.shutdown()
-
-            if mode == "multi":
-                message = "GWSL - Multi Window Mode"
-            if mode == "full":
-                message = "GWSL - Fullscreen Mode"
-            else:
-                message = "GWSL - Single Window Mode"
-
-            systray = tray(bundle_dir + "\\assets\\" + ic, message, menu, default_menu_index=5)
-            systray.start()
-            restart_server()
-        else:
-            pass
-    except Exception as e:
-        logger.exception("Exception occurred")
 
 
 def ask():
-    choice = pymsgbox.confirm(text="Do you want to switch default window modes? This might force close some windows.",
-                              title="Switch Mode?",
+    choice = pymsgbox.confirm(text="Switch XServer profiles? This might force-close some windows.",
+                              title="Switch Profile",
                               buttons=["Yes", "No"])
     if choice == "Yes":
         return True
@@ -137,9 +188,9 @@ def ask():
         return False
 
 
-def ask_clip():
-    choice = pymsgbox.confirm(text="Toggle the shared clipboard? This might force close some windows.",
-                              title="Toggle Clipboard?",
+def ask_clip(phrase):
+    choice = pymsgbox.confirm(text="Toggle the shared clipboard? This might force-close some windows.",
+                              title=f"{phrase} Clipboard",
                               buttons=["Yes", "No"])
     if choice == "Yes":
         return True
@@ -149,64 +200,12 @@ def ask_clip():
 
 def ask_restart():
     answer = pymsgbox.confirm(
-        text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?", title="Uh Oh!",
+        text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?", title="XServer Has Stopped",
         buttons=['Yes', 'No'])
     if answer == "Yes":
         return True
     else:
         return False
-
-
-def full_mode(systray):
-    global mode, timer
-    timer = time.perf_counter()
-    try:
-        if mode == "full":
-            return True
-        if ask() == True:
-            systray.update(hover_text="GWSL - Fullscreen Mode")
-            sett = iset.read()
-            sett["graphics"]["window_mode"] = "full"
-            iset.set(sett)
-
-            mode = "full"
-            restart_server()
-    except Exception as e:
-        logger.exception("Exception occurred")
-
-
-def multi_mode(systray):
-    global mode, timer
-    try:
-        if mode == "multi":
-            return True
-        if ask() == True:
-            systray.update(hover_text="GWSL - Multi Window Mode")
-            mode = "multi"
-            sett = iset.read()
-            sett["graphics"]["window_mode"] = "multi"
-            iset.set(sett)
-            restart_server()
-    except Exception as e:
-        logger.exception("Exception occurred")
-
-
-def single_mode(systray):
-    global mode, timer
-    timer = time.perf_counter()
-    try:
-        if mode == "single":
-            return True
-        if ask() == True:
-            systray.update(hover_text="GWSL - Single Window Mode")
-            mode = "single"
-            sett = iset.read()
-            sett["graphics"]["window_mode"] = "single"
-            iset.set(sett)
-            restart_server()
-    except Exception as e:
-        logger.exception("Exception occurred")
-
 
 def restart_server():
     kill_server()
@@ -216,22 +215,20 @@ def restart_server():
 def kill_server():
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
-    # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-
+    
 
 def start_server():
-    global mode, clipboard
-    default_arguments = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
-    if mode == "multi":
-        default_arguments.append("-multiwindow")
-    elif mode == "full":
-        default_arguments.append("-fullscreen")
-    if clipboard == True:
-        default_arguments.append("-clipboard")
-        default_arguments.append("-primary")
+    if display_mode != "c":
+        default_arguments = default_profiles[display_mode]
+        if clipboard == True:
+            default_arguments.append("-clipboard")
+            default_arguments.append("-primary")
+        else:
+            default_arguments.append("-noclipboard")
+            default_arguments.append("-noprimary")
     else:
-        default_arguments.append("-noclipboard")
-        default_arguments.append("-noprimary")
+        default_arguments = ["-ac"] + get_args(current_custom_profile)
+
     subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
 
 
@@ -243,11 +240,11 @@ def get_running():
     return False
 
 
-timer = time.perf_counter()
+
 
 
 def main():
-    global systray, mode, clipboard, exiter, ic, timer
+    global systray, display_mode, clipboard, exiter, ic, timer
     # Kill VcXsrv if already running
     if get_running() == True:
         kill_server()
@@ -256,7 +253,13 @@ def main():
     start_server()
 
     # Start Tray Icon
-    systray = tray(bundle_dir + "\\assets\\" + ic, "GWSL - Multi Window Mode", menu, default_menu_index=5)
+    menu = build_menu()
+    if display_mode == "c":
+        name = current_custom_profile
+    else:
+        mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen"}
+        name = mode_names[display_mode]
+    systray = tray(ic, f"GWSL Running - {name}", menu, default_menu_index=open_dashboard)
     systray.start()
 
     # start service listener
@@ -266,9 +269,11 @@ def main():
             if time.perf_counter() - timer > 4:
                 timer = timer = time.perf_counter()
                 if get_running() == False:
-                    if mode == "single":
-                        systray.update(hover_text="GWSL - Multi Window Mode")
-                        mode = "multi"
+                    #In case someone closes a single-window server... restart as multi window.
+                    if display_mode == "s":
+                        display_mode = "m"
+                        menu = build_menu()
+                        systray.update(hover_text="GWSL Running - Multi Window", menu_options=menu)
                         sett = iset.read()
                         sett["graphics"]["window_mode"] = "multi"
                         iset.set(sett)
@@ -281,28 +286,12 @@ def main():
                         kill_server()
                         subprocess.getoutput('taskkill /F /IM GWSL.exe')
                         sys.exit()
-                registry = ConnectRegistry(None, HKEY_CURRENT_USER)
-                key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-                key_value = QueryValueEx(key, 'SystemUsesLightTheme')
-                k = int(key_value[0])
-
-                if k == 0:
-                    ic = "logo.ico"
-                    systray.update(icon=bundle_dir + "\\assets\\" + "logo.ico")
-                else:
-                    ic = "logodark.ico"
-                    systray.update(icon=bundle_dir + "\\assets\\" + "logodark.ico")
-
+                
             if exiter == True:
                 kill_server()
                 subprocess.getoutput('taskkill /F /IM GWSL.exe')
                 systray.shutdown()
                 sys.exit()
-        # except OSError:
-        #    systray.shutdown()
-        #    kill_server()
-        #    subprocess.getoutput('taskkill /F /IM GWSL.exe')
-        #    sys.exit()
 
         except Exception as e:
             logger.exception("Exception occurred")
@@ -350,39 +339,32 @@ if __name__ == "__main__":
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred")    
 
-    try:
-        registry = ConnectRegistry(None, HKEY_CURRENT_USER)
-        key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-        key_value = QueryValueEx(key, 'SystemUsesLightTheme')
-        k = int(key_value[0])
-        if k == 0:
-            ic = "logo.ico"
-        else:
-            ic = "logodark.ico"
-
-        # if len(sys.argv) > 1:
-        #    print("using argument")
-        #    iset.path = sys.argv[1]
-        # else:
-        #    print("standalone")
-
-        # defaults
     except Exception as e:
         logger.exception("Exception occurred")
     try:
         mode = iset.read()["graphics"]["window_mode"]
-        clipboard = iset.read()["general"]["clipboard"]
+        key = {"multi":"m", "single":"s", "full":"f"}
+        try:
+            if key[mode] == "m" or key[mode] == "s" or key[mode] == "f":
+                print("We have a default!! Hooray!")
+                display_mode = key[mode]
+                clipboard = iset.read()["general"]["clipboard"]
+            else:
+                print("We have a custom profile")
+                current_custom_profile = mode
+        except:
+            print("We have a custom profile")
+            current_custom_profile = mode
+            display_mode = "c"
 
-        if clipboard == False:
-            clip = "Enable"
-        else:
-            clip = "Disable"
+        rescan()
 
         menu = build_menu()
         
         keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
+        ic = icon("systray")
         main()
     except Exception as e:
         logger.exception("Exception occurred")

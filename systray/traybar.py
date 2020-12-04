@@ -38,11 +38,12 @@ class SysTrayIcon(object):
         self._on_quit = on_quit
 
         menu_options = menu_options or ()
-        menu_options = menu_options# + (('Quit', None, SysTrayIcon.QUIT),)
         self._next_action_id = SysTrayIcon.FIRST_ID
         self._menu_actions_by_id = set()
+        self._menu_commands_by_id = set()
         self._menu_options = self._add_ids_to_menu_options(list(menu_options))
         self._menu_actions_by_id = dict(self._menu_actions_by_id)
+        self._menu_commands_by_id = dict(self._menu_commands_by_id)
 
         window_class_name = window_class_name or ("SysTrayIconPy-%s" % (str(uuid.uuid4())))
 
@@ -131,26 +132,63 @@ class SysTrayIcon(object):
             return      # not started
         PostMessage(self._hwnd, WM_CLOSE, 0, 0)
 
-    def update(self, icon=None, hover_text=None):
-        """ update icon image and/or hover text """
+    def update(self, icon=None, hover_text=None, menu_options=None):
+        """ update icon image and/or hover text and/or menu items"""
         if icon:
             self._icon = icon
             self._load_icon()
         if hover_text:
             self._hover_text = hover_text
+        if menu_options != None:
+            menu_options = menu_options or ()
+            self._next_action_id = SysTrayIcon.FIRST_ID
+            self._menu_actions_by_id = set()
+            self._menu_commands_by_id = set()
+            self._menu_options = self._add_ids_to_menu_options(list(menu_options))
+            self._menu_actions_by_id = dict(self._menu_actions_by_id)
+            self._menu_commands_by_id = dict(self._menu_commands_by_id)
+            """
+            self._notify_id = None
+            self._message_loop_thread = None
+            self._hwnd = None
+            self._hicon = 0
+            self._hinst = None
+            self._window_class = None
+            self._menu = None
+            self._register_class()
+            self._hicon = 0
+            """
+            self._menu = CreatePopupMenu()
+            self._create_menu(self._menu, self._menu_options)
+            
+            
+            
+            
         self._refresh_icon()
 
     def _add_ids_to_menu_options(self, menu_options):
         result = []
         for menu_option in menu_options:
-            option_text, option_icon, option_action = menu_option
+            try:
+                option_text, option_icon, option_action, option_command = menu_option
+            except:
+                option_text, option_icon, option_action = menu_option
+                option_command = None
+                
             if callable(option_action) or option_action in SysTrayIcon.SPECIAL_ACTIONS:
                 self._menu_actions_by_id.add((self._next_action_id, option_action))
-                result.append(menu_option + (self._next_action_id,))
+                self._menu_commands_by_id.add((self._next_action_id, option_command))
+                if len(menu_option + (option_command, self._next_action_id,)) == 5:
+                    result.append(menu_option + (option_command, self._next_action_id,))
+                else:
+                    result.append(menu_option + (self._next_action_id,))
+
+                
             elif non_string_iterable(option_action):
                 result.append((option_text,
                                option_icon,
                                self._add_ids_to_menu_options(option_action),
+                               None,
                                self._next_action_id))
             else:
                 raise Exception('Unknown item', option_text, option_icon, option_action)
@@ -214,7 +252,8 @@ class SysTrayIcon(object):
 
     def _notify(self, hwnd, msg, wparam, lparam):
         if lparam == 513:
-            self._execute_menu_option(self._default_menu_index + SysTrayIcon.FIRST_ID)
+            self._default_menu_index()
+            #self._execute_menu_option(self._default_menu_index + SysTrayIcon.FIRST_ID)
         if lparam == WM_LBUTTONDBLCLK:
             pass #Do nothing here
         elif lparam == WM_RBUTTONUP:
@@ -243,7 +282,12 @@ class SysTrayIcon(object):
         PostMessage(self._hwnd, WM_NULL, 0, 0)
 
     def _create_menu(self, menu, menu_options):
-        for option_text, option_icon, option_action, option_id in menu_options[::-1]:
+        if len(menu_options) == 3:
+            index = 0
+        else:
+            index = 1
+
+        for option_text, option_icon, option_action, cmd, option_id in menu_options[::-1]:
             if option_icon:
                 option_icon = self._prep_menu_icon(option_icon)
 
@@ -269,13 +313,13 @@ class SysTrayIcon(object):
 
         hdcBitmap = CreateCompatibleDC(None)
         hdcScreen = GetDC(None)
-        hbm = CreateCompatibleBitmap(hdcScreen, ico_x, ico_y)
+        hbm = CreateCompatibleBitmap(hdcScreen, ico_x + 10, ico_y + 10)
         hbmOld = SelectObject(hdcBitmap, hbm)
         # Fill the background.
         brush = GetSysColorBrush(COLOR_MENU)
-        FillRect(hdcBitmap, ctypes.byref(RECT(0, 0, 16, 16)), brush)
+        FillRect(hdcBitmap, ctypes.byref(RECT(0, 0, ico_x + 10, ico_y + 10)), brush)
         # draw the icon
-        DrawIconEx(hdcBitmap, 0, 0, hicon, ico_x, ico_y, 0, 0, DI_NORMAL)
+        DrawIconEx(hdcBitmap, 5, 5, hicon, ico_x, ico_y, 0, 0, DI_NORMAL)
         SelectObject(hdcBitmap, hbmOld)
 
         # No need to free the brush
@@ -290,10 +334,14 @@ class SysTrayIcon(object):
 
     def _execute_menu_option(self, id):
         menu_action = self._menu_actions_by_id[id]
+        command_id = self._menu_commands_by_id[id]
         if menu_action == SysTrayIcon.QUIT:
             DestroyWindow(self._hwnd)
         else:
-            menu_action(self)
+            if command_id != None:
+                menu_action(self, command_id)
+            else:
+                menu_action(self)
 
 def non_string_iterable(obj):
     try:

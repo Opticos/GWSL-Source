@@ -1,3 +1,3 @@
 GWSL Copyright Paul-E/Opticos Studios 2020
 
-Note: This program requires Windows 10 version 1909 or later. Windows 10 2004 is reccomended.
+Note: This program requires Windows 10 version 1903 or later. Windows 10 2004 is reccomended.
