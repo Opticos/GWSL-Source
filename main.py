@@ -2,9 +2,16 @@
 
 # Copyright Paul-E/Opticos Studios 2020
 # https://opticos.github.io/gwsl/
-import os, sys, subprocess, sys, time, threading, iset, pymsgbox, keyboard
-from systray import SysTrayIcon as tray
+import iset
+import keyboard
+import os
+import pymsgbox
+import subprocess
+import sys
+import time
+import GWSL_profiles as profile
 
+from systray import SysTrayIcon as tray
 
 frozen = 'not'
 if getattr(sys, 'frozen', False):
@@ -26,26 +33,33 @@ display_mode = "m"
 
 hashtag_the_most_default = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
 
-default_profiles = {"m":hashtag_the_most_default + ["-multiwindow"],
-                    "s":hashtag_the_most_default,
-                    "f":hashtag_the_most_default + ["-fullscreen"]}
+default_profiles = {"m": hashtag_the_most_default + ["-multiwindow"],
+                    "s": hashtag_the_most_default,
+                    "f": hashtag_the_most_default + ["-fullscreen"]}
 
 current_custom_profile = None
 
 profile_dict = {}
 custom_profiles = []
 
+
 def rescan(systray=False):
     global profile_dict, custom_profiles
-    sett = iset.read()
-    profile_dict = sett["xserver_profiles"]
-    if systray != False:
-        menu = build_menu()
-        systray.update(menu_options=menu)
-    custom_profiles = list(profile_dict)
+    try:
+        sett = iset.read()
+        profile_dict = sett["xserver_profiles"]
+        if systray != False:
+            menu = build_menu()
+            systray.update(menu_options=menu)
+        custom_profiles = list(profile_dict)
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot scan profiles")
+        custom_profiles = []
+
 
 def get_args(profile_name):
     return profile_dict[profile_name]
+
 
 def open_about(systray):
     try:
@@ -56,126 +70,166 @@ def open_about(systray):
 
 def open_dashboard(*args):
     try:
-        subprocess.Popen(bundle_dir + "\\GWSL.exe")          
+        subprocess.Popen(bundle_dir + "\\GWSL.exe")
     except Exception as e:
         logger.exception("Exception occurred")
+
 
 def shutdown(systray):
     global exiter
     exiter = True
 
+
 def icon(name):
     return f"{bundle_dir}\\assets\\systray\\{name}.ico"
 
+
 def set_custom_profile(systray, profile):
     global current_custom_profile, display_mode
-    if profile == current_custom_profile:
-        return True
-    if ask():
-        sett = iset.read()
-        sett["graphics"]["window_mode"] = profile
-        iset.set(sett)
-        display_mode = "c"
-        current_custom_profile = profile
-        
-        menu = build_menu()
-        systray.update(hover_text=f"GWSL Running - {profile}", menu_options=menu)
-        print("setting", profile)
+    try:
+        if profile == current_custom_profile:
+            return True
+        if ask():
+            sett = iset.read()
+            sett["graphics"]["window_mode"] = profile
+            iset.set(sett)
+            display_mode = "c"
+            current_custom_profile = profile
 
-        restart_server()
+            menu = build_menu()
+            systray.update(hover_text=f"GWSL Running - {profile}", menu_options=menu)
+            print("setting", profile)
+
+            restart_server()
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot switch to custom profile " + str(profile))
 
 def set_default_profile(systray, mode_type):
     global current_custom_profile, display_mode
-    if mode_type == display_mode:
-        return True
-    if ask():
-        sett = iset.read()
-        mode_names = {"m":"multi", "s":"single", "f":"full"}
-        sett["graphics"]["window_mode"] = mode_names[mode_type]
-        iset.set(sett)
-        display_mode = mode_type
-        current_custom_profile = ""
-        
-        menu = build_menu()
-        mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen"}
-        name = mode_names[display_mode]
-        systray.update(hover_text=f"GWSL Running - {name}", menu_options=menu)
+    try:
+        if mode_type == display_mode:
+            return True
+        if ask():
+            sett = iset.read()
+            mode_names = {"m": "multi", "s": "single", "f": "full"}
+            sett["graphics"]["window_mode"] = mode_names[mode_type]
+            iset.set(sett)
+            display_mode = mode_type
+            current_custom_profile = ""
 
-        restart_server()
+            menu = build_menu()
+            mode_names = {"m": "Multi Window", "s": "Single Window", "f": "Fullscreen"}
+            name = mode_names[display_mode]
+            systray.update(hover_text=f"GWSL Running - {name}", menu_options=menu)
+
+            restart_server()
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot switch to profile type " + str(mode_type))
+
 
 def toggle_clipboard(systray, state):
     global clipboard
-    if state == True:
-        phrase = "Enable"
-    else:
-        phrase = "Disable"
-    if ask_clip(phrase):
-        clipboard = state
-        menu = build_menu()
-        systray.update(menu_options=menu)
-        sett = iset.read()
-        sett["general"]["clipboard"] = clipboard
-        iset.set(sett)
+    try:
+        if state == True:
+            phrase = "Enable"
+        else:
+            phrase = "Disable"
+        if ask_clip(phrase):
+            clipboard = state
+            menu = build_menu()
+            systray.update(menu_options=menu)
+            sett = iset.read()
+            sett["general"]["clipboard"] = clipboard
+            iset.set(sett)
 
-        restart_server()
+            restart_server()
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot toggle clipboard")
 
 
 def config(systray):
-    os.chdir(os.getenv('APPDATA') + "\\GWSL")
-    os.popen("settings.json")
+    try:
+        path = os.getenv('APPDATA') + "\\GWSL\\"
+        os.popen(f"{path}settings.json")
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot open Config File")
+
 
 def open_logs(systray):
-    os.chdir(os.getenv('APPDATA') + "\\GWSL")
-    os.popen("notepad service.log|notepad dashboard.log")
+    try:
+        path = os.getenv('APPDATA') + "\\GWSL\\"
+        subprocess.Popen(f"notepad {path}service.log")
+        subprocess.Popen(f"notepad {path}dashboard.log")
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Open Logs")
 
 def open_help(s):
     import webbrowser
     webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
-    
+
+def add_profile(systray):
+    try:
+        new_profile = profile.add()
+        if new_profile != None:
+            name = new_profile["name"]
+            arguments = new_profile["args"].split(" ")
+            sett = iset.read()
+            sett["xserver_profiles"][name] = arguments
+            iset.set(sett)
+            rescan()
+            menu = build_menu()
+            systray.update(menu_options=menu)
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Create Profile")
+
 def build_menu():
-    menu = []
+    try:
+        menu = []
 
-    modes = {"m":"multi", "s":"single", "f":"full", "c":"custom"}
+        modes = {"m": "multi", "s": "single", "f": "full", "c": "custom"}
 
-    mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen", "c":current_custom_profile}
-    
-    defaults = [("Multi Window Mode", icon("multi"), set_default_profile, "m"),
-                ("Single Window Mode", icon("single"), set_default_profile, "s"),
-                ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
+        mode_names = {"m": "Multi Window", "s": "Single Window", "f": "Fullscreen", "c": current_custom_profile}
 
-    options = [("Configure GWSL", icon("config"), config),
-               ("View Logs", icon("logs"), open_logs),
-                ("Dashboard", icon("dashboard"), open_dashboard),
-                ("About", icon("info"), open_about),
-                ("Help", icon("help"), open_help),
-                ("Exit", icon("quit"), shutdown)]
-  
-    current_icon = icon(modes[display_mode])
+        defaults = [("Multi Window Mode", icon("multi"), set_default_profile, "m"),
+                    ("Single Window Mode", icon("single"), set_default_profile, "s"),
+                    ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
 
-    profiles = []
-    for profile in custom_profiles:
-        text = "Custom - " + str(profile)
-        prof = (text, icon("custom"), set_custom_profile, profile)
-        profiles.append(prof)
+        options = [("Configure GWSL", icon("config"), config),
+                   ("View Logs", icon("logs"), open_logs),
+                   ("Dashboard", icon("dashboard"), open_dashboard),
+                   ("About", icon("info"), open_about),
+                   ("Help", icon("help"), open_help),
+                   ("Exit", icon("quit"), shutdown)]
 
-    mode_name = mode_names[display_mode]
-    menu.append((f"XServer Profiles ({mode_name})", current_icon, defaults + profiles))
+        current_icon = icon(modes[display_mode])
 
-    menu.append(("Rescan Profiles", icon("refresh"), rescan))
-    
-    if display_mode != "c":
-        if clipboard == True:
-            ico = icon("check")
-            command = False
-            phrase = "On"
-        else:
-            ico = icon("quit")
-            command = True
-            phrase = "Off"
-        menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
-    
-    menu += options
-    return menu
+        profiles = []
+        for profile in custom_profiles:
+            text = "Custom - " + str(profile)
+            prof = (text, icon("custom"), set_custom_profile, profile)
+            profiles.append(prof)
+
+        mode_name = mode_names[display_mode]
+        menu.append((f"XServer Profiles ({mode_name})", current_icon, defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
+
+        menu.append(("Rescan Profiles", icon("refresh"), rescan))
+
+        if display_mode != "c":
+            if clipboard:
+                ico = icon("check")
+                command = False
+                phrase = "On"
+            else:
+                ico = icon("quit")
+                command = True
+                phrase = "Off"
+            menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
+
+        menu += options
+        return menu
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Build Menu")
+        return []
 
 
 def ask():
@@ -200,12 +254,14 @@ def ask_clip(phrase):
 
 def ask_restart():
     answer = pymsgbox.confirm(
-        text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?", title="XServer Has Stopped",
+        text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
+        title="XServer Has Stopped",
         buttons=['Yes', 'No'])
     if answer == "Yes":
         return True
     else:
         return False
+
 
 def restart_server():
     kill_server()
@@ -215,22 +271,24 @@ def restart_server():
 def kill_server():
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
-    
+
 
 def start_server():
-    if display_mode != "c":
-        default_arguments = default_profiles[display_mode]
-        if clipboard == True:
-            default_arguments.append("-clipboard")
-            default_arguments.append("-primary")
+    try:
+        if display_mode != "c":
+            default_arguments = default_profiles[display_mode]
+            if clipboard:
+                default_arguments.append("-clipboard")
+                default_arguments.append("-primary")
+            else:
+                default_arguments.append("-noclipboard")
+                default_arguments.append("-noprimary")
         else:
-            default_arguments.append("-noclipboard")
-            default_arguments.append("-noprimary")
-    else:
-        default_arguments = ["-ac"] + get_args(current_custom_profile)
+            default_arguments = ["-ac"] + get_args(current_custom_profile)
 
-    subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
-
+        subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Start VcXsrv")
 
 def get_running():
     proc_list = os.popen('tasklist').readlines()
@@ -240,13 +298,10 @@ def get_running():
     return False
 
 
-
-
-
 def main():
     global systray, display_mode, clipboard, exiter, ic, timer
     # Kill VcXsrv if already running
-    if get_running() == True:
+    if get_running():
         kill_server()
 
     # Start VcXsrv
@@ -257,7 +312,7 @@ def main():
     if display_mode == "c":
         name = current_custom_profile
     else:
-        mode_names = {"m":"Multi Window", "s":"Single Window", "f":"Fullscreen"}
+        mode_names = {"m": "Multi Window", "s": "Single Window", "f": "Fullscreen"}
         name = mode_names[display_mode]
     systray = tray(ic, f"GWSL Running - {name}", menu, default_menu_index=open_dashboard)
     systray.start()
@@ -268,8 +323,8 @@ def main():
         try:
             if time.perf_counter() - timer > 4:
                 timer = timer = time.perf_counter()
-                if get_running() == False:
-                    #In case someone closes a single-window server... restart as multi window.
+                if not get_running():
+                    # In case someone closes a single-window server... restart as multi window.
                     if display_mode == "s":
                         display_mode = "m"
                         menu = build_menu()
@@ -278,7 +333,7 @@ def main():
                         sett["graphics"]["window_mode"] = "multi"
                         iset.set(sett)
                         restart_server()
-                    elif ask_restart() == True:
+                    elif ask_restart():
                         restart_server()
 
                     else:
@@ -286,15 +341,16 @@ def main():
                         kill_server()
                         subprocess.getoutput('taskkill /F /IM GWSL.exe')
                         sys.exit()
-                
-            if exiter == True:
+
+            if exiter:
                 kill_server()
                 subprocess.getoutput('taskkill /F /IM GWSL.exe')
                 systray.shutdown()
                 sys.exit()
 
         except Exception as e:
-            logger.exception("Exception occurred")
+            logger.exception("Exception occurred in main loop")
+            
         time.sleep(2)
 
     kill_server()
@@ -304,17 +360,20 @@ def main():
 
 if __name__ == "__main__":
     # main_thread
+    ## Create Appdata directory if manager has not done so
     try:
         sett_path = os.getenv('APPDATA') + "\\GWSL"
-        if os.path.isdir(sett_path) == False:
+        if not os.path.isdir(sett_path):
             os.mkdir(sett_path)
             print("creating appdata directory")
 
-        if os.path.exists(sett_path + "\\settings.json") == False:
+        if not os.path.exists(sett_path + "\\settings.json"):
             iset.create(sett_path + "\\settings.json")
             print("creating settings")
 
         iset.path = sett_path + "\\settings.json"
+
+        # Start Logging
         import logging
 
         logger = logging.getLogger(__name__)
@@ -329,7 +388,7 @@ if __name__ == "__main__":
         logger.addHandler(f_handler)
     except:
         sett_path = os.getenv('APPDATA') + "\\GWSL\\errorbegin"
-        if os.path.isdir(sett_path) == False:
+        if not os.path.isdir(sett_path):
             os.mkdir(sett_path)
         sys.exit()
 
@@ -339,13 +398,11 @@ if __name__ == "__main__":
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
     except Exception as e:
-        logger.exception("Exception occurred")    
+        logger.exception("Exception occurred - Cannot Set DPI Aware")
 
-    except Exception as e:
-        logger.exception("Exception occurred")
     try:
         mode = iset.read()["graphics"]["window_mode"]
-        key = {"multi":"m", "single":"s", "full":"f"}
+        key = {"multi": "m", "single": "s", "full": "f"}
         try:
             if key[mode] == "m" or key[mode] == "s" or key[mode] == "f":
                 print("We have a default!! Hooray!")
@@ -362,9 +419,9 @@ if __name__ == "__main__":
         rescan()
 
         menu = build_menu()
-        
+
         keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
         ic = icon("systray")
         main()
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - Cannot Start Service. Make sure the settings file is not corrupted.")

@@ -12,7 +12,7 @@ import PIL.ImageTk
 asset_dir = "Assets/"
 
 
-def get_login(machine):
+def add():
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)  # , fg="red", bg="black")
@@ -20,7 +20,6 @@ def get_login(machine):
     else:
         boxRoot = tk.Tk()
         boxRoot.withdraw()
-
     def quitter():
         boxRoot.quit()
         boxRoot.destroy()
@@ -28,50 +27,50 @@ def get_login(machine):
         return None
 
     def login(*args):
-        nonlocal creds
+        nonlocal options
         passw = link_pass.get()
         user = link_user.get()
         if user != "" and passw != "":
-            creds = {"user": user, "pass": passw}
+            options = {"name": user, "args": passw}
             boxRoot.quit()
             boxRoot.destroy()
             # boxRoot.running = False
-
-    creds = {}
-
-    boxRoot.title("Login to " + str(machine))
+            
+    boxRoot.title("XServer Profile Creator")
     boxRoot.iconname("Dialog")
-    boxRoot.minsize(300, 120)
+    boxRoot.minsize(700, 120)
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
-
-    lbl = tk.Label(boxRoot, text="Login:", justify=LEFT)  # , font=("Helvetica", 16))
+    options = {}
+    lbl = tk.Label(boxRoot, text="Add", justify=LEFT)  # , font=("Helvetica", 16))
     # lbl.grid(row=0, padx=10, sticky="W")
     boxRoot.grid_rowconfigure(0, weight=0)
 
     # First frame
 
     frame_1 = ttk.Frame(boxRoot, padding="0.15i")
-    imager = Image.open(asset_dir + "lock.png")
+    imager = Image.open(asset_dir + "icon.png")
     img = PIL.ImageTk.PhotoImage(imager.resize([48, 48]))
     labelm = tk.Label(frame_1, image=img)
     labelm.image = img
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
+    
 
-    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Profile Name: ").grid(row=0, column=1, padx=10, sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
-    link_user.grid(row=0, column=2, padx=10, sticky="WE")
+    link_user.grid(row=0, column=2, columnspan=4, padx=10, sticky="WE")
 
     link_user.focus_force()
 
-    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
-
-    link_pass = ttk.Entry(frame_1, show="*")
+    tk.Label(frame_1, text="VcXsrv Flags: ").grid(row=1, column=1, padx=10, sticky="W")
+    
+    link_pass = ttk.Entry(frame_1)
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
+    tk.Label(frame_1, text='(Please leave the display port number untouched and do not use -ac)').grid(row=2, column=1, columnspan=4, padx=10, sticky="W")
 
     machines = []
 
@@ -83,7 +82,7 @@ def get_login(machine):
     close_b = ttk.Button(frame_3, text="Cancel", command=quitter)
     close_b.grid(column=0, row=0, sticky="SW", padx=10)
 
-    test_b = ttk.Button(frame_3, text="Login", command=login)
+    test_b = ttk.Button(frame_3, text="Add", command=login)
     test_b.grid(column=2, row=0, sticky="SE", padx=10)
 
     frame_3.grid(row=2, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
@@ -110,8 +109,8 @@ def get_login(machine):
         boxRoot.update()
         if boxRoot.running == False:
             break
-        if creds != {}:
-            return creds
+        if options != {}:
+            return options
 
 
 #print(get_login("raspberrypi"))
