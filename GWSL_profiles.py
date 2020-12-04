@@ -20,6 +20,7 @@ def add():
     else:
         boxRoot = tk.Tk()
         boxRoot.withdraw()
+
     def quitter():
         boxRoot.quit()
         boxRoot.destroy()
@@ -35,7 +36,7 @@ def add():
             boxRoot.quit()
             boxRoot.destroy()
             # boxRoot.running = False
-            
+
     boxRoot.title("XServer Profile Creator")
     boxRoot.iconname("Dialog")
     boxRoot.minsize(700, 120)
@@ -55,7 +56,6 @@ def add():
     labelm.image = img
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
-    
 
     tk.Label(frame_1, text="Profile Name: ").grid(row=0, column=1, padx=10, sticky="W")
 
@@ -66,11 +66,14 @@ def add():
     link_user.focus_force()
 
     tk.Label(frame_1, text="VcXsrv Flags: ").grid(row=1, column=1, padx=10, sticky="W")
-    
+
     link_pass = ttk.Entry(frame_1)
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
-    tk.Label(frame_1, text='(Please leave the display port number untouched and do not use -ac)').grid(row=2, column=1, columnspan=4, padx=10, sticky="W")
+    tk.Label(frame_1, text='(Please leave the display port number untouched and do not use -ac)').grid(row=2, column=1,
+                                                                                                       columnspan=4,
+                                                                                                       padx=10,
+                                                                                                       sticky="W")
 
     machines = []
 
@@ -112,5 +115,4 @@ def add():
         if options != {}:
             return options
 
-
-#print(get_login("raspberrypi"))
+# print(get_login("raspberrypi"))

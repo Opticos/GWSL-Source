@@ -1,16 +1,16 @@
 # GWSL Service
 
-# Copyright Paul-E/Opticos Studios 2020
-# https://opticos.github.io/gwsl/
-import iset
-import keyboard
 import os
-import pymsgbox
 import subprocess
 import sys
 import time
-import GWSL_profiles as profile
+import keyboard
 
+import GWSL_profiles as profile
+# Copyright Paul-E/Opticos Studios 2020
+# https://opticos.github.io/gwsl/
+import iset
+import pymsgbox
 from systray import SysTrayIcon as tray
 
 frozen = 'not'
@@ -104,6 +104,7 @@ def set_custom_profile(systray, profile):
     except Exception as e:
         logger.exception("Exception occurred - Cannot switch to custom profile " + str(profile))
 
+
 def set_default_profile(systray, mode_type):
     global current_custom_profile, display_mode
     try:
@@ -163,9 +164,11 @@ def open_logs(systray):
     except Exception as e:
         logger.exception("Exception occurred - Cannot Open Logs")
 
+
 def open_help(s):
     import webbrowser
     webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
+
 
 def add_profile(systray):
     try:
@@ -181,6 +184,7 @@ def add_profile(systray):
             systray.update(menu_options=menu)
     except Exception as e:
         logger.exception("Exception occurred - Cannot Create Profile")
+
 
 def build_menu():
     try:
@@ -210,7 +214,8 @@ def build_menu():
             profiles.append(prof)
 
         mode_name = mode_names[display_mode]
-        menu.append((f"XServer Profiles ({mode_name})", current_icon, defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
+        menu.append((f"XServer Profiles ({mode_name})", current_icon,
+                     defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
 
         menu.append(("Rescan Profiles", icon("refresh"), rescan))
 
@@ -290,6 +295,7 @@ def start_server():
     except Exception as e:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
 
+
 def get_running():
     proc_list = os.popen('tasklist').readlines()
     for proc in proc_list:
@@ -350,7 +356,7 @@ def main():
 
         except Exception as e:
             logger.exception("Exception occurred in main loop")
-            
+
         time.sleep(2)
 
     kill_server()
