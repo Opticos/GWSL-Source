@@ -32,8 +32,9 @@ build.py # Build the packages with PyInstaller
 
 
 # Dependencies (all can be installed with pip)
+You can do this in a virtualenv.
 ```
-pygame
+pygame #Verion 2. The latest.
 pywin32
 winshell
 Pillow
