@@ -205,6 +205,7 @@ if "--r" not in args:
             win32gui.EnumWindows(windowEnumerationHandler, top_windows)
             for i in top_windows:
                 if "gwsl dashboard" in i[1].lower():
+                    print(i[0])
                     win32gui.ShowWindow(i[0], 5)
                     win32gui.SetForegroundWindow(i[0])
                     break
@@ -338,6 +339,8 @@ if "--r" not in args:
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
 
+        
+                    
         ui.set_size([WIDTH, HEIGHT])
         pygame.display.set_caption("GWSL Dashboard")
         ui.start_graphics(pygame, asset_dir)
@@ -384,6 +387,9 @@ if "--r" not in args:
         import blur
 
         blur.blur(HWND)
+
+        
+        
 
 
 
@@ -1335,8 +1341,6 @@ def app_launcher(machine):
             break
         for event in pygame.event.get():
             if event.type == QUIT:
-                # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -1602,8 +1606,6 @@ def chooser(backdrop, title, options):
 
         for event in pygame.event.get():
             if event.type == QUIT:
-                # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -2709,6 +2711,9 @@ def draw(canvas, mouse=False):
 
     # pygame.draw.circle(canvas, [255, 0, 0, 255], [100, 100], 50)
 
+    #Draw light/dark accent for readability
+
+    
     if light == False:
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
 
@@ -2722,7 +2727,7 @@ def draw(canvas, mouse=False):
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)])
-
+    
     # canvas.fill(fuchsia)
 
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.4)))

@@ -65,8 +65,15 @@ def get_color():
         if rgb[0] < 0 or rgb[0] > 255 or rgb[1] < 0 or rgb[1] > 255 or rgb[2] < 0 or rgb[2] > 255:
             rgb = [0, 150, 150]
 
+        # Make the color lighter if needed
+        lightness = int((rgb[0] + rgb[1] + rgb[2]) / 3)
+        if lightness < 30:
+            rgb = [0, 150, 150]
+        
         return rgb
 
+        # Junk code
+        """
         # Convert the interger to Hex and remove its offset
         accent_int = key_value[0]
         accent_hex = hex(accent_int + 4278190080)  # Remove FF offset and convert to HEX again
@@ -75,12 +82,14 @@ def get_color():
         accent = accent_hex[4:6] + accent_hex[2:4] + accent_hex[0:2]
         rgb = hex_to_rgb('#' + accent)
         rgb = rgb[:2]
-
+        print(1, rgb)
         if rgb[0] < 0 or rgb[0] > 255 or rgb[1] < 0 or rgb[1] > 255 or rgb[2] < 0 or rgb[2] > 255:
             rgb = [0, 200, 200]
-
+        print(2, rgb)
         return rgb
+        """
     except:
+        print("failing")
         return [0, 200, 200]
 
 

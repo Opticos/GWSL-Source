@@ -42,6 +42,25 @@ current_custom_profile = None
 profile_dict = {}
 custom_profiles = []
 
+# DPI Stuff
+from winreg import *
+modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARsE"]
+REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+
+def set_reg(name, value):
+    pass
+    """
+    try:
+        CreateKey(HKEY_CURRENT_USER, REG_PATH)
+        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, 
+                                       KEY_WRITE)
+        SetValueEx(registry_key, name, 0, REG_SZ, value)
+        CloseKey(registry_key)
+        return True
+    except WindowsError:
+        return False
+    """
+
 
 def rescan(systray=False):
     global profile_dict, custom_profiles
@@ -186,6 +205,20 @@ def add_profile(systray):
         logger.exception("Exception occurred - Cannot Create Profile")
 
 
+def dpi_set(systray, mode):
+    server_location = f"{bundle_dir}/VCXSRV/GWSL_vcxsrv.exe"
+    instance_location = f"{bundle_dir}/VCXSRV/GWSL_instance.exe"
+    print(mode)
+    
+
+    try:
+        set_reg(r"C:\Users\PEF\Music\Outlook Express\Movie Maker\moviemk.exe", modes[0])
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Change DPI")
+    
+
+
+
 def build_menu():
     try:
         menu = []
@@ -198,12 +231,17 @@ def build_menu():
                     ("Single Window Mode", icon("single"), set_default_profile, "s"),
                     ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
 
+        dpi_options = [("DPI Scaling Mode", icon("dpi"), [("Linux (GTK and QT Handle Scaling)", icon("dpi_lin"), dpi_set, ""),
+                                                          ("Windows (Faster but Blurrier)", icon("dpi_win"), dpi_set, ""),
+                                                          ("Windows Enhanced (Multi-Monitor Aware)", icon("dpi_enhanced"), dpi_set, "")])]
+        
         options = [("Configure GWSL", icon("config"), config),
                    ("View Logs", icon("logs"), open_logs),
                    ("Dashboard", icon("dashboard"), open_dashboard),
                    ("About", icon("info"), open_about),
                    ("Help", icon("help"), open_help),
                    ("Exit", icon("quit"), shutdown)]
+        
 
         current_icon = icon(modes[display_mode])
 
@@ -220,6 +258,7 @@ def build_menu():
         menu.append(("Rescan Profiles", icon("refresh"), rescan))
 
         if display_mode != "c":
+            # Clipboard options are only enabled for multi, single, and fullscreen default modes
             if clipboard:
                 ico = icon("check")
                 command = False
@@ -229,7 +268,9 @@ def build_menu():
                 command = True
                 phrase = "Off"
             menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
+        
 
+        menu += dpi_options
         menu += options
         return menu
     except Exception as e:
