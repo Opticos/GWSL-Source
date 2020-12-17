@@ -44,12 +44,10 @@ custom_profiles = []
 
 # DPI Stuff
 from winreg import *
-modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARsE"]
+modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARE"]
 REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
 def set_reg(name, value):
-    pass
-    """
     try:
         CreateKey(HKEY_CURRENT_USER, REG_PATH)
         registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, 
@@ -59,7 +57,7 @@ def set_reg(name, value):
         return True
     except WindowsError:
         return False
-    """
+    
 
 
 def rescan(systray=False):
@@ -206,13 +204,14 @@ def add_profile(systray):
 
 
 def dpi_set(systray, mode):
-    server_location = f"{bundle_dir}/VCXSRV/GWSL_vcxsrv.exe"
-    instance_location = f"{bundle_dir}/VCXSRV/GWSL_instance.exe"
+    server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
+    instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(mode)
     
 
     try:
-        set_reg(r"C:\Users\PEF\Music\Outlook Express\Movie Maker\moviemk.exe", modes[0])
+        set_reg(server_location, modes[int(mode)])
+        set_reg(instance_location, modes[int(mode)])
     except Exception as e:
         logger.exception("Exception occurred - Cannot Change DPI")
     
@@ -231,9 +230,9 @@ def build_menu():
                     ("Single Window Mode", icon("single"), set_default_profile, "s"),
                     ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
 
-        dpi_options = [("DPI Scaling Mode", icon("dpi"), [("Linux (GTK and QT Handle Scaling)", icon("dpi_lin"), dpi_set, ""),
-                                                          ("Windows (Faster but Blurrier)", icon("dpi_win"), dpi_set, ""),
-                                                          ("Windows Enhanced (Multi-Monitor Aware)", icon("dpi_enhanced"), dpi_set, "")])]
+        dpi_options = [("DPI Scaling Mode", icon("dpi"), [("Linux (GTK and QT)", icon("dpi_lin"), dpi_set, 0),
+                                                          ("Windows (Faster but Blurrier)", icon("dpi_win"), dpi_set, 1),
+                                                          ("Windows GDI Enhanced (Multi-Monitor Aware)", icon("dpi_enhanced"), dpi_set, 2)])]
         
         options = [("Configure GWSL", icon("config"), config),
                    ("View Logs", icon("logs"), open_logs),

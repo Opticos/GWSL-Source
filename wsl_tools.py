@@ -91,6 +91,10 @@ def get_apps(machine):
     return apps
 
 
+
+
+
+
 def gtk(machine, scale):
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" gtk' + str(scale)

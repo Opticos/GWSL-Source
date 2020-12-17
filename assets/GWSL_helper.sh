@@ -9,11 +9,11 @@ do
 	then
 		echo "exporting DISPLAY for WSL2"
 		sed -i.bak '/DISPLAY=/d' ~/.profile
-		echo "export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
+		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
 
 		
 		sed -i.bak '/DISPLAY=/d' ~/.bashrc
-		echo "export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
+		echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
 	
 	
 	elif [ "export1" == $i ] #Export Display = 0 
@@ -67,14 +67,14 @@ do
 		apps=`find /usr/share/applications -name '*.desktop' -print0 |xargs -0 grep -i -l "Terminal=False"`
 		for app in $apps
 		do
-			all_apps+=`cat $app | sed -En '/Name=/p'`
+			all_apps+=`cat $app | sed -En '/^Name=/p'`
 			all_apps+=":cmd:"
 			all_apps+=`cat $app | sed -En '/^Exec=/p'`
 			all_apps+=":ico:"
 			all_apps+=`cat $app | sed -En '/Icon=/p'`
 			all_apps+="/:/"
 		done
-		echo $all_apps
+		echo -e $all_apps
 		
 	elif [ "profile" == $i ] #cat of .profile
 	then
