@@ -16,7 +16,7 @@ GWSL can be downloaded from the releases tab or from the Microsoft Store. The Mi
 
 <a href='//www.microsoft.com/store/apps/9nl6kd1h33v3?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' style='width: 50px'/></a>
 
-
+(I cannot make it smaller for some reason :D)
 
 # More Information
 
