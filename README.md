@@ -10,11 +10,24 @@ GWSL automates the process of running X on top of WSL and over SSH:
 
 This is the actual code for GWSL. And some premade binaries.
 
+## Downloading
+
+GWSL can be downloaded from the releases tab or from the Microsoft Store. The Microsoft Store version is reccomended.
+
+<a href='//www.microsoft.com/store/apps/9nl6kd1h33v3?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' style='width: 284px; height: 104px;'/></a>
+
+
+
+# More Information
+
 See assets/liceses.txt to see licenses for dependencies (VCXSRV and PUTTY) etc.
 
 Please contact me if anything in the licenses is incorrect or confusing.
 
 # Program Architecture
+
+In case you want to contribute and/or build the program yourself, here is a quick rundown of the code.
+
 ```
 manager.py # The GWSL Dashboard
 main.py # The GWSL Service
