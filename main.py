@@ -206,14 +206,14 @@ def add_profile(systray):
 def dpi_set(systray, mode):
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
-    print(mode)
-    
-
     try:
         set_reg(server_location, modes[int(mode)])
         set_reg(instance_location, modes[int(mode)])
     except Exception as e:
         logger.exception("Exception occurred - Cannot Change DPI")
+
+    if ask_dpi() == True:
+        restart_server()
     
 
 
@@ -278,7 +278,7 @@ def build_menu():
 
 
 def ask():
-    choice = pymsgbox.confirm(text="Switch XServer profiles? This might force-close some windows.",
+    choice = pymsgbox.confirm(text="Switch XServer profiles? Be sure to save any work open in GWSL programs. This might force-close some windows.",
                               title="Switch Profile",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -288,7 +288,7 @@ def ask():
 
 
 def ask_clip(phrase):
-    choice = pymsgbox.confirm(text="Toggle the shared clipboard? This might force-close some windows.",
+    choice = pymsgbox.confirm(text="Toggle the shared clipboard? Be sure to save any work open in GWSL programs. This might force-close some windows.",
                               title=f"{phrase} Clipboard",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -296,6 +296,14 @@ def ask_clip(phrase):
     else:
         return False
 
+def ask_dpi():
+    choice = pymsgbox.confirm(text="To apply changes, the GWSL XServer needs to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
+                              title=f"Restart XServer to Apply Changes?",
+                              buttons=["Yes", "No"])
+    if choice == "Yes":
+        return True
+    else:
+        return False
 
 def ask_restart():
     answer = pymsgbox.confirm(
