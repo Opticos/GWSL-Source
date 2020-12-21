@@ -18,7 +18,7 @@
 #   _#  #
 
 
-BUILD_MODE = "WIN32"  # MSIX or WIN32
+BUILD_MODE = "MSIX"  # MSIX or WIN32
 
 version = "1.3.7"
 
@@ -2651,7 +2651,7 @@ def draw(canvas, mouse=False):
     canvas.fill([0, 0, 0, 0])
 
     #print(time.perf_counter() - heartbeat)
-    if time.perf_counter() - heartbeat > 1.2:
+    if time.perf_counter() - heartbeat > 1:
         heartbeat = time.perf_counter()
         animator.animate("donate", random.choice(colores))
 
@@ -3187,11 +3187,11 @@ if "--r" not in args:
         loader = icon_font.render("", True, white)
 
         day = time.localtime().tm_wday
-        if day in dd:
-            donate_asker = True
-            animator.register("donate", [255, 0, 0])
-        else:
-            donate_asker = False
+        #if day in dd:
+        donate_asker = True
+        animator.register("donate", [255, 0, 0])
+        #else:
+        #   donate_asker = False
     
 
         while True:

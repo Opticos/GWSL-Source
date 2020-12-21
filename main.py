@@ -244,18 +244,20 @@ def build_menu():
 
         current_icon = icon(modes[display_mode])
 
+        
         profiles = []
+        
         for profile in custom_profiles:
-            text = "Custom - " + str(profile)
+            text = "Custom - " + str(profile) + " (alpha)"
             prof = (text, icon("custom"), set_custom_profile, profile)
             profiles.append(prof)
-
+        
         mode_name = mode_names[display_mode]
         menu.append((f"XServer Profiles ({mode_name})", current_icon,
-                     defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
-
+                     defaults + profiles + [("Add A Profile (alpha)", icon("add"), add_profile)]))
+            
         menu.append(("Rescan Profiles", icon("refresh"), rescan))
-
+        
         if display_mode != "c":
             # Clipboard options are only enabled for multi, single, and fullscreen default modes
             if clipboard:
@@ -269,7 +271,7 @@ def build_menu():
             menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
         
 
-        menu += dpi_options
+        #menu += dpi_options
         menu += options
         return menu
     except Exception as e:
@@ -338,7 +340,6 @@ def start_server():
                 default_arguments.append("-noprimary")
         else:
             default_arguments = ["-ac"] + get_args(current_custom_profile)
-
         subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
     except Exception as e:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
