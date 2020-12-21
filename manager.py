@@ -70,6 +70,7 @@ try:
         if "v3" not in lines:
             print("Cleaning Logs...")
             os.remove(app_path + 'dashboard.log')
+            os.remove(app_path + 'settings.json')
 except:
     pass
 
@@ -313,8 +314,10 @@ if "--r" not in args:
             winh = screensize[1]
 
         sett = iset.read()
-
-        start_menu = sett["general"]["start_menu_mode"]
+        try:
+            start_menu = sett["general"]["start_menu_mode"]
+        except:
+            start_menu = False
 
         if start_menu == True:
             if pos_config == "top":
