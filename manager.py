@@ -3335,6 +3335,7 @@ elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
         if get_running("GWSL_service") != True:
             try:
                 subprocess.Popen('GWSL_service.exe')
+                time.sleep(0.2)
             except Exception as e:
                 logger.exception("Exception occurred")
                 print("Can't run service...")
@@ -3350,16 +3351,20 @@ elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
                 title='Cannot Find Machine: ' + str(machine),
                 buttons=["Ok"])
         else:
-            if True:
+            try:
                 spawn_n_run(machine, command, mode, clipboard, gtk, qt, append, cmd=True, theme=themer, root=rooter,
                             dbus=dbuser, keep=keeper)
-            else:
+            except Exception as e:
+                logger.exception("Exception occurred - bad shortcut")
+            """
+            except:
                 choice = pymsgbox.confirm(
                     text='Hmmm... This shortcut does not seem to work. Try deleting it and making a new one.',
                     title='Bad Shortcut',
                     buttons=["Ok"])
+            """
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - bad shortcut 2")
 
 
 elif args[1] == "--r" and "--ssh" in args:
