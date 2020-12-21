@@ -55,8 +55,8 @@ def set_reg(name, value):
         SetValueEx(registry_key, name, 0, REG_SZ, value)
         CloseKey(registry_key)
         return True
-    except WindowsError:
-        return False
+    except Exception as e:
+        logger.exception("Exception occurred - Cannot Change DPI (set_reg)")
     
 
 
@@ -206,11 +206,13 @@ def add_profile(systray):
 def dpi_set(systray, mode):
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
+    print(server_location)
+    print(instance_location)
     try:
         set_reg(server_location, modes[int(mode)])
         set_reg(instance_location, modes[int(mode)])
     except Exception as e:
-        logger.exception("Exception occurred - Cannot Change DPI")
+        logger.exception("Exception occurred - Cannot Change DPI (dpi_set)")
 
     if ask_dpi() == True:
         restart_server()
@@ -271,7 +273,7 @@ def build_menu():
             menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
         
 
-        #menu += dpi_options
+        menu += dpi_options
         menu += options
         return menu
     except Exception as e:

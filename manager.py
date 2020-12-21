@@ -18,7 +18,7 @@
 #   _#  #
 
 
-BUILD_MODE = "MSIX"  # MSIX or WIN32
+BUILD_MODE = "WIN32"  # MSIX or WIN32
 
 version = "1.3.7"
 
@@ -2888,8 +2888,13 @@ def draw(canvas, mouse=False):
 
         if i[1] == heart and donate_asker == True:
             colo = animator.get("donate")
-            sett = icon_font.render(i[1], True, colo)
-            txt = title_font.render(i[0], True, colo)
+            try:
+                sett = icon_font.render(i[1], True, colo)
+                txt = title_font.render(i[0], True, colo)
+            except:
+                colo = [255, 0, 0]
+                sett = icon_font.render(i[1], True, colo)
+                txt = title_font.render(i[0], True, colo)
 
         if s2 == True or q == last:
             txt.set_alpha(int(launch * 255 * (1 - s3)))
@@ -3152,7 +3157,7 @@ if "--r" not in args:
             self._variable.set(not self._variable.get())
             self._activate()
 
-if "--r" not in args:
+if "--r" not in args: #start normally
     running = True
     service_loaded = False
     updater = threading.Thread(target=update_running)
@@ -3250,7 +3255,7 @@ if "--r" not in args:
             webbrowser.get('windows-default').open(
                 "https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/2-enable-and-install")
 
-elif args[1] == "--r" and "--startup" in args:
+elif args[1] == "--r" and "--startup" in args: #startup
     try:
         print("started")
         if get_running("GWSL_service") != True:
@@ -3264,7 +3269,7 @@ elif args[1] == "--r" and "--startup" in args:
     except Exception as e:
         logger.exception("Exception occurred")
 
-elif args[1] == "--r" and "--ssh" not in args:
+elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
     try:
         print("started")
         themer = "Follow Windows"

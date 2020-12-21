@@ -3,7 +3,7 @@ import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "137"
+version = "137_trad"
 
 
 print("\nBuilding Dashboard...")
