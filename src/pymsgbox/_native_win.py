@@ -61,7 +61,7 @@ def alert(
 ):
     """Displays a simple message box with text and a single OK button. Returns the text of the button clicked on."""
     text = str(text)
-    if (_tkinter) or (timeout is not None) or (button != pymsgbox.OK_TEXT):
+    if _tkinter or (timeout is not None) or (button != pymsgbox.OK_TEXT):
         # Timeouts are not supported by Windows message boxes.
         # Call the original tkinter alert function, not this native one:
         return pymsgbox._alertTkinter(text, title, button, root, timeout)
@@ -112,7 +112,7 @@ def confirm(
         ):
             buttonFlag = MB_YESNOCANCEL
 
-    if (_tkinter) or (timeout is not None) or (buttonFlag is None):
+    if _tkinter or (timeout is not None) or (buttonFlag is None):
         # Call the original tkinter confirm() function, not this native one:
         return pymsgbox._confirmTkinter(text, title, buttons, root, timeout)
 
@@ -138,7 +138,7 @@ def confirm(
     elif retVal == IDABORT:
         return pymsgbox.ABORT_TEXT
     else:
-        assert False, "Unexpected return value from MessageBox: %s" % (retVal)
+        assert False, "Unexpected return value from MessageBox: %s" % retVal
 
 
 '''

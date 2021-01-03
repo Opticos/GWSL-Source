@@ -1,0 +1,10 @@
+pygame>=2.0.0
+pywin32
+winshell
+Pillow
+imtools
+keyboard
+pyinstaller==3.5
+wsl_tools
+win10toast>=0.9
+fuzzywuzzy[speedup]

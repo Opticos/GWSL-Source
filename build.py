@@ -1,25 +1,23 @@
 import os
-import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
+
+from PyInstaller.__main__ import run
+
 
 version = "137_trad"
 
 
 print("\nBuilding Dashboard...")
-PyInstaller.__main__.run([
-    'manager.py',
-    '-i=assets/icon.ico',
-    '-w',
-    '-y',
-    '-n=GWSL'
+run([
+    'src/gwsl/cli.py', '-i=src/gwsl/assets/icon.ico', '-w', '-y', '-n=GWSL'
 ])
 
 
 print("\nBuilding Service...")
-PyInstaller.__main__.run([
-    'main.py',
-    '-i=assets/icon.ico',
+run([
+    'src/gwsl/tray.py',
+    '-i=src/gwsl/assets/icon.ico',
     '-w',
     '-y',
     '-n=GWSL_service',

@@ -1,6 +1,5 @@
-# WIN32BLUR
-import ctypes, win32gui, subprocess, time
-from enum import IntEnum, Enum
+"""WIN32BLUR."""
+import ctypes
 
 user32 = ctypes.windll.user32
 c_ulong = ctypes.c_ulong
@@ -20,7 +19,7 @@ class ACCENTPOLICY(ctypes.Structure):
         ("AccentState", ACCENTSTATE),
         ("AccentFlags", ctypes.c_uint),
         ("GradientColor", ctypes.c_uint),
-        ("AnimationId", ctypes.c_uint)
+        ("AnimationId", ctypes.c_uint),
     ]
 
 
@@ -59,16 +58,14 @@ class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
     _fields_ = [
         ("Attribute", WINDOWCOMPOSITIONATTRIB),
         ("Data", ctypes.POINTER(ctypes.c_int)),
-        ("SizeOfData", ctypes.c_size_t)
+        ("SizeOfData", ctypes.c_size_t),
     ]
 
 
 accent = ACCENTPOLICY()
 
-accent.AccentState = 4#ACCENTSTATE.ACCENT_ENABLE_ACRYLICBLURBEHIND
-print(ctypes.c_uint(0xCC000000))
+accent.AccentState = ACCENTSTATE.ACCENT_ENABLE_ACRYLICBLURBEHIND
 accent.GradientColor = ctypes.c_uint(0xCC000000)
-accent.AccentFlags = 0
 accentStructSize = ctypes.sizeof(accent)
 
 data = WINDOWCOMPOSITIONATTRIBDATA()
@@ -78,22 +75,7 @@ data.SizeOfData = accentStructSize
 data.Data = ctypes.cast(ctypes.pointer(accent), ctypes.POINTER(ctypes.c_int))
 
 
-
-def blur(HWND):
-    return user32.SetWindowCompositionAttribute(ctypes.cast(HWND, ctypes.POINTER(ctypes.c_int)), ctypes.byref(data))
-    # print(ctypes.GetLastError())
-subprocess.Popen(r"VCXSRV\GWSL_vcxsrv.exe -fullscreen")
-def windowEnumerationHandler(hwnd, top_windows):
-    top_windows.append((hwnd, win32gui.GetWindowText(hwnd)))
-"""
-time.sleep(0.5)
-results = []
-top_windows = []
-win32gui.EnumWindows(windowEnumerationHandler, top_windows)
-for i in top_windows:
-    if "vcxsrv" in i[1].lower():
-        print(i[0])
-        blur(i[0])
-        break"""
-                
-
+def blur(hwnd):
+    return user32.SetWindowCompositionAttribute(
+        ctypes.cast(hwnd, ctypes.POINTER(ctypes.c_int)), ctypes.byref(data)
+    )
