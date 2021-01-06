@@ -64,16 +64,12 @@ try:
 except ImportError:
     TKINTER_IMPORT_SUCCEEDED = False
 
-
 PROPORTIONAL_FONT_FAMILY = ("MS", "Sans", "Serif")
 MONOSPACE_FONT_FAMILY = "Courier"
 
 PROPORTIONAL_FONT_SIZE = 10
-MONOSPACE_FONT_SIZE = (
-    9
-)  # a little smaller, because it it more legible at a smaller size
+MONOSPACE_FONT_SIZE = (9)  # a little smaller, because it it more legible at a smaller size
 TEXT_ENTRY_FONT_SIZE = 12  # a little larger makes it easier to see
-
 
 STANDARD_SELECTION_EVENTS = ["Return", "Button-1", "space"]
 
@@ -123,7 +119,7 @@ alert = _alertTkinter
 
 
 def _confirmTkinter(
-    text="", title="", buttons=(OK_TEXT, CANCEL_TEXT), root=None, timeout=None
+        text="", title="", buttons=(OK_TEXT, CANCEL_TEXT), root=None, timeout=None
 ):
     """Displays a message box with OK and Cancel buttons. Number and text of buttons can be customized. Returns the text of the button clicked on."""
     assert TKINTER_IMPORT_SUCCEEDED, "Tkinter is required for pymsgbox"
@@ -160,7 +156,6 @@ def _passwordTkinter(text="", title="", default="", mask="*", root=None, timeout
 
 
 password = _passwordTkinter
-
 
 # Load the native versions of the alert/confirm/prompt/password functions, if available:
 if sys.platform == "win32":
@@ -205,19 +200,20 @@ def _buttonbox(msg, title, choices, root=None, timeout=None):
     else:
         boxRoot = tk.Tk()
         boxRoot.withdraw()
+
     def quitter():
         boxRoot.quit()
         boxRoot.destroy()
         return None
+
     boxRoot.title(title)
     boxRoot.iconname("Dialog")
-    #icon = tk.PhotoImage(height=16, width=16)
-    #icon.blank()
-    
+    # icon = tk.PhotoImage(height=16, width=16)
+    # icon.blank()
 
     boxRoot.attributes("-topmost", True)
-    #boxRoot.wm_iconphoto('True', icon)
-    #boxRoot.img = icon
+    # boxRoot.wm_iconphoto('True', icon)
+    # boxRoot.img = icon
     boxRoot.geometry(rootWindowPosition)
     boxRoot.minsize(400, 100)
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
@@ -232,7 +228,7 @@ def _buttonbox(msg, title, choices, root=None, timeout=None):
 
     # -------------------- place the widgets in the frames -----------------------
     messageWidget = tk.Message(messageFrame, text=msg, width=400)
-    #messageWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, PROPORTIONAL_FONT_SIZE))
+    # messageWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, PROPORTIONAL_FONT_SIZE))
     messageWidget.pack(side=tk.TOP, expand=tk.YES, fill=tk.X, padx="3m", pady="3m")
 
     __put_buttons_in_buttonframe(choices)
@@ -334,9 +330,9 @@ def __fillablebox(msg, title="", default="", mask=None, root=None, timeout=None)
     global boxRoot, __enterboxText, __enterboxDefaultText
     global cancelButton, entryWidget, okButton
 
-    if title == None:
+    if title is None:
         title == ""
-    if default == None:
+    if default is None:
         default = ""
     __enterboxDefaultText = default
     __enterboxText = __enterboxDefaultText
@@ -353,7 +349,7 @@ def __fillablebox(msg, title="", default="", mask=None, root=None, timeout=None)
         boxRoot.quit()
         boxRoot.destroy()
         return None
-    
+
     boxRoot.title(title)
     boxRoot.iconname("Dialog")
     boxRoot.geometry(rootWindowPosition)
@@ -361,7 +357,6 @@ def __fillablebox(msg, title="", default="", mask=None, root=None, timeout=None)
     boxRoot.attributes("-topmost", True)
 
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
-    
 
     # ------------- define the messageFrame ---------------------------------
     messageFrame = tk.Frame(master=boxRoot)
@@ -381,16 +376,16 @@ def __fillablebox(msg, title="", default="", mask=None, root=None, timeout=None)
 
     # -------------------- the msg widget ----------------------------
     messageWidget = tk.Message(messageFrame, width="4.5i", text=msg)
-    #messageWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, PROPORTIONAL_FONT_SIZE))
+    # messageWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, PROPORTIONAL_FONT_SIZE))
     messageWidget.pack(side=tk.RIGHT, expand=1, fill=tk.BOTH, padx="3m", pady="3m")
 
     # --------- entryWidget ----------------------------------------------
     entryWidget = ttk.Entry(entryFrame, width=40)
     _bindArrows(entryWidget, skipArrowKeys=True)
-    #entryWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, TEXT_ENTRY_FONT_SIZE))
+    # entryWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, TEXT_ENTRY_FONT_SIZE))
     if mask:
         entryWidget.configure(show=mask)
-    entryWidget.pack(padx="3m")#side=tk.LEFT
+    entryWidget.pack(padx="3m")  # side=tk.LEFT
     entryWidget.bind("<Return>", __enterboxGetText)
     entryWidget.bind("<Escape>", __enterboxCancel)
 
