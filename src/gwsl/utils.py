@@ -3,10 +3,11 @@
 import ctypes
 import platform
 from enum import Enum
-from functools import wraps
+from functools import wraps, lru_cache
 from pathlib import Path
 from statistics import mean
 from typing import Union, Tuple, Any
+from win32api import GetMonitorInfo, MonitorFromPoint
 from winreg import (
     ConnectRegistry,
     HKEY_CURRENT_USER,
@@ -90,6 +91,20 @@ def ask_reboot(machine: Union[str, WSLDistro]) -> bool:
     return yesno(text=f"Restart {machine} To Apply Changes?", title="Restart Machine?")
 
 
+def wsl_not_installed_msgbox() -> None:
+    """Display an information dialog box if WSL is not installed."""
+    choice = pymsgbox.confirm(
+        text="WSL is not configured. Please install it and get some distros.",
+        title="Cannot Find WSL!",
+        buttons=["Ok", "Online Help"],
+    )
+    if choice == "Online Help":
+        paths.open_url(
+            "https://docs.microsoft.com/en-us/learn/modules/"
+            "get-started-with-windows-subsystem-for-linux/2-enable-and-install"
+        )
+
+
 def exception_dialog(exc: Exception) -> None:
     """
     Display a message box with the exception info.
@@ -161,6 +176,32 @@ def set_app_dpi(app: Path, mode: DPIAwarness):
         str(app),
         mode.value,
     )
+
+
+# endregion
+
+
+# region Taskbar settings
+class TaskbarPostion(int, Enum):
+
+    """Taskbar position."""
+
+    LEFT = 0
+    TOP = 1
+    RIGHT = 2
+    BOTTOM = 3
+
+
+def taskbar_info() -> Tuple[TaskbarPostion, int]:
+    """Return the position and the size of the taskbar."""
+    monitor_info = GetMonitorInfo(MonitorFromPoint((0, 0)))
+    monitor_area = monitor_info.get("Monitor")
+    work_area = monitor_info.get("Work")
+
+    for pos in list(TaskbarPostion):
+        size = monitor_area[pos.value] - work_area[pos.value]
+        if size != 0:
+            return pos, size
 
 
 # endregion
@@ -282,6 +323,16 @@ class IconManager:
 def load_image_alpha(filename: Path) -> pygame.surface.Surface:
     """Return the alpha enable image from the given path."""
     return pygame.image.load(str(filename)).convert_alpha()
+
+
+# endregion
+
+
+# region Font management
+@lru_cache
+def get_font(path: Path, inches: float) -> pygame.font.Font:
+    """Return the font with the specified path and size, using cache."""
+    return pygame.font.Font(str(path), in2pix(inches))
 
 
 # endregion

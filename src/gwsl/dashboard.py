@@ -5,8 +5,7 @@ import ctypes
 import itertools
 import os
 import threading
-from enum import Enum
-from functools import lru_cache, partial
+from functools import partial
 from pathlib import Path
 from typing import Tuple, Optional, Callable, List, Type, Any
 
@@ -14,15 +13,20 @@ import pygame
 import win32con
 import win32gui
 from win10toast import ToastNotifier
-from win32api import GetMonitorInfo, MonitorFromPoint
 from wsl_tools import WSLManager, WSLDistro, WSLApp
 
 import gwsl
 import pymsgbox
 from gwsl import shortcut_creator, ssh_runner, paths, blur, utils, shortcut_runner
 from gwsl.settings import Settings
-from gwsl.utils import in2pix, Coords
-
+from gwsl.utils import (
+    in2pix,
+    Coords,
+    get_font,
+    TaskbarPostion,
+    taskbar_info,
+    wsl_not_installed_msgbox,
+)
 
 # region typing
 Box = Tuple[int, int, int, int]
@@ -38,38 +42,12 @@ def run(about: bool = False) -> None:
         about: if True, directly show the about page
     """
     settings = Settings.load_or_create(paths.settings)
-    manager = get_wsl_manager(settings.distro_blacklist)
-    if not manager:
+    manager = WSLManager(settings.distro_blacklist)
+    if not manager.installed:
+        wsl_not_installed_msgbox()
         return
     dash = Dashboard(manager, settings, about)
     dash.mainloop()
-
-
-@lru_cache
-def get_font(path: Path, inches: float) -> pygame.font.Font:
-    """Return the font with the specified path and size, using cache."""
-    return pygame.font.Font(str(path), in2pix(inches))
-
-
-class TaskbarPostion(int, Enum):
-    """Taskbar position."""
-
-    LEFT = 0
-    TOP = 1
-    RIGHT = 2
-    BOTTOM = 3
-
-
-def taskbar_info() -> Tuple[TaskbarPostion, int]:
-    """Return the position and the size of the taskbar."""
-    monitor_info = GetMonitorInfo(MonitorFromPoint((0, 0)))
-    monitor_area = monitor_info.get("Monitor")
-    work_area = monitor_info.get("Work")
-
-    for pos in list(TaskbarPostion):
-        size = monitor_area[pos.value] - work_area[pos.value]
-        if size != 0:
-            return pos, size
 
 
 class Dashboard:
@@ -86,7 +64,7 @@ class Dashboard:
     ) -> None:
         self.running = True
         self.loading = True
-        self.current_page = None
+        self.current_page: Optional[DashboardPage] = None
         self.settings = settings
         self.manager = manager
         self.selected_machine = None
@@ -113,10 +91,8 @@ class Dashboard:
         """
         while self.running:
             for event in pygame.event.get():
-                if self._quit_chekcer(event):
-                    pygame.event.clear()
-                    pygame.display.quit()
-                    self.running = False
+                if self._quit_checker(event):
+                    self.close()
                     return
                 if (
                     event.type == pygame.MOUSEBUTTONUP
@@ -131,8 +107,15 @@ class Dashboard:
             self.clock.tick(60)
         print("Not running anymore")
 
+    def close(self):
+        """Close the window."""
+        # TODO: pull down animation
+        pygame.event.clear()
+        pygame.display.quit()
+        self.running = False
+
     @staticmethod
-    def _quit_chekcer(event: pygame.event.Event) -> bool:
+    def _quit_checker(event: pygame.event.Event) -> bool:
         """Check if a quit event is triggered."""
         etype = event.type
         return (
@@ -239,6 +222,7 @@ class Dashboard:
         """Open the selected machine in a shell."""
         self.selected_machine = machine
         machine.open_in_shell(self.settings.general.shell_gui == "wt")
+        self.close()
 
     def setter(self) -> None:
         """Choose the distro to configure."""
@@ -259,6 +243,7 @@ class Dashboard:
         self.change_page(AppLauncherPage, machine=machine)
 
 
+# region Widgets
 # class Text:
 #     def __init__(
 #         self,
@@ -282,20 +267,6 @@ class Dashboard:
 #
 #     def draw(self, screen):
 #         screen.blit(self.txt_surf, self.position)
-
-
-class LoadingPage(pygame.sprite.LayeredDirty):
-    """
-    Loading page with a spinner at the center of the page.
-
-    Called by Dashboard.change_page.
-    """
-
-    def __init__(self, parent: Dashboard):
-        super().__init__()
-        self.parent = parent
-        spinner = Spinner(self.parent.window_center, self.parent.fg_color)
-        self.add(spinner)
 
 
 class Spinner(pygame.sprite.DirtySprite):
@@ -443,6 +414,10 @@ class IconButton(pygame.sprite.DirtySprite):
             return self.func(*args)
 
 
+# endregion
+
+
+# region Pages
 class DashboardPage(pygame.sprite.LayeredDirty):
     """
     Base dashboard page.
@@ -486,6 +461,19 @@ class DashboardPage(pygame.sprite.LayeredDirty):
         for b in self.sprites():
             if b.rect.collidepoint(pos):
                 b.callback()
+
+
+class LoadingPage(DashboardPage):
+    """
+    Loading page with a spinner at the center of the page.
+
+    Called by Dashboard.change_page.
+    """
+
+    def _init_buttons_def(self) -> None:
+        """Don't care about buttons, just add a Spinner."""
+        self.empty()
+        self.add(Spinner(self.parent.window_center, self.parent.fg_color))
 
 
 class MainPage(DashboardPage):
@@ -681,10 +669,12 @@ class AppLauncherPage(DashboardPage):
     def launch_app(self, app: WSLApp):
         """Launch the selected application."""
         shortcut = shortcut_runner.ShortcutSettings(str(self.machine), app.cmd)
+        self.parent.close()
         shortcut_runner.run(shortcut)
 
     def create_shortcut(self, app: WSLApp):
         """Open the shortcut creator for the selected application."""
+        self.parent.close()
         shortcut_creator.run(
             cmd=app.cmd, name=app.name, machine=self.machine.name, icon=app.ico
         )
@@ -706,25 +696,7 @@ class ThemeChooserPage(DashboardPage):
         self.machine.theme = theme
 
 
-def get_wsl_manager(blacklist) -> Optional[WSLManager]:
-    """
-    Init a WSLManager instance.
-
-    Display an information dialog box if WSL is not installed.
-    """
-    wsl_manager = WSLManager(blacklist)
-    if wsl_manager.installed:
-        return wsl_manager
-    choice = pymsgbox.confirm(
-        text="WSL is not configured. Please install it and get some distros.",
-        title="Cannot Find WSL!",
-        buttons=["Ok", "Online Help"],
-    )
-    if choice == "Online Help":
-        paths.open_url(
-            "https://docs.microsoft.com/en-us/learn/modules/"
-            "get-started-with-windows-subsystem-for-linux/2-enable-and-install"
-        )
+# endregion
 
 
 if __name__ == "__main__":
