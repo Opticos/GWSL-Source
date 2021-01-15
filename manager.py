@@ -76,6 +76,17 @@ except:
 
 import logging
 
+class DuplicateFilter(logging.Filter):
+
+    def filter(self, record):
+        # add other fields if you need more granular comparison, depends on your app
+        current_log = (record.module, record.levelno, record.msg)
+        if current_log != getattr(self, "last_log", None):
+            self.last_log = current_log
+            return True
+        return False
+    
+
 logger = logging.Logger("GWSL " + version, level=0)
 # logger = logging.getLogger("GWSL " + version)
 # Create handlers
@@ -88,6 +99,7 @@ f_handler.setFormatter(f_format)
 
 # Add handlers to the logger
 logger.addHandler(f_handler)
+logger.addFilter(DuplicateFilter())
 
 try:
     iset.path = app_path + "settings.json"
@@ -129,7 +141,7 @@ try:
         # print("Moving Licenses")
         print(subprocess.getoutput('copy "' + bundle_dir + "\\assets\\" + lc_name + '" "' + app_path + '"'))
 except Exception as e:
-    logger.exception("Exception occurred")
+    logger.exception("Exception occurred - Config generation")
     sys.exit()
 
 tools.script = app_path + "\\GWSL_helper.sh"
@@ -140,7 +152,7 @@ try:
     if int(platform.release()) >= 8:
         ctypes.windll.shcore.SetProcessDpiAwareness(True)
 except Exception as e:
-    logger.exception("Exception occurred")
+    logger.exception("Exception occurred - Cannot set dpi aware")
 
 import tkinter as tk
 
@@ -174,6 +186,7 @@ def get_system_light():
     except:
         white = [255, 255, 255]
         light = False
+    
 
 
 # import gettext
@@ -211,7 +224,7 @@ if "--r" not in args:
                     win32gui.SetForegroundWindow(i[0])
                     break
         except Exception as e:
-            logger.exception("Exception occurred")
+            logger.exception("Exception occurred - cannot raise window")
 
         sys.exit()
     except PermissionError:
@@ -230,7 +243,7 @@ if "--r" not in args:
                     win32gui.SetForegroundWindow(i[0])
                     break
         except Exception as e:
-            logger.exception("Exception occurred")
+            logger.exception("Exception occurred - cannot raise window")
             pass
 
         sys.exit()
@@ -387,9 +400,17 @@ if "--r" not in args:
                                win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
 
         # win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
-        import blur
+        
+        sett = iset.read()
+        try:
+            acrylic = sett["general"]["acrylic_enabled"]
+        except Exception as e:
+            logger.exception("Exception occurred - Please reset settings")
+            acrylic = True
 
-        blur.blur(HWND)
+        if acrylic == True:
+            import blur
+            blur.blur(HWND)
 
         
         
@@ -399,7 +420,7 @@ if "--r" not in args:
 
 
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - Cannot Init Display")
 
 
 def get_version(machine):
@@ -1850,7 +1871,7 @@ def create_shortcut(command, name, icon):
         print(subprocess.getoutput('copy "' + shortcut_path + '" "' + winshell.start_menu() + '"'))
 
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - Cannot Create Shortcut")
 
 
 def start_server(port, mode, clipboard):
@@ -2040,7 +2061,7 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 else:
                     threaded()
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - cannot spawn process")
 
 
 def get_login(machine):
@@ -2499,7 +2520,7 @@ def putty():
         iset.set(sett)
 
         if ip.get() != "":
-            command = f'--r --ssh --ip="{ip.get()}" --command="open_putty"'
+            command = f'--r --ssh --ip="{ip.get()} --command="open_putty"'
 
             print(command)
             create_shortcut(command, "Graphical SSH on " + ip.get(), asset_dir + "computer.ico")
@@ -2702,7 +2723,8 @@ def draw(canvas, mouse=False):
             animator.animate("loading", [100, 0])
 
     # print(canvas.get_at([0, 0]))
-
+    
+    
     launch = animator.get("start2")[0] / 100.0
 
     if animator.get("start2")[0] > 99 and service_loaded == False:
@@ -3248,7 +3270,7 @@ if "--r" not in args: #start normally
                 draw(canvas)
                 pygame.display.update()
             except Exception as e:
-                logger.exception("Exception occurred")
+                logger.exception("Exception occurred - Error in Mainloop")
 
     else:
         choice = pymsgbox.confirm(text="WSL is not configured. Please install it and get some distros.",
@@ -3338,9 +3360,9 @@ elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
         if get_running("GWSL_service") != True:
             try:
                 subprocess.Popen('GWSL_service.exe')
-                time.sleep(0.2)
+                time.sleep(0.5)
             except Exception as e:
-                logger.exception("Exception occurred")
+                logger.exception("Exception occurred - Cannot Start Service")
                 print("Can't run service...")
 
         print("keep", keeper)
@@ -3401,7 +3423,7 @@ elif args[1] == "--r" and "--ssh" in args:
             try:
                 subprocess.Popen('GWSL_service.exe')
             except Exception as e:
-                logger.exception("Exception occurred")
+                logger.exception("Exception occurred - Cannot start service")
                 print("Can't run service...")
 
         timer = time.perf_counter()
@@ -3442,7 +3464,7 @@ elif args[1] == "--r" and "--ssh" in args:
 
 
     except Exception as e:
-        logger.exception("Exception occurred")
+        logger.exception("Exception occurred - SSH mode failure")
     except KeyboardInterrupt:
         try:
             prog.kill()

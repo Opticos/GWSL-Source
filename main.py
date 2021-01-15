@@ -189,7 +189,7 @@ def open_help(s):
 
 def add_profile(systray):
     try:
-        new_profile = profile.add()
+        new_profile = profile.add(bundle_dir)
         if new_profile != None:
             name = new_profile["name"]
             arguments = new_profile["args"].split(" ")
@@ -217,6 +217,36 @@ def dpi_set(systray, mode):
     if ask_dpi() == True:
         restart_server()
     
+def reset_config(systray):
+    global exiter
+    if ask_reset():
+        try:
+            systray.shutdown()
+            iset.create(sett_path + "\\settings.json")
+            print("creating settings")
+            print("Stopping Logger...")
+            f_handler.close()
+            logging.shutdown()
+            print("Cleaning Logs...")
+            try:
+                os.remove(sett_path + '\\dashboard.log')
+            except:
+                pass
+            try:
+                os.remove(sett_path + '\\service.log')
+            except:
+                pass
+            try:
+                os.remove(sett_path + '\\settings.json')
+            except:
+                pass
+            exiter = True
+            kill_server()
+            sys.exit()
+        except:
+            pass
+    else:
+        pass
 
 
 
@@ -234,9 +264,10 @@ def build_menu():
 
         dpi_options = [("DPI Scaling Mode", icon("dpi"), [("Linux (GTK and QT)", icon("dpi_lin"), dpi_set, 0),
                                                           ("Windows (Faster but Blurrier)", icon("dpi_win"), dpi_set, 1),
-                                                          ("Windows GDI Enhanced (Multi-Monitor Aware)", icon("dpi_enhanced"), dpi_set, 2)])]
+                                                          ("Windows GDI Enhanced", icon("dpi_enhanced"), dpi_set, 2)])]
         
         options = [("Configure GWSL", icon("config"), config),
+                   ("Log and Configuration Cleanup", icon("refresh"), reset_config),
                    ("View Logs", icon("logs"), open_logs),
                    ("Dashboard", icon("dashboard"), open_dashboard),
                    ("About", icon("info"), open_about),
@@ -250,13 +281,13 @@ def build_menu():
         profiles = []
         
         for profile in custom_profiles:
-            text = "Custom - " + str(profile) + " (alpha)"
+            text = "Custom - " + str(profile) + ""
             prof = (text, icon("custom"), set_custom_profile, profile)
             profiles.append(prof)
         
         mode_name = mode_names[display_mode]
         menu.append((f"XServer Profiles ({mode_name})", current_icon,
-                     defaults + profiles + [("Add A Profile (alpha)", icon("add"), add_profile)]))
+                     defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
             
         menu.append(("Rescan Profiles", icon("refresh"), rescan))
         
@@ -301,7 +332,7 @@ def ask_clip(phrase):
         return False
 
 def ask_dpi():
-    choice = pymsgbox.confirm(text="To apply changes, the GWSL XServer needs to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
+    choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
                               title=f"Restart XServer to Apply Changes?",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -309,6 +340,15 @@ def ask_dpi():
     else:
         return False
 
+def ask_reset():
+    choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL.",
+                              title=f"Clear GWSL Data?",
+                              buttons=["Yes", "No"])
+    if choice == "Yes":
+        return True
+    else:
+        return False
+    
 def ask_restart():
     answer = pymsgbox.confirm(
         text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
@@ -407,6 +447,9 @@ def main():
 
         except Exception as e:
             logger.exception("Exception occurred in main loop")
+            kill_server()
+            systray.shutdown()
+            sys.exit()
 
         time.sleep(2)
 

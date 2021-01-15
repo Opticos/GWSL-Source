@@ -3,6 +3,7 @@ from .win32_adapter import *
 import threading
 import uuid
 
+
 class SysTrayIcon(object):
     """
     menu_options: tuple of tuples (menu text, menu icon path or None, function name)

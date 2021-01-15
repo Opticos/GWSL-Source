@@ -36,6 +36,8 @@ DispatchMessage = ctypes.windll.user32.DispatchMessageA
 Shell_NotifyIcon = ctypes.windll.shell32.Shell_NotifyIcon
 DestroyIcon = ctypes.windll.user32.DestroyIcon
 
+
+
 NIM_ADD = 0
 NIM_MODIFY = 1
 NIM_DELETE = 2

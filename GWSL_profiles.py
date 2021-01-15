@@ -9,10 +9,10 @@ from PIL import Image
 import PIL
 import PIL.ImageTk
 
-asset_dir = "Assets/"
 
 
-def add():
+
+def add(asset_dir):
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)  # , fg="red", bg="black")
@@ -52,7 +52,7 @@ def add():
     # First frame
 
     frame_1 = ttk.Frame(boxRoot, padding="0.15i")
-    imager = Image.open(asset_dir + "icon.png")
+    imager = Image.open(asset_dir + "\\assets\\icon.png")
     img = PIL.ImageTk.PhotoImage(imager.resize([48, 48]))
     labelm = tk.Label(frame_1, image=img)
     labelm.image = img
