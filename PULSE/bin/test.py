@@ -1,7 +1,8 @@
 import subprocess, time
 
-subprocess.Popen("pulseaudio.exe", shell=True)
+subprocess.Popen("pulseaudio.exe")
 
-time.sleep(5)
-
-print(subprocess.getoutput("taskkill /IM pulseaudio.exe /F"))
+while True:
+    if input(":") == "kill":
+        print("stopping")
+        print(subprocess.getoutput("taskkill /IM pulseaudio.exe /F"))

@@ -39,6 +39,12 @@ load-module module-augment-properties
 ### Load audio drivers statically
 ### (it's probably better to not load these drivers manually, but instead
 ### use module-udev-detect -- see below -- for doing this automatically)
+
+load-module module-native-protocol-tcp port=4713 auth-ip-acl=172.16.0.0/12
+load-module module-esound-protocol-tcp port=4714 auth-ip-acl=172.16.0.0/12
+load-module module-waveout
+
+
 load-module module-waveout sink_name=output source_name=input record=0
 #load-module module-null-sink
 

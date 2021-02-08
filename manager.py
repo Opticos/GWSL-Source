@@ -1892,11 +1892,14 @@ def start_server(port, mode, clipboard):
 
 
 def get_light():
-    registry = ConnectRegistry(None, HKEY_CURRENT_USER)
-    key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
-    key_value = QueryValueEx(key, 'AppsUseLightTheme')
-    k = int(key_value[0])
-    return k
+    try:
+        registry = ConnectRegistry(None, HKEY_CURRENT_USER)
+        key = OpenKey(registry, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize')
+        key_value = QueryValueEx(key, 'AppsUseLightTheme')
+        k = int(key_value[0])
+        return k
+    except:
+        return 0
 
 
 def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=False, theme="Follow Windows",
