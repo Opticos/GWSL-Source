@@ -1,0 +1,7 @@
+pygame
+pywin32
+winshell
+Pillow
+imtools
+keyboard
+pyinstaller==3.5
