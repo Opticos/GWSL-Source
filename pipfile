@@ -1,7 +1,17 @@
-pygame
-pywin32
-winshell
-Pillow
-imtools
-keyboard
-pyinstaller==3.5
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pygame = '>=2'
+winshell = '>=0.6'
+Pillow = '>=8.1.0'
+imtools = '>=2.0.1'
+keyboard = '>=0.13.5'
+pyinstaller = '3.5'
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
