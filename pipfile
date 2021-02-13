@@ -10,6 +10,7 @@ Pillow = '>=8.1.0'
 imtools = '>=2.0.1'
 keyboard = '>=0.13.5'
 pyinstaller = '3.5'
+pywin32 = "*"
 
 [dev-packages]
 
