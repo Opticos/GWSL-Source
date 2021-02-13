@@ -1,5 +1,6 @@
 # Get Settings
-import json, copy
+import json
+import copy
 
 path = None
 

@@ -57,7 +57,6 @@ def set_reg(name, value):
         return True
     except Exception as e:
         logger.exception("Exception occurred - Cannot Change DPI (set_reg)")
-    
 
 
 def rescan(systray=False):
@@ -249,7 +248,6 @@ def reset_config(systray):
         pass
 
 
-
 def build_menu():
     try:
         menu = []
@@ -273,11 +271,9 @@ def build_menu():
                    ("About", icon("info"), open_about),
                    ("Help", icon("help"), open_help),
                    ("Exit", icon("quit"), shutdown)]
-        
 
         current_icon = icon(modes[display_mode])
 
-        
         profiles = []
         
         for profile in custom_profiles:
@@ -302,7 +298,6 @@ def build_menu():
                 command = True
                 phrase = "Off"
             menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
-        
 
         menu += dpi_options
         menu += options
@@ -460,7 +455,7 @@ def main():
 
 if __name__ == "__main__":
     # main_thread
-    ## Create Appdata directory if manager has not done so
+    # Create Appdata directory if manager has not done so
     try:
         sett_path = os.getenv('APPDATA') + "\\GWSL"
         if not os.path.isdir(sett_path):

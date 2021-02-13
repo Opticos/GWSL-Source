@@ -14,6 +14,7 @@ modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARsE"]
 
 REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
+
 def set_reg(name, value):
     try:
         CreateKey(HKEY_CURRENT_USER, REG_PATH)
@@ -35,5 +36,6 @@ def get_reg(name):
         return True
     except WindowsError:
         return False
+
 
 get_reg(r"C:\Users\PEF\Music\Outlook Express\Movie Maker\moviemk.exe")

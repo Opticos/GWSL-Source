@@ -67,8 +67,6 @@ class cmd:
             queue.daemon = True
             queue.start()
 
-
-
         else:
             p = Popen(command, bufsize=1, universal_newlines=True)
 

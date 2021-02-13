@@ -8,11 +8,8 @@ import tempfile
 #import unittest
 
 
-
-
 if sys.platform != "win32":
     import fcntl
-
 
 
 class SingleInstanceException(BaseException):

@@ -10,8 +10,6 @@ import PIL
 import PIL.ImageTk
 
 
-
-
 def add(asset_dir):
     if root:
         root.withdraw()

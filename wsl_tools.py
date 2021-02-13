@@ -1,4 +1,6 @@
-import os, subprocess
+import os
+import subprocess
+import time
 
 script = None
 
@@ -35,9 +37,6 @@ def get_themes(machine):
         themes.append(theme)
 
     return themes
-
-
-import time
 
 
 def get_apps(machine):
@@ -89,10 +88,6 @@ def get_apps(machine):
 
             apps.update({name: {"cmd": run, "ico": icon}})
     return apps
-
-
-
-
 
 
 def gtk(machine, scale):

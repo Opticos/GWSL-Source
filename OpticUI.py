@@ -1,5 +1,5 @@
 # OpticUI 1.0
-# Copyright Paul-E andOpticos Studios 2020
+# Copyright Paul-E and Opticos Studios 2020
 
 
 import PIL, os
