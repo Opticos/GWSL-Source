@@ -85,7 +85,7 @@ class DuplicateFilter(logging.Filter):
             self.last_log = current_log
             return True
         return False
-    
+
 
 logger = logging.Logger("GWSL " + version, level=0)
 # logger = logging.getLogger("GWSL " + version)
@@ -186,7 +186,6 @@ def get_system_light():
     except:
         white = [255, 255, 255]
         light = False
-    
 
 
 # import gettext
@@ -355,8 +354,6 @@ if "--r" not in args:
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
 
-        
-                    
         ui.set_size([WIDTH, HEIGHT])
         pygame.display.set_caption("GWSL Dashboard")
         ui.start_graphics(pygame, asset_dir)
@@ -411,13 +408,6 @@ if "--r" not in args:
         if acrylic == True:
             import blur
             blur.blur(HWND)
-
-        
-        
-
-
-
-
 
     except Exception as e:
         logger.exception("Exception occurred - Cannot Init Display")
@@ -829,8 +819,6 @@ def about():
                             elif i == "Edit Configuration":
                                 os.chdir(app_path)
                                 os.popen("settings.json")
-                                
-                            
 
                 h += ui.inch2pix(0.29) + txt.get_height()  # used to be 0.3
                 d += ui.inch2pix(0.1)
@@ -1483,7 +1471,6 @@ def app_launcher(machine):
                                 animator.animate("start2", [0, 0])
                                 end = True
 
-
                         elif mouse[0] > w + ui.inch2pix(0.4) + txt_width and mouse[0] < WIDTH:
                             shortcut(name=a[0].upper() + a[1:], cmd=i["cmd"], mach=machine, icn=i["icn"])
 
@@ -1979,10 +1966,9 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 ip = get_ip(machine)
                 runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append)
 
-
-
         else:
-            # In this case, we need to start a new server, run in a new thread that self closes VCXSRV after command if in multi window mode
+            # In this case, we need to start a new server, run in a new thread that self closes
+            # VCXSRV after command if in multi window mode
             port = str(random.randrange(1000, 9999))
 
             if w_mode == "Multi Window":
@@ -2229,7 +2215,8 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
         command = link_command.get()
         if link_label.get() != "" and command != "":
-            # --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="Default" --clip_enabled="Default" --gtk_scale=1 --qt_scale=1 --append=""
+            # --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="Default"
+            # --clip_enabled="Default" --gtk_scale=1 --qt_scale=1 --append=""
             if append_chooser.get() == "None":
                 append = ""
             else:
@@ -2681,8 +2668,6 @@ def draw(canvas, mouse=False):
     if time.perf_counter() - heartbeat > 1:
         heartbeat = time.perf_counter()
         animator.animate("donate", random.choice(colores))
-
-
         
     # print(accent)
     launch = animator.get("start")[0] / 100.0
@@ -2704,8 +2689,6 @@ def draw(canvas, mouse=False):
         lumen_opac = 0
         win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
 
-
-
     else:
         if about_open == True:
             about_open = False
@@ -2726,8 +2709,6 @@ def draw(canvas, mouse=False):
             animator.animate("loading", [100, 0])
 
     # print(canvas.get_at([0, 0]))
-    
-    
     launch = animator.get("start2")[0] / 100.0
 
     if animator.get("start2")[0] > 99 and service_loaded == False:
@@ -2739,9 +2720,7 @@ def draw(canvas, mouse=False):
 
     # pygame.draw.circle(canvas, [255, 0, 0, 255], [100, 100], 50)
 
-    #Draw light/dark accent for readability
-
-    
+    # Draw light/dark accent for readability
     if light == False:
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
 
@@ -2907,7 +2886,7 @@ def draw(canvas, mouse=False):
                 last = q
 
         # square(canvas, [ui.inch2pix(0.1), pos[1]], [WIDTH - ui.inch2pix(0.1) * 2,
-        #                                                             ui.inch2pix(0.3) + ui.inch2pix(0.4)], width=2, filled = True, color=accent + [int(launch * 100)])
+        #       ui.inch2pix(0.3) + ui.inch2pix(0.4)], width=2, filled = True, color=accent + [int(launch * 100)])
 
         s3 = animator.get("select")[0] / 100
         # selected
@@ -3109,7 +3088,6 @@ def draw(canvas, mouse=False):
     canvas.blit(txt2, [ui.inch2pix(0.35) - txt2.get_width() / 2,
                        HEIGHT - ui.inch2pix(0.38) - txt2.get_height() / 2 - int((v2 - 1) * ui.inch2pix(0.4))])
 
-    #
     # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, int(((animator.get("darken")[0] / 100)) * 200)])
     py_root.fill([0, 0, 0, 255])
     py_root.blit(canvas, [0, 0], special_flags=(pygame.BLEND_RGBA_ADD))
@@ -3304,7 +3282,8 @@ elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
         rooter = "False"
         dbuser = "False"
         keeper = "False"
-        # python manager.py --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="multi" --clip_enabled="true" --gtk_scale=1 --qt_scale=1 --append="--zoom=1"
+        # python manager.py --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="multi"
+        # --clip_enabled="true" --gtk_scale=1 --qt_scale=1 --append="--zoom=1"
         for arg in args[2:]:
             if "--wsl_machine" in arg:
                 machine = arg[14:]
@@ -3403,7 +3382,8 @@ elif args[1] == "--r" and "--ssh" in args:
         command = None
         password = None
         rooter = "false"
-        # python manager.py --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="multi" --clip_enabled="true" --gtk_scale=1 --qt_scale=1 --append="--zoom=1"
+        # python manager.py --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="multi"
+        # --clip_enabled="true" --gtk_scale=1 --qt_scale=1 --append="--zoom=1"
         for arg in args[3:]:
             if "--ip" in arg:
                 ip = arg[5:]
@@ -3459,12 +3439,6 @@ elif args[1] == "--r" and "--ssh" in args:
         else:
             prog = cmd(command=["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip}", "-pw", f"{password}", "-X"],
                        console=True)
-
-
-
-
-
-
 
     except Exception as e:
         logger.exception("Exception occurred - SSH mode failure")
