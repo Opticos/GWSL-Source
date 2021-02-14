@@ -17,13 +17,6 @@
 #    |> #
 #   _#  #
 
-
-BUILD_MODE = "WIN32"  # MSIX or WIN32
-
-version = "1.3.7"
-
-lc_name = "Licenses137.txt"
-
 import time
 
 import os, sys, win32, subprocess, sys, threading, iset, re, pymsgbox, random
@@ -32,6 +25,52 @@ from win32com.client import Dispatch
 import winreg
 from winreg import *
 from exe_layer import cmd
+
+import logging
+import wsl_tools as tools
+
+import tkinter as tk
+
+from tkinter import *
+from tkinter import ttk
+
+from win10toast import ToastNotifier
+import ctypes, platform
+
+from PIL import Image, ImageTk
+import PIL, win32gui
+import PIL.ImageTk
+
+import win32con, win32api
+
+import singleton
+
+import pygame, webbrowser
+# print("whoops")
+
+import animator as anima
+
+from pygame.locals import *
+
+import pygame.gfxdraw
+from ctypes import wintypes, windll
+from win32api import GetMonitorInfo, MonitorFromPoint
+from pathlib import Path
+
+# DISPLAY ones
+import OpticUI as ui
+
+# import gettext
+
+import blur
+
+from shutil import which
+
+BUILD_MODE = "WIN32"  # MSIX or WIN32
+
+version = "1.3.7"
+
+lc_name = "Licenses137.txt"
 
 debug = False
 
@@ -76,7 +115,6 @@ try:
 except:
     pass
 
-import logging
 
 class DuplicateFilter(logging.Filter):
 
@@ -103,6 +141,7 @@ f_handler.setFormatter(f_format)
 logger.addHandler(f_handler)
 logger.addFilter(DuplicateFilter())
 
+
 try:
     iset.path = app_path + "settings.json"
 
@@ -123,8 +162,6 @@ try:
                 iset.create(app_path + "\\settings.json")
 
     # Get the script ready
-    import wsl_tools as tools
-
     if os.path.exists(app_path + "GWSL_helper.sh") == False:
         # print("Moving helper script")
         print(subprocess.getoutput('copy "' + bundle_dir + "\\assets\GWSL_helper.sh" + '" "' + app_path + '"'))
@@ -149,25 +186,13 @@ except Exception as e:
 tools.script = app_path + "\\GWSL_helper.sh"
 
 try:
-    import ctypes, platform
-
     if int(platform.release()) >= 8:
         ctypes.windll.shcore.SetProcessDpiAwareness(True)
 except Exception as e:
     logger.exception("Exception occurred - Cannot set dpi aware")
 
-import tkinter as tk
-
-from tkinter import *
-from tkinter import ttk
-
 root = None  # tk.Tk() #this is intensive... import as needed?
 # root.withdraw()
-from PIL import Image, ImageTk
-import PIL, win32gui
-import PIL.ImageTk
-
-import win32con, win32api
 
 
 def get_system_light():
@@ -190,7 +215,6 @@ def get_system_light():
         light = False
 
 
-# import gettext
 # zh = gettext.translation('manager', localedir='locale', languages=['zh'])
 # zh.install()
 # _ = #zh.gettext
@@ -203,8 +227,6 @@ default_font = asset_dir + "segoeui.ttf"
 
 if "--r" not in args:
     os.environ["PBR_VERSION"] = "4.0.2"
-
-    import singleton
 
     try:
         instance = singleton.SingleInstance()
@@ -250,36 +272,19 @@ if "--r" not in args:
         sys.exit()
 
     try:
-
-        from win10toast import ToastNotifier
-
         toaster = ToastNotifier()
 
         # pick a random date to ask for donations
         dd = [random.randrange(0, 8), random.randrange(0, 8), random.randrange(0, 8)]
-        # DISPLAY ones
-        import OpticUI as ui
 
         os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "4.0.2"
 
-        import pygame, webbrowser
-        # print("whoops")
-
-        import animator as anima
-
-        from pygame.locals import *
-
         t = time.perf_counter()
-        import pygame.gfxdraw
 
         ui.init("dpi")  # , tk, root)
-        from ctypes import wintypes, windll
 
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
-
-        from win32api import GetMonitorInfo, MonitorFromPoint
-        from pathlib import Path
 
         monitor_info = GetMonitorInfo(MonitorFromPoint((0, 0)))
         monitor_area = monitor_info.get("Monitor")
@@ -317,10 +322,7 @@ if "--r" not in args:
         if pos_config == "top":
             winpos = screensize[0] - WIDTH
             winh = taskbar - HEIGHT
-        elif pos_config == "bottom":
-            winpos = screensize[0] - WIDTH
-            winh = screensize[1]
-        elif pos_config == "right":
+        elif pos_config == "bottom" or pos_config == "right":
             winpos = screensize[0] - WIDTH
             winh = screensize[1]
         elif pos_config == "left":
@@ -402,7 +404,7 @@ if "--r" not in args:
                                win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
 
         # win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
-        
+
         sett = iset.read()
         try:
             acrylic = sett["general"]["acrylic_enabled"]
@@ -411,7 +413,6 @@ if "--r" not in args:
             acrylic = True
 
         if acrylic == True:
-            import blur
             blur.blur(HWND)
 
     except Exception as e:
@@ -464,8 +465,7 @@ def help_ssh():
 def runs(distro, command):
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
     logger.info(f"(runos) WSL SHELL $ {cmd}")
-    subprocess.Popen(cmd,
-                     shell=True)  # .readlines()
+    subprocess.Popen(cmd, shell=True)  # .readlines()
     return None
 
 
@@ -2663,7 +2663,7 @@ colores = [[255, 0, 0],
         [233, 26, 38],
         [210, 21, 229]]
 
-        
+
 def draw(canvas, mouse=False):
     global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
     # mask.fill([255, 0, 0])
@@ -2673,7 +2673,7 @@ def draw(canvas, mouse=False):
     if time.perf_counter() - heartbeat > 1:
         heartbeat = time.perf_counter()
         animator.animate("donate", random.choice(colores))
-        
+
     # print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
@@ -2739,7 +2739,7 @@ def draw(canvas, mouse=False):
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)])
-    
+
     # canvas.fill(fuchsia)
 
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.4)))
@@ -2878,7 +2878,7 @@ def draw(canvas, mouse=False):
     selected = False
     q = 0
     s2 = False
-    
+
     for i in buttons:
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
@@ -3177,7 +3177,6 @@ if "--r" not in args: #start normally
     about_open = False
 
     read = ""
-    from shutil import which
 
     if which("wsl.exe") != None:
         installed = True
@@ -3208,7 +3207,7 @@ if "--r" not in args: #start normally
         animator.register("donate", [255, 0, 0])
         #else:
         #   donate_asker = False
-    
+
 
         while True:
             try:
@@ -3276,7 +3275,7 @@ elif args[1] == "--r" and "--startup" in args: #startup
                 logger.exception("Startup Mode. Cannot start service...")
                 print("Can't run service...")
 
-        
+
     except Exception as e:
         logger.exception("Exception occurred")
 
