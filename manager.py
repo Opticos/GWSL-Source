@@ -35,6 +35,8 @@ from exe_layer import cmd
 
 debug = False
 
+git_url = 'https://opticos.github.io/gwsl/'
+
 args = sys.argv
 
 frozen = 'not'
@@ -253,8 +255,8 @@ if "--r" not in args:
 
         toaster = ToastNotifier()
 
-        dd = [random.randrange(0, 8), random.randrange(0, 8), random.randrange(0, 8)]  # pick a random date to ask for donations
-
+        # pick a random date to ask for donations
+        dd = [random.randrange(0, 8), random.randrange(0, 8), random.randrange(0, 8)]
         # DISPLAY ones
         import OpticUI as ui
 
@@ -350,7 +352,8 @@ if "--r" not in args:
         py_root = pygame.display.set_mode([WIDTH, HEIGHT], NOFRAME)
 
         HWND = pygame.display.get_wm_info()["window"]
-        # win32gui.MoveWindow(HWND, screensize[0] - WIDTH, screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
+        # win32gui.MoveWindow(HWND, screensize[0] - WIDTH,
+        #   screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
 
@@ -367,9 +370,11 @@ if "--r" not in args:
         # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
         # mask.fill([255, 0, 0])
         # pay = pygame.image.load(asset_dir + "paypal.png").convert_alpha()
-        # pay = pygame.transform.smoothscale(pay, [ui.inch2pix(1), int((pay.get_height() / pay.get_width()) * ui.inch2pix(1))])
+        # pay = pygame.transform.smoothscale(pay, [ui.inch2pix(1),
+        #   int((pay.get_height() / pay.get_width()) * ui.inch2pix(1))])
         # try:
-        #    mini1 = pygame.image.load(os.getenv('APPDATA') + r"\Microsoft\Windows\Themes\TranscodedWallpaper").convert()
+        #    mini1 = pygame.image.load(os.getenv('APPDATA') +
+        #       r"\Microsoft\Windows\Themes\TranscodedWallpaper").convert()
         # except:
         #    bak = asset_dir + random.choice(["1", "2", "3"]) + ".jpg"
         #    mini1 = pygame.image.load(bak).convert()
@@ -444,16 +449,16 @@ def helper(topic):
         url = "configuring-a-wsl-distro-for-use-with-gwsl"
     elif topic == "launcher":
         url = "using-the-integrated-linux-app-launcher"
-    webbrowser.get('windows-default').open("https://opticos.github.io/gwsl/tutorials/manual.html#" + str(url))
+    webbrowser.get('windows-default').open(git_url + "tutorials/manual.html#" + str(url))
 
 
 def help_short():
     webbrowser.get('windows-default').open(
-        "https://opticos.github.io/gwsl/tutorials/manual.html#using-the-gwsl-shortcut-creator")
+        git_url + "tutorials/manual.html#using-the-gwsl-shortcut-creator")
 
 
 def help_ssh():
-    webbrowser.get('windows-default').open("https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh")
+    webbrowser.get('windows-default').open(git_url + "tutorials/manual.html#using-gwsl-with-ssh")
 
 
 def runs(distro, command):
@@ -2848,7 +2853,7 @@ def draw(canvas, mouse=False):
             app_launcher(machine)
 
     def donate():
-        webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/#donate')#https://sites.google.com/bartimee.com/opticos-studios/donate')
+        webbrowser.get('windows-default').open(git_url + '#donate')#https://sites.google.com/bartimee.com/opticos-studios/donate')
 
     def wsl_installer():
         webbrowser.get('windows-default').open("https://docs.microsoft.com/en-us/windows/wsl/install-win10")
@@ -2960,7 +2965,7 @@ def draw(canvas, mouse=False):
                 1 - launch) * 60 + txt.get_height() + ui.inch2pix(0.1):
             # webbrowser.open("GWSLHELP.com")#, new=0, autoraise=True)
             if mouse != False:
-                webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
+                webbrowser.get('windows-default').open(git_url + 'help.html')
             selected = True
             txt = title_font.render(_("Help"), True, accent)
             txt.set_alpha(int(launch * 255 * s))
