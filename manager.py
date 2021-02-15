@@ -18,11 +18,15 @@
 #   _#  #
 
 import time
-
-import os, sys, win32, subprocess, sys, threading, iset, re, pymsgbox, random
+import os
+import subprocess
+import threading
+import iset
+import pymsgbox
+import random
 import winshell
+
 from win32com.client import Dispatch
-import winreg
 from winreg import *
 from exe_layer import cmd
 
@@ -30,34 +34,35 @@ import logging
 import wsl_tools as tools
 
 import tkinter as tk
-
 from tkinter import *
 from tkinter import ttk
 
 from win10toast import ToastNotifier
-import ctypes, platform
+import ctypes
+from ctypes import wintypes, windll
+import platform
 
 from PIL import Image, ImageTk
-import PIL, win32gui
+import PIL
 import PIL.ImageTk
 
-import win32con, win32api
+import win32gui
+import win32con
+import win32api
 
 import singleton
 
-import pygame, webbrowser
-# print("whoops")
+import pygame
+from pygame.locals import *
+import pygame.gfxdraw
+
+import webbrowser
 
 import animator as anima
 
-from pygame.locals import *
-
-import pygame.gfxdraw
-from ctypes import wintypes, windll
 from win32api import GetMonitorInfo, MonitorFromPoint
 from pathlib import Path
 
-# DISPLAY ones
 import OpticUI as ui
 
 # import gettext
