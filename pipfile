@@ -13,6 +13,7 @@ pyinstaller = '3.5'
 pywin32 = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.8"
