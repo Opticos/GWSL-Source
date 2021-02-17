@@ -6,6 +6,8 @@
 - [sys](https://docs.python.org/3/library/sys.html)
 - [time](https://docs.python.org/3/library/time.html)
 - [winreg](https://docs.python.org/3/library/winreg.html)
+- [json](https://docs.python.org/3/library/json.html)
+- [copy](https://docs.python.org/3/library/copy.html)
 
 ## Other
 - keyboard
