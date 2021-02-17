@@ -67,8 +67,6 @@ class cmd:
             queue.daemon = True
             queue.start()
 
-
-
         else:
             p = Popen(command, bufsize=1, universal_newlines=True)
 
@@ -92,7 +90,6 @@ class cmd:
                 for c in commands:
                     self.proc.stdin.write(c + " ")
                 self.proc.stdin.write("\n")
-
 
             else:
                 self.proc.stdin.write(command + " \n")
