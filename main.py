@@ -51,12 +51,11 @@ REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 def set_reg(name, value):
     try:
         CreateKey(HKEY_CURRENT_USER, REG_PATH)
-        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, 
-                                       KEY_WRITE)
+        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, KEY_WRITE)
         SetValueEx(registry_key, name, 0, REG_SZ, value)
         CloseKey(registry_key)
         return True
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Change DPI (set_reg)")
     
 
@@ -69,7 +68,7 @@ def rescan(systray=False):
             menu = build_menu()
             systray.update(menu_options=menu)
         custom_profiles = list(profile_dict)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot scan profiles")
         custom_profiles = []
 
@@ -81,14 +80,14 @@ def get_args(profile_name):
 def open_about(systray):
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe --about")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred")
 
 
 def open_dashboard(*args):
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred")
 
 
@@ -118,7 +117,7 @@ def set_custom_profile(systray, profile):
             print("setting", profile)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot switch to custom profile " + str(profile))
 
 
@@ -141,7 +140,7 @@ def set_default_profile(systray, mode_type):
             systray.update(hover_text=f"GWSL Running - {name}", menu_options=menu)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot switch to profile type " + str(mode_type))
 
 
@@ -161,24 +160,24 @@ def toggle_clipboard(systray, state):
             iset.set(sett)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot toggle clipboard")
 
 
-def config(systray):
+def config():
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         os.popen(f"{path}settings.json")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot open Config File")
 
 
-def open_logs(systray):
+def open_logs():
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         subprocess.Popen(f"notepad {path}service.log")
         subprocess.Popen(f"notepad {path}dashboard.log")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Open Logs")
 
 
@@ -199,11 +198,11 @@ def add_profile(systray):
             rescan()
             menu = build_menu()
             systray.update(menu_options=menu)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Create Profile")
 
 
-def dpi_set(systray, mode):
+def dpi_set(mode):
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(server_location)
@@ -211,7 +210,7 @@ def dpi_set(systray, mode):
     try:
         set_reg(server_location, modes[int(mode)])
         set_reg(instance_location, modes[int(mode)])
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Change DPI (dpi_set)")
 
     if ask_dpi() == True:
@@ -246,8 +245,6 @@ def reset_config(systray):
             sys.exit()
         except:
             pass
-    else:
-        pass
 
 
 def build_menu():
@@ -304,7 +301,7 @@ def build_menu():
         menu += dpi_options
         menu += options
         return menu
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Build Menu")
         return []
 
@@ -328,6 +325,7 @@ def ask_clip(phrase):
     else:
         return False
 
+
 def ask_dpi():
     choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
                               title=f"Restart XServer to Apply Changes?",
@@ -337,6 +335,7 @@ def ask_dpi():
     else:
         return False
 
+
 def ask_reset():
     choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL.",
                               title=f"Clear GWSL Data?",
@@ -345,7 +344,8 @@ def ask_reset():
         return True
     else:
         return False
-    
+
+
 def ask_restart():
     answer = pymsgbox.confirm(
         text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
@@ -380,7 +380,7 @@ def start_server():
         else:
             default_arguments = ["-ac"] + get_args(current_custom_profile)
         subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
 
 
@@ -442,7 +442,7 @@ def main():
                 systray.shutdown()
                 sys.exit()
 
-        except Exception as e:
+        except:
             logger.exception("Exception occurred in main loop")
             kill_server()
             systray.shutdown()
@@ -495,7 +495,7 @@ if __name__ == "__main__":
 
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Set DPI Aware")
 
     try:
@@ -521,5 +521,5 @@ if __name__ == "__main__":
         keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
         ic = icon("systray")
         main()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Start Service. Make sure the settings file is not corrupted.")
