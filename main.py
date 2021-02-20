@@ -322,7 +322,9 @@ def build_menu():
 
 
 def ask():
-    choice = pymsgbox.confirm(text="Switch XServer profiles? Be sure to save any work open in GWSL programs. This might force-close some windows.",
+    """Prompts user to confirm switching XServer profiles"""
+    choice = pymsgbox.confirm(text="Switch XServer profiles? Be sure to save any work open in GWSL programs. "
+                                   "This might force-close some windows.",
                               title="Switch Profile",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -332,7 +334,9 @@ def ask():
 
 
 def ask_clip(phrase):
-    choice = pymsgbox.confirm(text="Toggle the shared clipboard? Be sure to save any work open in GWSL programs. This might force-close some windows.",
+    """Prompts user to confirm enabling/disabling the shared clipboard"""
+    choice = pymsgbox.confirm(text="Toggle the shared clipboard? Be sure to save any work open in GWSL programs. "
+                                   "This might force-close some windows.",
                               title=f"{phrase} Clipboard",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -342,7 +346,9 @@ def ask_clip(phrase):
 
 
 def ask_dpi():
-    choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
+    """Prompts user to confirm changing DPI"""
+    choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL "
+                                   "programs. This will force close windows running in GWSL. Restart now?",
                               title=f"Restart XServer to Apply Changes?",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -352,7 +358,10 @@ def ask_dpi():
 
 
 def ask_reset():
-    choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL.",
+    """Prompts user to confirm clearing logs and resetting config"""
+    choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. "
+                                   "The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL "
+                                   "programs. This will force close windows running in GWSL.",
                               title=f"Clear GWSL Data?",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -362,6 +371,7 @@ def ask_reset():
 
 
 def ask_restart():
+    """Prompts user to confirm restarting the GWSL service"""
     answer = pymsgbox.confirm(
         text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
         title="XServer Has Stopped",
@@ -373,16 +383,19 @@ def ask_restart():
 
 
 def restart_server():
+    """Restarts GWSL services"""
     kill_server()
     start_server()
 
 
 def kill_server():
+    """Stops the GWSL services"""
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
 
 
 def start_server():
+    """Starts the GWSL services"""
     try:
         if display_mode != "c":
             default_arguments = default_profiles[display_mode]
@@ -400,6 +413,7 @@ def start_server():
 
 
 def get_running():
+    """Checks whether the GWSL service is currently running"""
     proc_list = os.popen('tasklist').readlines()
     for proc in proc_list:
         if "GWSL_vcxsrv" in proc:
@@ -408,6 +422,7 @@ def get_running():
 
 
 def main():
+    """Main entry point for application"""
     global systray, display_mode, clipboard, exiter, ic, timer
     # Kill VcXsrv if already running
     if get_running():
