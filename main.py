@@ -44,6 +44,7 @@ custom_profiles = []
 
 # DPI Stuff
 from winreg import *
+from winreg import CloseKey, ConnectRegistry, CreateKey, OpenKey, QueryValue, QueryValueEx, SetValueEx
 modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARE"]
 REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
