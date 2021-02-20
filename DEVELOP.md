@@ -33,6 +33,7 @@
 - [time](https://docs.python.org/3/library/time.html)
 - [uuid](https://docs.python.org/3/library/uuid.html)
 - [winreg](https://docs.python.org/3/library/winreg.html)
+    - Exposes Windows registry API.
 
 
 ## Other

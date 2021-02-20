@@ -50,6 +50,7 @@ REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
 
 def set_reg(name, value):
+    """Set DPI via registry key"""
     try:
         CreateKey(HKEY_CURRENT_USER, REG_PATH)
         registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, KEY_WRITE)
@@ -61,6 +62,7 @@ def set_reg(name, value):
     
 
 def rescan(systray=False):
+    """Rescan profiles"""
     global profile_dict, custom_profiles
     try:
         sett = iset.read()
@@ -75,6 +77,7 @@ def rescan(systray=False):
 
 
 def get_args(profile_name):
+    """Get defaults for launching VCXSRV"""
     return profile_dict[profile_name]
 
 
@@ -98,10 +101,12 @@ def shutdown(systray):
 
 
 def icon(name):
+    """Returns path of named icon"""
     return f"{bundle_dir}\\assets\\systray\\{name}.ico"
 
 
 def set_custom_profile(systray, profile):
+    """Switch to custom profile"""
     global current_custom_profile, display_mode
     try:
         if profile == current_custom_profile:
@@ -123,6 +128,7 @@ def set_custom_profile(systray, profile):
 
 
 def set_default_profile(systray, mode_type):
+    """Sets the default XServer display mode (single, multi, fullscreen"""
     global current_custom_profile, display_mode
     try:
         if mode_type == display_mode:
@@ -146,6 +152,7 @@ def set_default_profile(systray, mode_type):
 
 
 def toggle_clipboard(systray, state):
+    """Toggles the clipboard between Windows and WSL graphical apps being on/off."""
     global clipboard
     try:
         if state == True:
@@ -166,6 +173,7 @@ def toggle_clipboard(systray, state):
 
 
 def config():
+    """Open the config file for GWSL (settings.json)"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         os.popen(f"{path}settings.json")
@@ -174,6 +182,7 @@ def config():
 
 
 def open_logs():
+    """Launches Notepad to view GWSL logs"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         subprocess.Popen(f"notepad {path}service.log")
@@ -183,11 +192,13 @@ def open_logs():
 
 
 def open_help(s):
+    """Open browser to GWSL help page"""
     import webbrowser
     webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
 
 
 def add_profile(systray):
+    """Allows one to add a custom XServer profile (config)"""
     try:
         new_profile = profile.add(bundle_dir)
         if new_profile != None:
@@ -204,6 +215,7 @@ def add_profile(systray):
 
 
 def dpi_set(mode):
+    """Modifies the DPI registry key in Windows"""
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(server_location)
@@ -219,6 +231,7 @@ def dpi_set(mode):
 
 
 def reset_config(systray):
+    """Resets settings.json to original config, clears GWSL logs"""
     global exiter
     if ask_reset():
         try:
@@ -249,6 +262,7 @@ def reset_config(systray):
 
 
 def build_menu():
+    """Builds the configuration menu"""
     try:
         menu = []
 
