@@ -81,6 +81,7 @@ try:
 except:
     pass
 
+
 class DuplicateFilter(logging.Filter):
 
     def filter(self, record):
@@ -90,7 +91,7 @@ class DuplicateFilter(logging.Filter):
             self.last_log = current_log
             return True
         return False
-    
+
 
 logger = logging.Logger("GWSL " + version, level=0)
 # logger = logging.getLogger("GWSL " + version)
@@ -177,6 +178,10 @@ import win32api
 
 
 def get_system_light():
+    """
+    Sets color of white based on Windows registry theme setting
+    :return:
+    """
     global light, white, accent
     try:
         registry = ConnectRegistry(None, HKEY_CURRENT_USER)
@@ -405,7 +410,7 @@ if "--r" not in args:
                                win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
 
         # win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
-        
+
         sett = iset.read()
         try:
             acrylic = sett["general"]["acrylic_enabled"]
@@ -438,12 +443,22 @@ def get_version(machine):
 
 
 def reboot(machine):
+    """
+    Reboots WSL instance
+    :param machine:
+    :return:
+    """
     os.popen("wsl.exe -t " + str(machine))
     time.sleep(1)
     os.popen("wsl.exe -d " + str(machine))
 
 
 def helper(topic):
+    """
+    Build URL for specified topic
+    :param topic:
+    :return:
+    """
     if topic == "machine chooser":
         url = "the-gwsl-user-interface"
     elif topic == "configure":
@@ -456,11 +471,19 @@ def helper(topic):
 
 
 def help_short():
+    """
+    Open help page on shortcut creator in browser
+    :return:
+    """
     webbrowser.get('windows-default').open(
         "https://opticos.github.io/gwsl/tutorials/manual.html#using-the-gwsl-shortcut-creator")
 
 
 def help_ssh():
+    """
+    Open help page on using GWSL with SSH
+    :return:
+    """
     webbrowser.get('windows-default').open("https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh")
 
 
@@ -505,14 +528,26 @@ def runo(distro, command):
 
 
 def get_ip(machine):
+    """
+    Get IP of select WSL instance
+    :return:
+    """
     return runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")  # [0][:-1]
 
 
 def test_x():
+    """
+    Test the VCXSRV config by launching xclock
+    :return:
+    """
     subprocess.Popen("VCXSRV/xclock -display localhost:0")
 
 
 def choose_machine():
+    """
+    Builds the choose machine menu
+    :return:
+    """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
     machines = os.popen("wsl.exe -l -q").read()  # lines()
     machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
@@ -689,6 +724,10 @@ def choose_machine():
 
 
 def about():
+    """
+    Handles building and display the about window
+    :return:
+    """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
 
     animator.animate("choose", [100, 0])
@@ -806,7 +845,8 @@ def about():
 
         if len(machines) != 0:
             for i in machines:
-                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or i == "View Logs" or i == "Add to Startup":
+                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or \
+                        i == "View Logs" or i == "Add to Startup":
                     txt = title_font.render(i, True, accent)  # [0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -1236,7 +1276,8 @@ def configure_machine(machine):
         v = animator.get("loading_c")[0] / 100
         txt2 = pygame.transform.rotozoom(loader, loading_angle, 0.22)
         txt2.set_alpha(int(v * 255))
-        # canvas.blit(txt2, [ui.inch2pix(0.2) - txt2.get_width() / 2, HEIGHT - ui.inch2pix(0.3) - txt2.get_height() / 2 - int((v - 1) * ui.inch2pix(0.4))])
+        # canvas.blit(txt2, [ui.inch2pix(0.2) - txt2.get_width() / 2, HEIGHT - ui.inch2pix(0.3) - txt2.get_height() \
+        # / 2 - int((v - 1) * ui.inch2pix(0.4))])
         canvas.blit(txt2, [WIDTH / 2 - txt2.get_width() / 2,
                            HEIGHT / 2 - ui.inch2pix(0.2) - txt2.get_height() / 2 - int((v - 1) * ui.inch2pix(0.4))])
 
@@ -2664,7 +2705,7 @@ colores = [[255, 0, 0],
         [233, 26, 38],
         [210, 21, 229]]
 
-        
+
 def draw(canvas, mouse=False):
     global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
     # mask.fill([255, 0, 0])
@@ -2674,7 +2715,7 @@ def draw(canvas, mouse=False):
     if time.perf_counter() - heartbeat > 1:
         heartbeat = time.perf_counter()
         animator.animate("donate", random.choice(colores))
-        
+
     # print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
@@ -2715,7 +2756,7 @@ def draw(canvas, mouse=False):
             animator.animate("loading", [100, 0])
 
     # print(canvas.get_at([0, 0]))
-    
+
     launch = animator.get("start2")[0] / 100.0
 
     if animator.get("start2")[0] > 99 and service_loaded == False:
@@ -2741,7 +2782,7 @@ def draw(canvas, mouse=False):
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)])
-    
+
     # canvas.fill(fuchsia)
 
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.4)))
@@ -2882,7 +2923,7 @@ def draw(canvas, mouse=False):
     selected = False
     q = 0
     s2 = False
-    
+
     for i in buttons:
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
