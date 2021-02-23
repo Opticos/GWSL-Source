@@ -77,7 +77,7 @@ def rescan(systray=False):
 
 
 def get_args(profile_name):
-    """Get defaults for launching VCXSRV"""
+    """Get defaults for launching VCXSRV with a given profile"""
     return profile_dict[profile_name]
 
 
@@ -128,7 +128,7 @@ def set_custom_profile(systray, profile):
 
 
 def set_default_profile(systray, mode_type):
-    """Sets the default XServer display mode (single, multi, fullscreen"""
+    """Sets the default XServer display mode (single, multi, fullscreen)"""
     global current_custom_profile, display_mode
     try:
         if mode_type == display_mode:
@@ -152,7 +152,7 @@ def set_default_profile(systray, mode_type):
 
 
 def toggle_clipboard(systray, state):
-    """Toggles the clipboard between Windows and WSL graphical apps being on/off."""
+    """Toggles the clipboard between Windows and WSL graphical apps being on/off. (Only functional in 3 default profiles)"""
     global clipboard
     try:
         if state == True:
@@ -215,7 +215,7 @@ def add_profile(systray):
 
 
 def dpi_set(mode):
-    """Modifies the DPI registry key in Windows"""
+    """Modifies the DPI registry key in Windows (DPI implementation to chanage soon)"""
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(server_location)
