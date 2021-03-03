@@ -55,3 +55,6 @@ TODO GET PASSWORD OUT OF LOGS (add donotlog arg to pass to run when consolidated
 TODO Make sure new profile system works with shortcut menu. THIS WILL ALSO FIX #31
 TODO again! consolidate run commands
 TRY TO USE WSL tools from @sanzoghenzo and help debug his code. 
+SSH keys for authentication
+Add button in distro settings to add libgl indirect to profile etc.
+Add button saying type to jump down the list.
