@@ -44,23 +44,25 @@ custom_profiles = []
 
 # DPI Stuff
 from winreg import *
+from winreg import CloseKey, ConnectRegistry, CreateKey, OpenKey, QueryValue, QueryValueEx, SetValueEx
 modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARE"]
 REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
 
 def set_reg(name, value):
+    """Set DPI via registry key"""
     try:
         CreateKey(HKEY_CURRENT_USER, REG_PATH)
-        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, 
-                                       KEY_WRITE)
+        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, KEY_WRITE)
         SetValueEx(registry_key, name, 0, REG_SZ, value)
         CloseKey(registry_key)
         return True
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Change DPI (set_reg)")
     
 
 def rescan(systray=False):
+    """Rescan profiles"""
     global profile_dict, custom_profiles
     try:
         sett = iset.read()
@@ -69,26 +71,27 @@ def rescan(systray=False):
             menu = build_menu()
             systray.update(menu_options=menu)
         custom_profiles = list(profile_dict)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot scan profiles")
         custom_profiles = []
 
 
 def get_args(profile_name):
+    """Get defaults for launching VCXSRV with a given profile"""
     return profile_dict[profile_name]
 
 
 def open_about(systray):
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe --about")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred")
 
 
 def open_dashboard(*args):
     try:
         subprocess.Popen(bundle_dir + "\\GWSL.exe")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred")
 
 
@@ -98,10 +101,12 @@ def shutdown(systray):
 
 
 def icon(name):
+    """Returns path of named icon"""
     return f"{bundle_dir}\\assets\\systray\\{name}.ico"
 
 
 def set_custom_profile(systray, profile):
+    """Switch to custom profile"""
     global current_custom_profile, display_mode
     try:
         if profile == current_custom_profile:
@@ -118,11 +123,12 @@ def set_custom_profile(systray, profile):
             print("setting", profile)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot switch to custom profile " + str(profile))
 
 
 def set_default_profile(systray, mode_type):
+    """Sets the default XServer display mode (single, multi, fullscreen)"""
     global current_custom_profile, display_mode
     try:
         if mode_type == display_mode:
@@ -141,11 +147,12 @@ def set_default_profile(systray, mode_type):
             systray.update(hover_text=f"GWSL Running - {name}", menu_options=menu)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot switch to profile type " + str(mode_type))
 
 
 def toggle_clipboard(systray, state):
+    """Toggles the clipboard between Windows and WSL graphical apps being on/off. (Only functional in 3 default profiles)"""
     global clipboard
     try:
         if state == True:
@@ -161,33 +168,37 @@ def toggle_clipboard(systray, state):
             iset.set(sett)
 
             restart_server()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot toggle clipboard")
 
 
 def config(systray):
+    """Open the config file for GWSL (settings.json)"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         os.popen(f"{path}settings.json")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot open Config File")
 
 
 def open_logs(systray):
+    """Launches Notepad to view GWSL logs"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
         subprocess.Popen(f"notepad {path}service.log")
         subprocess.Popen(f"notepad {path}dashboard.log")
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Open Logs")
 
 
 def open_help(s):
+    """Open browser to GWSL help page"""
     import webbrowser
     webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
 
 
 def add_profile(systray):
+    """Allows one to add a custom XServer profile (config)"""
     try:
         new_profile = profile.add(bundle_dir)
         if new_profile != None:
@@ -199,11 +210,12 @@ def add_profile(systray):
             rescan()
             menu = build_menu()
             systray.update(menu_options=menu)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Create Profile")
 
 
 def dpi_set(systray, mode):
+    """Modifies the DPI registry key in Windows (DPI implementation to chanage soon)"""
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(server_location)
@@ -211,7 +223,7 @@ def dpi_set(systray, mode):
     try:
         set_reg(server_location, modes[int(mode)])
         set_reg(instance_location, modes[int(mode)])
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Change DPI (dpi_set)")
 
     if ask_dpi() == True:
@@ -219,6 +231,7 @@ def dpi_set(systray, mode):
 
 
 def reset_config(systray):
+    """Resets settings.json to original config, clears GWSL logs"""
     global exiter
     if ask_reset():
         try:
@@ -246,11 +259,10 @@ def reset_config(systray):
             sys.exit()
         except:
             pass
-    else:
-        pass
 
 
 def build_menu():
+    """Builds the configuration menu"""
     try:
         menu = []
 
@@ -304,13 +316,15 @@ def build_menu():
         menu += dpi_options
         menu += options
         return menu
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Build Menu")
         return []
 
 
 def ask():
-    choice = pymsgbox.confirm(text="Switch XServer profiles? Be sure to save any work open in GWSL programs. This might force-close some windows.",
+    """Prompts user to confirm switching XServer profiles"""
+    choice = pymsgbox.confirm(text="Switch XServer profiles? Be sure to save any work open in GWSL programs. "
+                                   "This might force-close some windows.",
                               title="Switch Profile",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -320,7 +334,9 @@ def ask():
 
 
 def ask_clip(phrase):
-    choice = pymsgbox.confirm(text="Toggle the shared clipboard? Be sure to save any work open in GWSL programs. This might force-close some windows.",
+    """Prompts user to confirm enabling/disabling the shared clipboard"""
+    choice = pymsgbox.confirm(text="Toggle the shared clipboard? Be sure to save any work open in GWSL programs. "
+                                   "This might force-close some windows.",
                               title=f"{phrase} Clipboard",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -328,8 +344,11 @@ def ask_clip(phrase):
     else:
         return False
 
+
 def ask_dpi():
-    choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL. Restart now?",
+    """Prompts user to confirm changing DPI"""
+    choice = pymsgbox.confirm(text="To apply changes, the GWSL will close. Be sure to save any work open in GWSL "
+                                   "programs. This will force close windows running in GWSL. Restart now?",
                               title=f"Restart XServer to Apply Changes?",
                               buttons=["Yes", "No"])
     if choice == "Yes":
@@ -337,16 +356,22 @@ def ask_dpi():
     else:
         return False
 
+
 def ask_reset():
-    choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL programs. This will force close windows running in GWSL.",
+    """Prompts user to confirm clearing logs and resetting config"""
+    choice = pymsgbox.confirm(text="Delete GWSL logs and reset configuration? This will not delete shortcuts. "
+                                   "The GWSL XServer will need to be restarted. Be sure to save any work open in GWSL "
+                                   "programs. This will force close windows running in GWSL.",
                               title=f"Clear GWSL Data?",
                               buttons=["Yes", "No"])
     if choice == "Yes":
         return True
     else:
         return False
-    
+
+
 def ask_restart():
+    """Prompts user to confirm restarting the GWSL service"""
     answer = pymsgbox.confirm(
         text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
         title="XServer Has Stopped",
@@ -358,16 +383,19 @@ def ask_restart():
 
 
 def restart_server():
+    """Restarts GWSL services"""
     kill_server()
     start_server()
 
 
 def kill_server():
+    """Stops the GWSL services"""
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
 
 
 def start_server():
+    """Starts the GWSL services"""
     try:
         if display_mode != "c":
             default_arguments = default_profiles[display_mode]
@@ -380,11 +408,12 @@ def start_server():
         else:
             default_arguments = ["-ac"] + get_args(current_custom_profile)
         subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
 
 
 def get_running():
+    """Checks whether the GWSL service is currently running"""
     proc_list = os.popen('tasklist').readlines()
     for proc in proc_list:
         if "GWSL_vcxsrv" in proc:
@@ -393,6 +422,7 @@ def get_running():
 
 
 def main():
+    """Main entry point for application"""
     global systray, display_mode, clipboard, exiter, ic, timer
     # Kill VcXsrv if already running
     if get_running():
@@ -442,7 +472,7 @@ def main():
                 systray.shutdown()
                 sys.exit()
 
-        except Exception as e:
+        except:
             logger.exception("Exception occurred in main loop")
             kill_server()
             systray.shutdown()
@@ -495,7 +525,7 @@ if __name__ == "__main__":
 
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Set DPI Aware")
 
     try:
@@ -521,5 +551,5 @@ if __name__ == "__main__":
         keyboard.add_hotkey('alt+ctrl+g', open_dashboard, args=systray)
         ic = icon("systray")
         main()
-    except Exception as e:
+    except:
         logger.exception("Exception occurred - Cannot Start Service. Make sure the settings file is not corrupted.")

@@ -17,21 +17,28 @@
 #    |> #
 #   _#  #
 
+import time
+import os
+import sys
+import win32
+import subprocess
+import threading
+import iset
+import re
+import pymsgbox
+import random
+import winshell
+from win32com.client import Dispatch
+import winreg
+from winreg import *
+from exe_layer import cmd
+import logging
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
 version = "1.3.7"
 
 lc_name = "Licenses137.txt"
-
-import time
-
-import os, sys, win32, subprocess, sys, threading, iset, re, pymsgbox, random
-import winshell
-from win32com.client import Dispatch
-import winreg
-from winreg import *
-from exe_layer import cmd
 
 debug = False
 
@@ -62,7 +69,7 @@ if os.path.isdir(app_path) == False:
     print(subprocess.getoutput('mkdir "' + app_path + '"'))
     print("creating appdata directory")
 
-# EMERCENCY LOG DELETER FOR 1.3.6. Delete in 1.3.8
+# EMERGENCY LOG DELETER FOR 1.3.6. Delete in 1.3.8
 try:
     if os.path.exists(app_path + "GWSL_helper.sh") == True:
         scr = open(app_path + "GWSL_helper.sh", "r")
@@ -74,7 +81,6 @@ try:
 except:
     pass
 
-import logging
 
 class DuplicateFilter(logging.Filter):
 
@@ -85,7 +91,7 @@ class DuplicateFilter(logging.Filter):
             self.last_log = current_log
             return True
         return False
-    
+
 
 logger = logging.Logger("GWSL " + version, level=0)
 # logger = logging.getLogger("GWSL " + version)
@@ -147,7 +153,8 @@ except Exception as e:
 tools.script = app_path + "\\GWSL_helper.sh"
 
 try:
-    import ctypes, platform
+    import ctypes
+    import platform
 
     if int(platform.release()) >= 8:
         ctypes.windll.shcore.SetProcessDpiAwareness(True)
@@ -162,13 +169,19 @@ from tkinter import ttk
 root = None  # tk.Tk() #this is intensive... import as needed?
 # root.withdraw()
 from PIL import Image, ImageTk
-import PIL, win32gui
+import PIL
+import win32gui
 import PIL.ImageTk
 
-import win32con, win32api
+import win32con
+import win32api
 
 
 def get_system_light():
+    """
+    Sets color of white based on Windows registry theme setting
+    :return:
+    """
     global light, white, accent
     try:
         registry = ConnectRegistry(None, HKEY_CURRENT_USER)
@@ -354,8 +367,6 @@ if "--r" not in args:
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
 
-        
-                    
         ui.set_size([WIDTH, HEIGHT])
         pygame.display.set_caption("GWSL Dashboard")
         ui.start_graphics(pygame, asset_dir)
@@ -399,7 +410,7 @@ if "--r" not in args:
                                win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
 
         # win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
-        
+
         sett = iset.read()
         try:
             acrylic = sett["general"]["acrylic_enabled"]
@@ -410,7 +421,6 @@ if "--r" not in args:
         if acrylic == True:
             import blur
             blur.blur(HWND)
-
 
     except Exception as e:
         logger.exception("Exception occurred - Cannot Init Display")
@@ -433,12 +443,22 @@ def get_version(machine):
 
 
 def reboot(machine):
+    """
+    Reboots WSL instance
+    :param machine:
+    :return:
+    """
     os.popen("wsl.exe -t " + str(machine))
     time.sleep(1)
     os.popen("wsl.exe -d " + str(machine))
 
 
 def helper(topic):
+    """
+    Build URL for specified topic
+    :param topic:
+    :return:
+    """
     if topic == "machine chooser":
         url = "the-gwsl-user-interface"
     elif topic == "configure":
@@ -451,11 +471,19 @@ def helper(topic):
 
 
 def help_short():
+    """
+    Open help page on shortcut creator in browser
+    :return:
+    """
     webbrowser.get('windows-default').open(
         "https://opticos.github.io/gwsl/tutorials/manual.html#using-the-gwsl-shortcut-creator")
 
 
 def help_ssh():
+    """
+    Open help page on using GWSL with SSH
+    :return:
+    """
     webbrowser.get('windows-default').open("https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh")
 
 
@@ -500,14 +528,26 @@ def runo(distro, command):
 
 
 def get_ip(machine):
+    """
+    Get IP of select WSL instance
+    :return:
+    """
     return runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")  # [0][:-1]
 
 
 def test_x():
+    """
+    Test the VCXSRV config by launching xclock
+    :return:
+    """
     subprocess.Popen("VCXSRV/xclock -display localhost:0")
 
 
 def choose_machine():
+    """
+    Builds the choose machine menu
+    :return:
+    """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
     machines = os.popen("wsl.exe -l -q").read()  # lines()
     machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
@@ -684,6 +724,10 @@ def choose_machine():
 
 
 def about():
+    """
+    Handles building and display the about window
+    :return:
+    """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
 
     animator.animate("choose", [100, 0])
@@ -801,7 +845,8 @@ def about():
 
         if len(machines) != 0:
             for i in machines:
-                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or i == "View Logs" or i == "Add to Startup":
+                if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or \
+                        i == "View Logs" or i == "Add to Startup":
                     txt = title_font.render(i, True, accent)  # [0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -822,8 +867,6 @@ def about():
                             elif i == "Edit Configuration":
                                 os.chdir(app_path)
                                 os.popen("settings.json")
-                                
-                            
 
                 h += ui.inch2pix(0.29) + txt.get_height()  # used to be 0.3
                 d += ui.inch2pix(0.1)
@@ -1049,8 +1092,8 @@ def configure_machine(machine):
             run(machine, passw + "sudo systemd-machine-id-setup")
             print("Starting Bus...")
             run(machine, passw + "sudo /etc/init.d/dbus start")
-            ##print("Injecting into .profile")
-            ##tools.dbus(machine)
+            # print("Injecting into .profile")
+            # tools.dbus(machine)
             # print(run(machine, passw + 'echo -e "#!/bin/sh -e \n" >> /etc/rc.local'))
             # run(machine, passw + 'echo -e "/etc/init.d/dbus start \n" >> /etc/rc.local')
             # run(machine, passw + 'echo "exit 0" >> /etc/rc.local')
@@ -1233,7 +1276,8 @@ def configure_machine(machine):
         v = animator.get("loading_c")[0] / 100
         txt2 = pygame.transform.rotozoom(loader, loading_angle, 0.22)
         txt2.set_alpha(int(v * 255))
-        # canvas.blit(txt2, [ui.inch2pix(0.2) - txt2.get_width() / 2, HEIGHT - ui.inch2pix(0.3) - txt2.get_height() / 2 - int((v - 1) * ui.inch2pix(0.4))])
+        # canvas.blit(txt2, [ui.inch2pix(0.2) - txt2.get_width() / 2, HEIGHT - ui.inch2pix(0.3) - txt2.get_height() \
+        # / 2 - int((v - 1) * ui.inch2pix(0.4))])
         canvas.blit(txt2, [WIDTH / 2 - txt2.get_width() / 2,
                            HEIGHT / 2 - ui.inch2pix(0.2) - txt2.get_height() / 2 - int((v - 1) * ui.inch2pix(0.4))])
 
@@ -1475,7 +1519,6 @@ def app_launcher(machine):
                                 animator.animate("start", [0, 0])
                                 animator.animate("start2", [0, 0])
                                 end = True
-
 
                         elif mouse[0] > w + ui.inch2pix(0.4) + txt_width and mouse[0] < WIDTH:
                             shortcut(name=a[0].upper() + a[1:], cmd=i["cmd"], mach=machine, icn=i["icn"])
@@ -1931,7 +1974,6 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
             else:
                 l_mode = "GTK_THEME=Adwaita:dark "
 
-
     elif theme == "Light Mode":
         prof = tools.profile(machine)
         if "GTK_THEME" in prof:
@@ -1939,7 +1981,6 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
         else:
             l_mode = "GTK_THEME=Adwaita:light "
-
 
     elif theme == "Dark Mode":
         prof = tools.profile(machine)
@@ -1973,7 +2014,8 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append)
 
         else:
-            # In this case, we need to start a new server, run in a new thread that self closes VCXSRV after command if in multi window mode
+            # In this case, we need to start a new server, run in a new thread that self closes
+            # VCXSRV after command if in multi window mode
             port = str(random.randrange(1000, 9999))
 
             if w_mode == "Multi Window":
@@ -2663,7 +2705,7 @@ colores = [[255, 0, 0],
         [233, 26, 38],
         [210, 21, 229]]
 
-        
+
 def draw(canvas, mouse=False):
     global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
     # mask.fill([255, 0, 0])
@@ -2673,7 +2715,7 @@ def draw(canvas, mouse=False):
     if time.perf_counter() - heartbeat > 1:
         heartbeat = time.perf_counter()
         animator.animate("donate", random.choice(colores))
-        
+
     # print(accent)
     launch = animator.get("start")[0] / 100.0
     hover = mouse
@@ -2693,8 +2735,6 @@ def draw(canvas, mouse=False):
 
         lumen_opac = 0
         win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
-
-
 
     else:
         if about_open == True:
@@ -2716,8 +2756,7 @@ def draw(canvas, mouse=False):
             animator.animate("loading", [100, 0])
 
     # print(canvas.get_at([0, 0]))
-    
-    
+
     launch = animator.get("start2")[0] / 100.0
 
     if animator.get("start2")[0] > 99 and service_loaded == False:
@@ -2743,7 +2782,7 @@ def draw(canvas, mouse=False):
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)])
-    
+
     # canvas.fill(fuchsia)
 
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.4)))
@@ -2884,7 +2923,7 @@ def draw(canvas, mouse=False):
     selected = False
     q = 0
     s2 = False
-    
+
     for i in buttons:
         s2 = False
         pos = [ui.inch2pix(0.4), start + (1 - launch) * s]
@@ -3100,7 +3139,6 @@ def draw(canvas, mouse=False):
     canvas.blit(txt2, [ui.inch2pix(0.35) - txt2.get_width() / 2,
                        HEIGHT - ui.inch2pix(0.38) - txt2.get_height() / 2 - int((v2 - 1) * ui.inch2pix(0.4))])
 
-    #
     # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, int(((animator.get("darken")[0] / 100)) * 200)])
     py_root.fill([0, 0, 0, 255])
     py_root.blit(canvas, [0, 0], special_flags=(pygame.BLEND_RGBA_ADD))
@@ -3176,7 +3214,7 @@ if "--r" not in args:
             self._variable.set(not self._variable.get())
             self._activate()
 
-if "--r" not in args: #start normally
+if "--r" not in args: # start normally
     running = True
     service_loaded = False
     updater = threading.Thread(target=update_running)
@@ -3211,10 +3249,10 @@ if "--r" not in args: #start normally
         loader = icon_font.render("", True, white)
 
         day = time.localtime().tm_wday
-        #if day in dd:
+        # if day in dd:
         donate_asker = True
         animator.register("donate", [255, 0, 0])
-        #else:
+        # else:
         #   donate_asker = False
 
         while True:
@@ -3273,7 +3311,7 @@ if "--r" not in args: #start normally
             webbrowser.get('windows-default').open(
                 "https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/2-enable-and-install")
 
-elif args[1] == "--r" and "--startup" in args: #startup
+elif args[1] == "--r" and "--startup" in args: # startup
     try:
         print("started")
         if get_running("GWSL_service") != True:
@@ -3286,7 +3324,7 @@ elif args[1] == "--r" and "--startup" in args: #startup
     except Exception as e:
         logger.exception("Exception occurred")
 
-elif args[1] == "--r" and "--ssh" not in args: #launch a shortcut
+elif args[1] == "--r" and "--ssh" not in args: # launch a shortcut
     try:
         print("started")
         themer = "Follow Windows"
