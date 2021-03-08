@@ -172,7 +172,7 @@ def toggle_clipboard(systray, state):
         logger.exception("Exception occurred - Cannot toggle clipboard")
 
 
-def config():
+def config(systray):
     """Open the config file for GWSL (settings.json)"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
@@ -181,7 +181,7 @@ def config():
         logger.exception("Exception occurred - Cannot open Config File")
 
 
-def open_logs():
+def open_logs(systray):
     """Launches Notepad to view GWSL logs"""
     try:
         path = os.getenv('APPDATA') + "\\GWSL\\"
@@ -214,7 +214,7 @@ def add_profile(systray):
         logger.exception("Exception occurred - Cannot Create Profile")
 
 
-def dpi_set(mode):
+def dpi_set(systray, mode):
     """Modifies the DPI registry key in Windows (DPI implementation to chanage soon)"""
     server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
