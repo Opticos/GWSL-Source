@@ -49,7 +49,7 @@ TODO If gwsl closed before service can start, keep service a little longer and t
 TODO localize it maybe
 TODO WRITE MANUALS
 TODO reduce cpu spikes with check service calls Check PR from @sanzoghenzo for reference
-TODO faster app loading with @sanzoghenzo's method. Test all distros. Wait. I think this might break WSL1 compatability. Maybe slower is better at this stage
+TODO faster app loading with @sanzoghenzo's method. Test all distros. Wait. !!!!!I think this might break WSL1 compatability. Maybe slower is better at this stage
 TODO debug GWSL error #31 github
 TODO GET PASSWORD OUT OF LOGS (add donotlog arg to pass to run when consolidated)
 TODO Make sure new profile system works with shortcut menu. THIS WILL ALSO FIX #31
