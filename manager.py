@@ -1190,7 +1190,7 @@ def configure_machine(machine):
             buttons.append(["Display Is Set To Auto-Export", confx, ""])
         if machine != None:
             if "deb" in machine.lower() or "ubuntu" in machine.lower():
-                buttons.append(["Configure DBus", conf_dbus, ""])
+                buttons.append(["Configure DBus (optional)", conf_dbus, ""])
 
         if "HI" in g_button:
             ico = plus
