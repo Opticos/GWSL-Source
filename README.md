@@ -68,5 +68,7 @@ If you enjoy GWSL, please consider buying me a cup of coffee (or a Tesla Cybertr
 
 [Donate with PayPal (any amount helps!)](https://www.paypal.com/donate/?cmd=_donations&business=VV8W4XA2PZ5R8&item_name=GWSL+Donation&currency_code=USD&Z3JncnB0=)
 
+[Ko-Fi also works](ko-fi.com/optico5)
+
 # GWSL Website
 https://opticos.github.io/gwsl/
