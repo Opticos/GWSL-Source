@@ -58,3 +58,5 @@ TODO (FAILED ATTEMPT) Add xserver text to logo on the store because title cannot
 *  SSH keys for authentication
 *  Add button in distro settings to add libgl indirect to profile etc.
 *  Add button saying type to jump down the list.
+*  Add "ubuntu" to store tags
+*  Add "xserver" to store icon
