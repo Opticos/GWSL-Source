@@ -1,0 +1,225 @@
+#include "XCalc"
+
+XCalc*ti.backgroundPixmap:		gray3?foreground=gray70&background=gray85
+XCalc*.bevel.background:		gray80
+XCalc*.bevel.displayList:		foreground gray90;lines -1,0,0,0,0,-1;lines 3,-4,-4,-4,-4,3
+
+XCalc*.bevel.borderColor:		gray60
+XCalc*.bevel.borderWidth:		1
+XCalc*.bevel.vertDistance:		4
+XCalc*.bevel.defaultDistance:		4
+XCalc*.bevel.screen.vertDistance:	4
+XCalc*.bevel.screen.horizDistance:	4
+XCalc*.bevel.screen*left:		chainLeft
+XCalc*.bevel.screen*right:		chainRight
+XCalc*.bevel.screen*top:		chainTop
+XCalc*.bevel.screen*bottom:		chainBottom
+XCalc*.bevel.screen*background:	rgb:9/a/9
+XCalc*.bevel.screen.borderColor:	gray50
+XCalc*.bevel.screen*LCD.foreground:	gray20
+XCalc*.bevel.screen*INV.vertDistance:	2
+
+!	T e x a s   I n s t r u m e n t s   T I - 3 0
+
+XCalc*ti.Command.shapeStyle:		roundedRectangle
+XCalc*ti.Command.displayList:		foreground rgb:a/b/c;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+
+XCalc*ti.Command.borderColor:		rgb:8/9/a
+XCalc*ti.Command.background:		rgb:c/d/e
+XCalc*ti.Command.foreground:		gray5
+
+XCalc*ti.button20.foreground:		gray5
+XCalc*ti.button20.background:		rgb:e/d/c
+XCalc*ti.button20.displayList:		foreground rgb:a/9/8;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button20.borderColor:		rgb:9/8/7
+
+XCalc*ti.button25.foreground:		gray5
+XCalc*ti.button25.background:		rgb:e/d/c
+XCalc*ti.button25.displayList:		foreground rgb:a/9/8;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button25.borderColor:		rgb:9/8/7
+
+XCalc*ti.button30.foreground:		gray5
+XCalc*ti.button30.background:		rgb:e/d/c
+XCalc*ti.button30.displayList:		foreground rgb:a/9/8;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button30.borderColor:		rgb:9/8/7
+
+XCalc*ti.button35.foreground:		gray5
+XCalc*ti.button35.background:		rgb:e/d/c
+XCalc*ti.button35.displayList:		foreground rgb:a/9/8;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button35.borderColor:		rgb:9/8/7
+
+XCalc*ti.button40.foreground:		gray5
+XCalc*ti.button40.background:		rgb:e/d/c
+XCalc*ti.button40.displayList:		foreground rgb:a/9/8;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button40.borderColor:		rgb:9/8/7
+
+
+
+XCalc*ti.button22.background:		gray95
+XCalc*ti.button22.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button22.borderColor:		gray65
+
+XCalc*ti.button23.background:		gray95
+XCalc*ti.button23.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button23.borderColor:		gray65
+
+XCalc*ti.button24.background:		gray95
+XCalc*ti.button24.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button24.borderColor:		gray65
+
+XCalc*ti.button27.background:		gray95
+XCalc*ti.button27.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button27.borderColor:		gray65
+
+XCalc*ti.button28.background:		gray95
+XCalc*ti.button28.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button28.borderColor:		gray65
+
+XCalc*ti.button29.background:		gray95
+XCalc*ti.button29.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button29.borderColor:		gray65
+
+XCalc*ti.button32.background:		gray95
+XCalc*ti.button32.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button32.borderColor:		gray65
+
+XCalc*ti.button33.background:		gray95
+XCalc*ti.button33.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button33.borderColor:		gray65
+
+XCalc*ti.button34.background:		gray95
+XCalc*ti.button34.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button34.borderColor:		gray65
+
+XCalc*ti.button37.background:		gray95
+XCalc*ti.button37.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button37.borderColor:		gray65
+
+XCalc*ti.button38.background:		gray95
+XCalc*ti.button38.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button38.borderColor:		gray65
+
+XCalc*ti.button39.background:		gray95
+XCalc*ti.button39.displayList:		foreground gray75;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+XCalc*ti.button39.borderColor:		gray65
+
+!	H e w l e t t - P a c k a r d   1 0 C
+
+XCalc*hp.Command.shapeStyle:		roundedRectangle
+XCalc*hp.background:	wheat
+
+XCalc*hp.Command.background:		peru
+XCalc*hp.Command.foreground:		white
+
+! Unused buttons.  (Make invisible.)
+XCalc*hp.button21.background:	wheat
+XCalc*hp.button22.background:	wheat
+
+! ON button
+XCalc*hp.button31.background:	goldenrod
+XCalc*hp.button31.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+!XCalc*hp.button31.foreground:	white
+
+! SQRT
+XCalc*hp.button1.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! e^x
+XCalc*hp.button2.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! 10^x
+XCalc*hp.button3.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! y^x
+XCalc*hp.button4.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! 1/c
+XCalc*hp.button5.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! CHS
+XCalc*hp.button6.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! x!
+XCalc*hp.button11.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! pi
+XCalc*hp.button12.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! sin
+XCalc*hp.button13.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! cos
+XCalc*hp.button14.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! tan
+XCalc*hp.button15.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! EEX
+XCalc*hp.button16.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! Rv
+XCalc*hp.button23.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! x:y
+XCalc*hp.button24.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! <-
+XCalc*hp.button25.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! ENTER
+XCalc*hp.button26.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! DRG
+XCalc*hp.button32.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! INV
+XCalc*hp.button33.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! STO
+XCalc*hp.button34.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+!RCL
+XCalc*hp.button35.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+
+! "Operator" keys.
+! Divide key
+XCalc*hp.button10.background:	SteelBlue
+XCalc*hp.button10.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! Multiply key
+XCalc*hp.button20.background:	SteelBlue
+XCalc*hp.button20.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! Minus key
+XCalc*hp.button30.background:	SteelBlue
+XCalc*hp.button30.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! SUM
+XCalc*hp.button38.background:	SteelBlue
+XCalc*hp.button38.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! Plus key
+XCalc*hp.button39.background:	SteelBlue
+XCalc*hp.button39.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+
+! "Number" keys.
+! "7"
+XCalc*hp.button7.background:	white
+XCalc*hp.button7.foreground:	black
+XCalc*hp.button7.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "8"
+XCalc*hp.button8.background:	white
+XCalc*hp.button8.foreground:	black
+XCalc*hp.button8.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "9"
+XCalc*hp.button9.background:	white
+XCalc*hp.button9.foreground:	black
+XCalc*hp.button9.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "4"
+XCalc*hp.button17.background:	white
+XCalc*hp.button17.foreground:	black
+XCalc*hp.button17.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "5"
+XCalc*hp.button18.background:	white
+XCalc*hp.button18.foreground:	black
+XCalc*hp.button18.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "6"
+XCalc*hp.button19.background:	white
+XCalc*hp.button19.foreground:	black
+XCalc*hp.button19.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "1"
+XCalc*hp.button27.background:	white
+XCalc*hp.button27.foreground:	black
+XCalc*hp.button27.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "2"
+XCalc*hp.button28.background:	white
+XCalc*hp.button28.foreground:	black
+XCalc*hp.button28.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "3"
+XCalc*hp.button29.background:	white
+XCalc*hp.button29.foreground:	black
+XCalc*hp.button29.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "0"
+XCalc*hp.button36.background:	white
+XCalc*hp.button36.foreground:	black
+XCalc*hp.button36.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90
+! "."
+XCalc*hp.button37.background:	white
+XCalc*hp.button37.foreground:	black
+XCalc*hp.button37.displayList:	foreground rgb:b/b/b;segments 8,-4,-9,-4,-4,-9,-4,8;draw-arc -14,-14,-4,-4,270,90

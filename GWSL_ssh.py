@@ -31,11 +31,20 @@ def get_login(machine):
         nonlocal creds
         passw = link_pass.get()
         user = link_user.get()
-        if user != "" and passw != "":
-            creds = {"user": user, "pass": passw}
+        key = link_key.get()
+        if user != "" and (passw != "" or key != ""):
+            creds = {"user": user, "pass": passw, "key": key}
             boxRoot.quit()
             boxRoot.destroy()
             # boxRoot.running = False
+
+    def browse_key(*args):
+        nonlocal creds
+        from tkinter.filedialog import askopenfilename
+        filename = tk.filedialog.askopenfilename(initialdir = "~/", title=f"Select a Valid SSH Private Key (.PPK) for {machine}", \
+                                      filetypes=[("PPK Key Files","*.ppk")])
+        link_key.insert(0, filename)
+        
 
     creds = {}
 
@@ -73,6 +82,15 @@ def get_login(machine):
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
 
+
+    tk.Label(frame_1, text="SSH Private Key: ").grid(row=2, column=1, padx=10, sticky="W")
+
+    link_key = ttk.Entry(frame_1)
+    link_key.grid(row=2, column=2, padx=10, sticky="WE")
+
+    key_b = ttk.Button(frame_1, text="...", command=browse_key, width=4)
+    key_b.grid(row=2, column=3, padx=0, sticky="W")
+    
     machines = []
 
     frame_1.grid(row=1, column=0, padx=20, sticky="SWE", columnspan=2)
@@ -86,7 +104,7 @@ def get_login(machine):
     test_b = ttk.Button(frame_3, text="Login", command=login)
     test_b.grid(column=2, row=0, sticky="SE", padx=10)
 
-    frame_3.grid(row=2, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
+    frame_3.grid(row=3, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
 
     frame_3.grid_columnconfigure(2, weight=1)
 
@@ -114,4 +132,4 @@ def get_login(machine):
             return creds
 
 
-# print(get_login("raspberrypi"))
+#print(get_login("raspberrypi"))

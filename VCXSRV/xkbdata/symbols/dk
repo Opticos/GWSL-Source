@@ -1,6 +1,4 @@
-// based on a keyboard map from an 'xkb/symbols/dk' file
-
-default  partial alphanumeric_keys
+default partial alphanumeric_keys
 xkb_symbols "basic" {
 
     include "latin(type2)"
@@ -39,14 +37,13 @@ xkb_symbols "nodeadkeys" {
     key <BKSL>	{ [apostrophe,   asterisk,  doubleacute,     multiply ]	};
     key <AB08>	{ [     comma,  semicolon,      cedilla,       ogonek ]	};
     key <AB09>	{ [    period,      colon, periodcentered,   abovedot ]	};
-
 };
 
 partial alphanumeric_keys
 xkb_symbols "winkeys" {
 
     include "dk(basic)"
-    name[Group1] = "Danish (Win keys)";
+    name[Group1] = "Danish (Windows)";
     include "eurosign(5)"
 };
 

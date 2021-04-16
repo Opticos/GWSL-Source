@@ -1,0 +1,236 @@
+#****************************************************************************
+#*                                                                          *
+#*                         COPYRIGHT (c) 1988 BY                            *
+#*             DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS.                *
+#*			   ALL RIGHTS RESERVED                              *
+#*                                                                          *
+#*  THIS SOFTWARE IS FURNISHED UNDER A LICENSE AND MAY BE USED AND  COPIED  *
+#*  ONLY  IN  ACCORDANCE  WITH  THE  TERMS  OF  SUCH  LICENSE AND WITH THE  *
+#*  INCLUSION OF THE ABOVE COPYRIGHT NOTICE.  THIS SOFTWARE OR  ANY  OTHER  *
+#*  COPIES  THEREOF MAY NOT BE PROVIDED OR OTHERWISE MADE AVAILABLE TO ANY  *
+#*  OTHER PERSON.  NO TITLE TO AND OWNERSHIP OF  THE  SOFTWARE  IS  HEREBY  *
+#*  TRANSFERRED.                                                            *
+#*                                                                          *
+#*  THE INFORMATION IN THIS SOFTWARE IS SUBJECT TO CHANGE  WITHOUT  NOTICE  *
+#*  AND  SHOULD  NOT  BE  CONSTRUED  AS  A COMMITMENT BY DIGITAL EQUIPMENT  *
+#*  CORPORATION.                                                            *
+#*                                                                          *
+#*  DIGITAL ASSUMES NO RESPONSIBILITY FOR THE USE OR  RELIABILITY  OF  ITS  *
+#*  SOFTWARE ON EQUIPMENT WHICH IS NOT SUPPLIED BY DIGITAL.                 *
+#*                                                                          *
+#****************************************************************************
+#*++
+#*  FACILITY:
+#*
+#*	< to be supplied >
+#*
+#*  ABSTRACT:
+#*
+#*	< to be supplied >
+#*
+#*  ENVIRONMENT:
+#*
+#*	< to be supplied >
+#*
+#*  MODIFICATION HISTORY:
+#*
+#*	< to be supplied >
+#*
+#*--
+#
+# toolkit error and warning messages - used in XtGetErrorDatabaseText
+#
+# toolkit error messages:
+#
+# CALLING SEQUENCE:
+#
+#    DWTERROR(key, message)						  
+#    	XtError (key, "dwtlibError", "DwtlibError", message, NULL, NULL)
+#
+#    XtError(name,type,class,defaultp,params,num_params)
+#    	(*errorHandler)(name,type,class,defaultp,params,num_params);
+#
+#    _XtDefaultError (name,type,class,defaultp,params,num_params)
+#    	XtGetErrorDatabaseText(name,type,class,defaultp, buffer, 1000);
+#
+#    XtGetErrorDatabaseText(name,type,class,defaultp, buffer, nbytes)
+#    	(void) sprintf(temp, "%s.%s", name, type);
+#    	(void) XrmGetResource(errorDB, temp, class, &type_str, &result);
+#
+attacheddbCircularDependency.dwtlibError: Circular dependency in Attached Dialog Box children
+ClipBoardBadDataType.dwtlibError: bad data type
+ClipBoardCorrupt.dwtlibError: internal error - corrupt data structure
+CvtStringToFontList.dwtlibError: String to FontList conversion needs character_set and screen
+fao_main.dwtlibError: DDIS CS functions have returned an undefined status
+HelpShellOneChild.dwtlibError: Helpshell widget only supports one child
+HiddenShellOneChild.dwtlibError: Hiddenshell widget only supports one child
+#
+# INTRINSIC ROUTINE ERROR MESSAGES
+#
+# CALLING SEQUENCE:
+#
+#    XtError(name,type,class,defaultp,params,num_params)
+#    	(*errorHandler)(name,type,class,defaultp,params,num_params);
+#
+#    _XtDefaultError (name,type,class,defaultp,params,num_params)
+#    	XtGetErrorDatabaseText(name,type,class,defaultp, buffer, 1000);
+#
+#    XtGetErrorDatabaseText(name,type,class,defaultp, buffer, nbytes)
+#    	(void) sprintf(temp, "%s.%s", name, type);
+#    	(void) XrmGetResource(errorDB, temp, class, &type_str, &result);
+#
+allocError.malloc:  Cannot perform malloc
+allocError.realloc: Cannot perform realloc
+allocError.calloc:  Cannot perform calloc
+wrongParameters.cvtIntOrPixelToXColor: Pixel to color conversion needs screen and colormap arguments
+wrongParameters.cvtStringToPixel: String to pixel conversion needs screen and colormap arguments
+wrongParameters.cvtStringToCursor: String to cursor conversion needs screen argument
+wrongParamters.cvtStringToFont: String to font conversion needs screen argument
+wrongParameters.cvtStringToFontStruct: String to cursor conversion needs screen argument
+invalidParent.xtCreateWidget: XtCreateWidget requires non-NULL parent
+invalidClass.xtCreateWidget: XtCreateWidget requires non-NULL widget class
+nullProc.insertChild: NULL insert_child procedure
+invalidParameter.removePopupFromParent: RemovePopupFromParent requires non-NULL popuplist
+invalidParent.xtCreatePopupShell: XtCreatePopupShell requires non-NULL parent
+invalidClass.xtCreatePopupShell: XtCreatePopupShell requires non-NULL widget class
+invalidClass.xtCreateApplicationShell: XtCreateApplicationShell requires non-NULL widget class
+invalidParent.xtMakeGeometryRequest: XtMakeGeometryRequest - NULL parent.  Use SetValues instead
+invalidParent.xtMakeGeometryRequest: XtMakeGeometryRequest - parent not composite
+invalidGeometryManager.xtMakeGeometryRequest: XtMakeGeometryRequest - parent has no geometry manger
+invalidDisplay.xtInitialize: Can't Open display
+invalidProcedure.realizeProc: No realize class procedure defined
+invalidProcedure.inheritanceProc: Unresolved inheritance operation
+communicationError.select: Select failed
+invalidParameter.xtAddInput: invalid condition passed to XtAddInput
+communicationError.notSelect: Error in notSelect
+communicationError.notSelect: Error in notSelect
+invalidClass.xtPopup: XtPopup requires a subclass of shellWidgetClass
+invalidClass.xtPopdown: XtPopdown requires a subclass of shellWidgetClass
+invalidArgCount.xtGetValues: Argument count > 0 on NULL argument list in XtGetValues
+invalidClass.constraintSetValue: Subclass of Constraint required in CallConstraintSetValues
+invalidArgCount.xtSetValues: Argument count > 0 on NULL argument list in XtSetValues
+noSelectionProperties.freeSelectionProperty: internal error: no selection property context for display
+invalidWindow.eventHandler: Event with wrong window
+invalidParameter.numberChildren: The root and popup shells widget only support one child
+invalidParameter.numberChildren: The root and popup shells widget only support one child
+missingEvent.shell: Events are disappearing from under Shell
+internalError.shell: Shell's window manager interaction is broken
+translationError.mergingTablesWithCycles: Trying to merge translation tables with cycles, and can't resolve this cycle
+invalidParameters.xtmenuPopup: XtMenuPopup called with num_params != 2
+invalidParameters.xtMenuPopup: Bad first parameter to _XtMenuPopup
+invalidPopup.xtMenuPopup: Can't find popup in _XtMenuPopup
+invalidParameters.xtMenuPopupAction: MenuPopup wants exactly one argument
+allocError.malloc: Cannot perform malloc
+allocError.realloc: Cannot perform realloc
+allocError.calloc: Cannot perform calloc
+#
+#
+# toolkit warning messages:
+#
+# CALLING SEQUENCE:
+#
+#    DWTWARNING(key, message)					  
+#    	XtWarning (key, "dwtlibWarning", "DwtlibWarning", message, NULL, NULL)
+#
+#    XtWarning(name,type,class,defaultp,params,num_params)
+#    	(*warningHandler)(name,type,class,defaultp,params,num_params);
+#
+#    _XtDefaultWarning (name,type,class,defaultp,params,num_params)
+#    	XtGetErrorDatabaseText(name,type,class,defaultp, buffer, 1000);
+#
+#    XtGetErrorDatabaseText(name,type,class,defaultp, buffer, nbytes)
+#    	(void) sprintf(temp, "%s.%s", name, type);
+#    	(void) XrmGetResource(errorDB, temp, class, &type_str, &result);
+#
+CSCharSetIdOutOfRange.dwtlibWarning: get_charset: Character set ID is out of range
+DialogPopupParent.dwtlibWarning: Parent of DwtModal/Modeless Dialog widget must be Shell
+STextCantFindPosition.dwtlibWarning: Can't find position in MovePreviousLine???
+MenuUnrealizedParent.dwtlibWarning: Can not create a popup menu with unrealized parent
+PulldownNoSubMenu.dwtlibWarning: Can not create a pulldown without a submenu.
+PulldownBadParent.dwtlibWarning: Pulldown widgets must have menuclass parents!
+PulldownBadParent.dwtlibWarning: Pulldown widgets must have menuclass parents!
+PushButton.dwtlibWarning: Accelerator translation table overflow
+ToggleButton.dwtlibWarning: Accelerator translation table overflow
+#
+# DRMSignalError.string: ", "DRMGeneralError",
+#            msg, NULL, 0) ;
+#
+# intrinsic routines warning messages
+#
+# CALLING SEQUENCE:
+#
+#    XtWarning(name,type,class,defaultp,params,num_params)
+#    	(*warningHandler)(name,type,class,defaultp,params,num_params);
+#
+#    _XtDefaultWarning (name,type,class,defaultp,params,num_params)
+#    	XtGetErrorDatabaseText(name,type,class,defaultp, buffer, 1000);
+#
+#    XtGetErrorDatabaseText(name,type,class,defaultp, buffer, nbytes)
+#    	(void) sprintf(temp, "%s.%s", name, type);
+#    	(void) XrmGetResource(errorDB, temp, class, &type_str, &result);
+#
+invalidCallbackList.xtAddCallback: Cannot find callback list in XtAddCallbacks
+invalidCallbackList.xtAddCallback: Cannot find callback list in XtAddCallbacks
+invalidCallbackList.xtRemoveCallback: Cannot find callback list in XtRemoveCallbacks
+invalidCallbackList.xtRemoveCallback: Cannot find callback list in XtRemoveCallbacks
+invalidCallbackList.xtRemoveAllCallback: Cannot find callback list in XtRemoveAllCallbacks
+invalidCallbackList.xtCallCallback: Cannot find callback list in XtCallCallbacks
+invalidCallbackList.xtOverrideCallback: Cannot find callback list in XtOverrideCallbacks
+invalidResourceName.computeArgs: Cannot find resource name %s as argument to conversion
+typeConversionError.noConverter: No type converter registered for '%s' to '%s' conversion
+conversionError.string: Cannot convert string \"%s\" to type %s
+wrongParameters.cvtIntToBoolean: Integer to Boolean conversion needs no extra arguments
+wrongParamters.cvtStringToBoolean: String to Boolean conversion needs no extra arguments
+wrongParamters.cvtIntToLongBoolean: Integer to LongBoolean conversion needs no extra arguments
+wrongParameters.cvtStringToLongBoolean: String to LongBoolean conversion needs no extra arguments
+noColormap.cvtStringToPixel: Cannot allocate colormap entry for \"%s\"
+wrongParameters.cvtStringToDisplay: String to Display conversion needs no extra arguments
+wrongParameters.cvtStringToFile: String to File conversion needs no extra arguments
+wrongParameters.cvtIntToFont: Integer to Font conversion needs no extra arguments
+wrongParameters.cvtStringToInt: String to Integer conversion needs no extra arguments
+wrongParameters.cvtStringToShort: String to Integer conversion needs no extra arguments
+wrongParameters.cvtStringToUnsignedChar: String to Integer conversion needs no extra arguments
+wrongParameters.cvtXColorToPixel: Color to Pixel conversion needs no extra arguments
+wrongParameters.cvtIntToPixel: Integer to Pixel conversion needs no extra arguments
+wrongParameters.cvtIntToPixmap: Integer to Pixmap conversion needs no extra arguments
+invalidDepth.setValues: Can't change widget depth
+versionMismatch.widget: Widget class %s version mismatch:\n  widget %d vs. intrinsics %d
+invalidWidget.removePopupFromParent: RemovePopupFromParent,widget not on parent list
+invalidProcedure.deleteChild: null delete_child procedure in XtDestroy
+registerWindowError.xtRegisterWindow: Attempt to change already registered window
+registerWindowError.xtUnregisterWindow: Attempt to unregister invalid window
+grabError.grabDestroyCallback: XtAddGrab requires exclusive grab if spring_loaded is TRUE
+grabError.xtRemoveGrab: XtRemoveGrab asked to remove a widget not on the grab list
+invalidShell.xtTranslateCoords: Widget has no shell ancestor
+invalidChild.xtUnmanageChildren: Null child passed to XtUnmanageChildren
+invalidChild.xtUnmanageChildren: Null child passed to XtUnmanageChildren
+ambigiousParent.xtUnmanageChildren: Not all children have same parent in XtUnmanageChildren
+invalidChild.xtManageChildren: null child passed to XtManageChildren
+invalidChild.xtManageChildren: null child passed to XtManageChildren
+ambigiousParent.xtManageChildren: Not all children have same parent in XtManageChildren
+unimplementedFunction.xtAddInput: XtAddInput is not implemented
+invalidProcedure.inputHandler: XtRemoveInput: Input handler not found
+unimplementedFunction.xtRemoveInput: XtRemoveInput is not implemented
+invalidParent.xtCopyFromParent: CopyFromParent must have non-NULL parent
+invalidArgCount.getResources: argument count > 0 on NULL argument list
+invalidResourceCount.getResources: resource count > 0 on NULL resource list
+invalidGeometry.xtMakeGeometryRequest: Shell subclass did not take care of geometry in XtSetValues
+invalidProcedure.set_values_almost: set_values_almost procedure shouldn't be NULL
+initializationError.xtInitialize: Initializing Resource Lists twice
+communicationError.windowManager: Window Manager is confused
+translationParseError.parseError: translation table syntax error: %s
+translationParseError.parseEvent: Events follow '+' repeat count
+translationParseError.parseEvent: Events follow '+' repeat count
+translationParseError.parseString: Missing \
+invalidParameters.compileAccelerators: String to TranslationTable needs no extra arguments
+invalidParameters.compileTranslations: String to TranslationTable needs no extra arguments
+translationError.xtTranslateInitialize: Intializing Translation manager twice
+#
+# ReportUnboundActions - warnings include state table - should split?
+#
+translationError.unboundActions: Actions not found
+translationError.ambigiousActions: Overriding earlier translation manager actions
+translationError.mergingNullTable: Old translation table was null, cannot modify
+invalidParameters.mergeTranslations: MergeTM to TranslationTable needs no extra arguments
+invalidPopup.unsupportedOperation: Pop-up menu creation is only supported on ButtonPress or EnterNotify events
+invalidPopup.unsupportedOperation: Pop-up menu creation is only supported on ButtonPress or EnterNotify events

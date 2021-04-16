@@ -1,7 +1,7 @@
 # GWSL Dashboard *lets do this again*
 
-# Copyright Paul-E/Opticos Studios 2020
-# https://www.opticos.studio
+# Copyright Paul-E/Opticos Studios 2021
+# https://sites.google.com/bartimee.com/opticos-studios/home
 
 
 # Dedicated to the Sacred Heart of Jesus
@@ -36,9 +36,9 @@ import logging
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.3.7"
+version = "1.3.8"
 
-lc_name = "Licenses137.txt"
+lc_name = "Licenses138.txt"
 
 debug = False
 
@@ -70,6 +70,7 @@ if os.path.isdir(app_path) == False:
     print("creating appdata directory")
 
 # EMERGENCY LOG DELETER FOR 1.3.6. Delete in 1.3.8
+"""
 try:
     if os.path.exists(app_path + "GWSL_helper.sh") == True:
         scr = open(app_path + "GWSL_helper.sh", "r")
@@ -80,7 +81,7 @@ try:
             os.remove(app_path + 'settings.json')
 except:
     pass
-
+"""
 
 class DuplicateFilter(logging.Filter):
 
@@ -119,12 +120,22 @@ try:
             iset.create(app_path + "\\settings.json")
             print("Updating settings")
         else:
-            if sett["conf_ver"] >= 3:
+            if sett["conf_ver"] >= 4:
                 if debug == True:
                     print("Settings up to date")
             else:
                 print("Updating settings")
+                old_iset = iset.read()
                 iset.create(app_path + "\\settings.json")
+                new_iset = iset.read()
+
+                #migrate user settings
+                new_iset["putty"]["ip"] = old_iset["putty"]["ip"]
+                new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
+                new_iset["app_blacklist"] = old_iset["app_blacklist"]
+                new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
+                iset.set(new_iset)
+                
 
     # Get the script ready
     import wsl_tools as tools
@@ -136,7 +147,7 @@ try:
         # make sure the script is up to date
         scr = open(app_path + "GWSL_helper.sh", "r")
         lines = scr.read()
-        if "v3" in lines:
+        if "v4" in lines:
             if debug == True:
                 print("Script is up to date")
         else:
@@ -324,7 +335,6 @@ if "--r" not in args:
         screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
         WIDTH, HEIGHT = ui.inch2pix(3.8), ui.inch2pix(5.7)  ##ui.inch2pix(7.9), ui.inch2pix(5)
-
         if pos_config == "top":
             winpos = screensize[0] - WIDTH
             winh = taskbar - HEIGHT
@@ -375,7 +385,30 @@ if "--r" not in args:
         fpsClock = pygame.time.Clock()
         lumen_opac = 6
         # light_source = pygame.image.load(asset_dir + "lumens/7.png").convert_alpha()
+        #sync, clock, link, laptop, invalid/failed circle, 
+        icons_old = {"refresh":"", "clock":"", "link":"",
+                 "laptop":"", "error":"", "settings":"", "app_list":"",
+                 "shell":"", "network":"", "heart":"", "question":"",
+                 "plus":"", "minus":"", "x":"", "check":"", "dbus_config":"",
+                 "theme":"", "discord":"", "export":"", "folder":""}
+        
+        #these are all 24 weight
+        icons = {"refresh":"", "clock":"", "link":"",
+                 "laptop":"", "error":"", "settings":"", "app_list":"",
+                 "shell":"", "network":"", "heart":"", "question":"",#oldshell 
+                 "plus":"", "minus":"", "x":"", "check":"", "dbus_config":"",
+                 "theme":"", "discord":"", "export":"", "folder":""}
+
+
+        
         ico_font = asset_dir + "SEGMDL2.TTF"
+        modern = True
+        
+        if modern == True:
+            ico_font = asset_dir + "segoefluent.ttf"#"SEGMDL2.TTF"
+
+        if "fluent" not in ico_font:
+            icons = icons_old
         # lumen = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
         # mask = pygame.Surface([WIDTH, HEIGHT], SRCALPHA).convert_alpha()
         # mask.fill([255, 0, 0])
@@ -429,17 +462,28 @@ if "--r" not in args:
 def get_version(machine):
     try:
         machines = os.popen("wsl.exe -l -v").read()  # lines()
-        machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
-        if "VERSION" in machines[0]:
-            machines = machines[2:]
-            machines[:] = (value for value in machines if value != "")
-            for i in machines:
-                if machine in i:
-                    return int(i[-1])
-        else:
+        machines = re.sub(r'[^a-z A-Z0-9./\n-]', r'', machines).splitlines()
+        #machines = machines.splitlines()
+        machines2 = []
+        wsl_1 = True
+        for i in machines:
+            b = ''.join(i).split()
+            if 'VERSION' in b:
+                wsl_1 = False
+            if 'NAME' not in b and b != [] and b != None:
+                machines2.append(b)
+        if wsl_1 == True:
+            print("assuming wsl 1")
             return 1
+        
+        for i in machines2:
+            if i[0] == machine:
+                return int(i[2])
+        return 1
+        
     except:
         return 1
+    
 
 
 def reboot(machine):
@@ -487,44 +531,84 @@ def help_ssh():
     webbrowser.get('windows-default').open("https://opticos.github.io/gwsl/tutorials/manual.html#using-gwsl-with-ssh")
 
 
+def wsl_run(distro, command, caller, nolog=False):
+    """
+    One Run to Rule Them All
+    """
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -lc " + '"' + str(command) + '&"'
+    
+    if nolog == False:
+        logger.info(f"(runos) WSL SHELL $ {cmd}")
+        #logger.info(f"WSL OUTPUT > {out}")
+        
+    #subprocess.Popen(cmd, shell=True)
+    print(caller, cmd)
+    run = subprocess.Popen(
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            universal_newlines=True
+    )
+    out = str(run.stdout.read().rstrip())
+    print(out)
+    return out
+    
+    #return out
+
+
 def runs(distro, command):
+    """
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
     logger.info(f"(runos) WSL SHELL $ {cmd}")
     subprocess.Popen(cmd,
                      shell=True)  # .readlines()
     return None
+    """
+    return wsl_run(distro, command, "runs")
 
 
 def run(distro, command):
+    """
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"'
     out = subprocess.getoutput(cmd)  # .readlines()
     logger.info(f"(run) WSL SHELL $ {cmd}")
     logger.info(f"WSL OUTPUT > {out}")
     return out
+    """
+    return wsl_run(distro, command, "run")
 
 
 def runo3(distro, command):
+    """
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;/bin/sh -c " + '"' + str(command) + '"'
     out = subprocess.getoutput(cmd)  # .readlines()
     logger.info(f"(runo3) WSL SHELL $ {cmd}")
     logger.info(f"WSL OUTPUT > {out}")
     return out
+    """
+    return wsl_run(distro, command, "runo3")
 
 
 def runo2(distro, command):
+    """
     cmd = "wsl.exe -d " + str(distro) + ' ' + "/bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
     logger.info(f"(runo2) WSL SHELL $ {cmd}")
     logger.info(f"WSL OUTPUT > {out}")
     return out
+    """
+    return wsl_run(distro, command, "runo2")
 
 
 def runo(distro, command):
+    """
     cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
     logger.info(f"(runo) WSL SHELL $ {cmd}")
     logger.info(f"WSL OUTPUT > {out}")
     return out
+    """
+    return wsl_run(distro, command, "runo")
 
 
 def get_ip(machine):
@@ -559,12 +643,13 @@ def choose_machine():
     docker_blacklist = []
     for i in machines:
         for a in avoid:
-            if a.lower() in i.lower():
+            if str(a).lower() in str(i).lower():
                 docker_blacklist.append(i)
+        
 
     for i in docker_blacklist:
         machines.remove(i)
-
+    
     if len(machines) == 1:
         return machines[0]
     elif len(machines) > 7:
@@ -725,7 +810,7 @@ def choose_machine():
 
 def about():
     """
-    Handles building and display the about window
+    Handles building and displaying the about window
     :return:
     """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
@@ -806,7 +891,7 @@ def about():
 
         icon_font = ui.font(ico_font, int(ui.inch2pix(0.16)))
 
-        sett = icon_font.render("", True, white)  # 
+        sett = icon_font.render(icons["clock"], True, white)  # 
         sett.set_alpha(int(v * 255))
         canvas.blit(sett, [WIDTH - sett.get_width() - ui.inch2pix(0.3), ui.inch2pix(0.395) - int(ui.inch2pix(0.1) * v)])
 
@@ -827,7 +912,7 @@ def about():
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
 
         machines = ["GWSL Version" + " " + str(version),
-                    "© Copyright Paul-E/Opticos Studios 2020",
+                    "© Copyright Paul-E/Opticos Studios 2021",
                     "GWSL Uses:",
                     "Python - Pyinstaller - SDL",
                     "VCXSRV - Putty - Pillow",
@@ -836,6 +921,8 @@ def about():
                     "Visit Opticos Studios Website",
                     "View Licenses",
                     "Edit Configuration",
+                    "Allow GWSL Through The Firewall",
+                    "GWSL Discord Server",
                     "View Logs"]
 
         if BUILD_MODE == "WIN32":
@@ -846,7 +933,8 @@ def about():
         if len(machines) != 0:
             for i in machines:
                 if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or \
-                        i == "View Logs" or i == "Add to Startup":
+                        i == "View Logs" or i == "Add to Startup" or i == "Allow GWSL Through The Firewall" or \
+                        i == "GWSL Discord Server":
                     txt = title_font.render(i, True, accent)  # [0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -860,15 +948,24 @@ def about():
                             if i == "View Licenses":
                                 os.popen(app_path + lc_name)
                             elif i == "Visit Opticos Studios Website":
-                                webbrowser.get('windows-default').open('http://opticos.studio')
+                                webbrowser.get('windows-default').open('https://sites.google.com/bartimee.com/opticos-studios/home')
                             elif i == "View Logs":
                                 os.chdir(app_path)
                                 os.popen("notepad service.log|notepad dashboard.log")
                             elif i == "Edit Configuration":
                                 os.chdir(app_path)
                                 os.popen("settings.json")
+                            elif i == "Allow GWSL Through The Firewall": #TODO
+                                os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
+                                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall \
+                                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe" \
+                                                and "GWSL_vcxsrv_lowdpi.exe". You will need Admin Priviledges to do this.'),
+                                                 title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
+                            elif i == "GWSL Discord Server":
+                                webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
+                                
 
-                h += ui.inch2pix(0.29) + txt.get_height()  # used to be 0.3
+                h += ui.inch2pix(0.23) + txt.get_height()  # used to be 0.29, 0.25
                 d += ui.inch2pix(0.1)
 
         txt = title_font.render(_("Cancel"), True, white)
@@ -911,13 +1008,15 @@ def configure_machine(machine):
     loading = True
     loading_angle = 0
     icon_font = ui.font(ico_font, int(ui.inch2pix(1)))  # 0.19
-    loader = icon_font.render("", True, white)
+    loader = icon_font.render(icons["refresh"], True, white)#
     them = "Default"
     themes = []
+    m_version = ""
 
     def get():
-        nonlocal q_button, g_button, QT, GTK, x_configured, loading, themes, them
+        nonlocal q_button, g_button, QT, GTK, x_configured, loading, themes, them, m_version
         profile = tools.profile(machine)
+        m_version = get_version(machine)
 
         if "QT_SCALE_FACTOR=2" in profile:
             QT = 2
@@ -962,6 +1061,8 @@ def configure_machine(machine):
     t.start()
 
     rebooter = False
+
+    
 
     while True:
         loading_angle -= 10
@@ -1036,10 +1137,16 @@ def configure_machine(machine):
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
         w = ui.inch2pix(0.5)  # WIDTH / 2 - txt.get_width() / 2 + ui.inch2pix(0.1)
         d = ui.inch2pix(0.2)
-        h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0.25)
+        h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0.1) #last used to be 0.25        
+        
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
-        icon_font = ui.font(ico_font, int(ui.inch2pix(0.19)))
 
+        if "fluent" in ico_font:
+            icon_font = ui.font(ico_font, int(ui.inch2pix(0.25))) #for old icons 0.19
+        else:
+            icon_font = ui.font(ico_font, int(ui.inch2pix(0.19))) #for old icons 0.19
+
+        
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
@@ -1056,6 +1163,7 @@ def configure_machine(machine):
 
         def confx():
             nonlocal rebooter, x_configured, machine
+            
             # if x_configured == False:
             ver = get_version(machine)
 
@@ -1080,6 +1188,15 @@ def configure_machine(machine):
                 rebooter = True
                 machine = None
 
+        def browse_wsl():
+            nonlocal machine
+            #chooser(canvas, "Alternate Shell Display Export", ["Bash (choose if unsure)", "Zsh", "Fish"], icon_override="shell")
+            subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+            
+        def indirect_conf():
+            chooser(canvas, "Alternate Shell Display Export", ["Bash (choose if unsure)", "Zsh", "Fish"], icon_override="shell")
+
+            
         def conf_dbus():
             code = pymsgbox.password(text='Enter Sudo Password For ' + str(machine.replace("-", " ")) + ":",
                                      title='Authentication', mask='*')
@@ -1180,18 +1297,24 @@ def configure_machine(machine):
                     themer.daemon = True
                     themer.start()
 
-        plus = ""
-        minus = ""
+        plus = icons["plus"]
+        minus = icons["minus"]
 
         buttons = []
         if x_configured == False:
-            buttons.append(["Auto-Export Display", confx, ""])
+            buttons.append(["Auto-Export Display", confx, icons["x"]])
         else:
-            buttons.append(["Display Is Set To Auto-Export", confx, ""])
+            buttons.append(["Display Is Set To Auto-Export", confx, icons["export"]])
         if machine != None:
             if "deb" in machine.lower() or "ubuntu" in machine.lower():
-                buttons.append(["Configure DBus (optional)", conf_dbus, ""])
+                buttons.append(["Configure DBus (optional)", conf_dbus, icons["dbus_config"]])
 
+        buttons.append(["LibGL Always Indirect (optional)", indirect_conf, icons["laptop"]]) #TODO
+
+        #if m_version == 2:
+        buttons.append(["Browse Distro Files", browse_wsl, icons["folder"]]) #TODO
+        
+ 
         if "HI" in g_button:
             ico = plus
         else:
@@ -1204,13 +1327,25 @@ def configure_machine(machine):
 
         buttons.append(["Set QT To: " + q_button, scaleq, ico])
         if themes != []:
-            buttons.append(["GTK Theme: " + str(them), theme, ""])
+            buttons.append(["GTK Theme: " + str(them), theme, icons["theme"]])
         else:
-            buttons.append(["No GTK Themes Installed", theme, ""])
+            buttons.append(["No GTK Themes Installed", theme, icons["theme"]])
 
-        buttons.append(["Reboot " + ni, reb, ""])
+        buttons.append(["Reboot " + ni, reb, icons["refresh"]])
         click = None
         v5 = (1 - animator.get("loading_c")[0] / 100)
+
+        title_font2 = ui.font(default_font, int(ui.inch2pix(0.13)))
+        v_str = ""
+        if m_version != "":
+            v_str = f"(WSL {m_version})"
+        txt3 = title_font2.render(v_str, True, white)
+        txt3.set_alpha(int(v5 * 200 * v))
+        
+        canvas.blit(txt3, [WIDTH / 2 - txt3.get_width() / 2, ui.inch2pix(0.45) + txt.get_height() - int(ui.inch2pix(0.2) * (v - 1))])
+
+
+        
         hover = pygame.mouse.get_pos()
         selected = False
         for i in buttons:
@@ -1238,7 +1373,13 @@ def configure_machine(machine):
                     txt.set_alpha(int((1 - s) * v5 * (int(v * 255))))
 
                 canvas.blit(txt, [w + ui.inch2pix(0.4), h - int(v5 * d)])
-                canvas.blit(txt2, [w, h - int(v5 * d) + ui.inch2pix(0.06)])
+
+                fluent_ico_offset = 0
+                if "fluent" in ico_font:
+                    fluent_ico_offset = -0.05
+
+                canvas.blit(txt2, [w, h - int(v5 * d) + ui.inch2pix(0.06 + fluent_ico_offset)])
+                
 
                 if s2 == True:
                     txt = title_font.render(i[0], True, accent)
@@ -1247,9 +1388,9 @@ def configure_machine(machine):
 
                     txt2 = icon_font.render(i[2], True, accent)
                     txt2.set_alpha(int(v5 * int(v * 255 * s)))
-                    canvas.blit(txt2, [w, h - int(v5 * d) + ui.inch2pix(0.06)])
+                    canvas.blit(txt2, [w, h - int(v5 * d) + ui.inch2pix(0.06 + fluent_ico_offset)])
 
-            h += ui.inch2pix(0.35) + txt.get_height()
+            h += ui.inch2pix(0.34) + txt.get_height() #used to be 0.35
             d += ui.inch2pix(0.1)
 
         if selected == True:
@@ -1259,12 +1400,13 @@ def configure_machine(machine):
 
         txt = title_font.render("Cancel", True, white)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT + ui.inch2pix(0.2) - txt.get_height() - int(v * d)])
+        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, HEIGHT + ui.inch2pix(0.6) - txt.get_height() - int(v * d)])
+        
         if mouse != False:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
                 0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
-                if mouse[1] > HEIGHT + ui.inch2pix(0.2) - txt.get_height() - int(v * d) and mouse[
-                    1] < HEIGHT + ui.inch2pix(0.2) + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
+                if mouse[1] > HEIGHT + ui.inch2pix(0.6) - txt.get_height() - int(v * d) and mouse[
+                    1] < HEIGHT + ui.inch2pix(0.6) + txt.get_height() + ui.inch2pix(0.1) - int(v * d):
                     machine = None
                     animator.animate("choose", [0, 0])
 
@@ -1326,7 +1468,7 @@ def app_launcher(machine):
             blocker = False
             name = i[0].lower() + i[1:]
             for a in avoid:
-                if a.lower() in name.lower():
+                if str(a).lower() in str(name).lower():
                     blocker = True
                     break
             if blocker == True:
@@ -1381,7 +1523,7 @@ def app_launcher(machine):
     # generate loader
     icon_font = ui.font(ico_font, int(ui.inch2pix(1)))  # 0.19
 
-    loader = icon_font.render("", True, white)
+    loader = icon_font.render(icons["refresh"], True, white)
     # print(txt2.get_size())
 
     end = False
@@ -1494,7 +1636,7 @@ def app_launcher(machine):
                                           (v3 - 1) * d) + scroll + ui.inch2pix(0.03)],
                                special_flags=(pygame.BLEND_RGBA_ADD))
 
-                txt2 = icon_font.render("", True, white)
+                txt2 = icon_font.render(icons["link"], True, white)
 
                 txt_width = WIDTH - (w + ui.inch2pix(0.4) + txt2.get_width() + ui.inch2pix(0.6))
                 ext = title_font.render("... ", True, white)
@@ -1550,6 +1692,16 @@ def app_launcher(machine):
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
 
+        title_font = ui.font(default_font, int(ui.inch2pix(0.13)))
+        s_str = ""
+        if loading == False:
+            s_str = "(Type to Search)"
+        txt3 = title_font.render(s_str, True, white)
+        txt3.set_alpha(int(v * v3 * 200))
+        
+        canvas.blit(txt3, [WIDTH / 2 - txt3.get_width() / 2, ui.inch2pix(0.45) + txt.get_height() - int(ui.inch2pix(0.2) * (v - 1))])
+        
+
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
@@ -1592,6 +1744,11 @@ def app_launcher(machine):
                     machine = None
                     animator.animate("choose", [0, 0])
                     animator.animate("apps", [0, 0])
+                    
+        
+        
+
+        
 
         if light == False:
             pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
@@ -1613,7 +1770,7 @@ def app_launcher(machine):
             return machine
 
 
-def chooser(backdrop, title, options):
+def chooser(backdrop, title, options, icon_override=None):
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
     animator.register("choose1", [0, 0])
     animator.animate("choose1", [100, 0])
@@ -1625,7 +1782,12 @@ def chooser(backdrop, title, options):
 
     size = ui.inch2pix(0.4)
     ui.set_icons(asset_dir + "Paper/")
-    iconer = pygame.transform.smoothscale(ui.pygame_icon("paint", bundle_dir), [size, size])
+
+    icon = "paint"
+    if icon_override != None:
+        icon = icon_override
+        
+    iconer = pygame.transform.smoothscale(ui.pygame_icon(icon, bundle_dir), [size, size])
 
     list_length = 0
     list_length = len(options) * (ui.inch2pix(0.35) + ui.inch2pix(0.25))
@@ -1923,7 +2085,13 @@ def start_server(port, mode, clipboard):
         default_arguments.append("-noclipboard")
         default_arguments.append("-noprimary")
 
-    proc = subprocess.Popen(["VCXSRV/GWSL_instance.exe", ":" + str(port)] + default_arguments)
+    sett = iset.read()
+    hidpi = sett["graphics"]["hidpi"]
+    
+    hd = ""
+    if hidpi == False:
+        hd = "_lowdpi"
+    proc = subprocess.Popen([f"VCXSRV/GWSL_vcxsrv{hd}.exe", ":" + str(port)] + default_arguments)
     return proc.pid
 
 
@@ -2006,11 +2174,12 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 append = ""
             else:
                 append = " " + appends
-
             if ver == 1:
+                print("check1")
                 runs(machine, passw + l_mode + "DISPLAY=:0 " + qt + gtk + command + append)
             else:
                 ip = get_ip(machine)
+                print("check2")
                 runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append)
 
         else:
@@ -2060,10 +2229,12 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 print("running in thread")
                 # runo2 #runo
                 if ver == 1:
+                    print("check3")
                     print(runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append))
 
                 elif ver == 2:
                     ip = get_ip(machine)
+                    print("check4")
                     print(runs(machine,
                                passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append))
 
@@ -2082,10 +2253,12 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
             if mode == "single":
                 if ver == 1:
+                    print("check5")
                     runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append)
 
                 elif ver == 2:
                     ip = get_ip(machine)
+                    print("check6")
                     runs(machine,
                          passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append)
 
@@ -2100,7 +2273,145 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
         logger.exception("Exception occurred - cannot spawn process")
 
 
+
+
+			
 def get_login(machine):
+    if root:
+        root.withdraw()
+        boxRoot = tk.Toplevel(master=root)  # , fg="red", bg="black")
+        boxRoot.withdraw()
+    else:
+        boxRoot = tk.Tk()
+        boxRoot.withdraw()
+
+    def quitter():
+        boxRoot.quit()
+        boxRoot.destroy()
+        boxRoot.running = False
+        return None
+
+    def login(*args):
+        nonlocal creds
+        passw = link_pass.get()
+        user = link_user.get()
+        key = link_key.get()
+        if user != "" and (passw != "" or key != ""):
+            creds = {"user": user, "pass": passw, "key": key}
+            sett = iset.read()
+            sett["putty"]["ssh_key"] = link_key.get()
+            iset.set(sett)
+            
+            boxRoot.quit()
+            boxRoot.destroy()
+            # boxRoot.running = False
+            
+
+    def browse_key(*args):
+        nonlocal creds
+        from tkinter.filedialog import askopenfilename
+        filename = tk.filedialog.askopenfilename(initialdir = "~/", title=f"Select a Valid SSH Private Key (.PPK) for {machine}", \
+                                      filetypes=[("PPK Key Files","*.ppk")])
+        link_key.delete(0,"end")
+        link_key.insert(0, filename)
+        sett = iset.read()
+        sett["putty"]["ssh_key"] = filename
+        iset.set(sett)
+        
+
+    creds = {}
+
+    boxRoot.title("Login to " + str(machine))
+    boxRoot.iconname("Dialog")
+    boxRoot.minsize(300, 120)
+    boxRoot.running = True
+    boxRoot.protocol("WM_DELETE_WINDOW", quitter)
+
+    lbl = tk.Label(boxRoot, text="Login:", justify=LEFT)  # , font=("Helvetica", 16))
+    # lbl.grid(row=0, padx=10, sticky="W")
+    boxRoot.grid_rowconfigure(0, weight=0)
+
+    # First frame
+
+    frame_1 = ttk.Frame(boxRoot, padding="0.15i")
+    imager = Image.open(asset_dir + "lock.png")
+    img = PIL.ImageTk.PhotoImage(imager.resize([48, 48]))
+    labelm = tk.Label(frame_1, image=img)
+    labelm.image = img
+
+    labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
+
+    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
+
+    link_user = ttk.Entry(frame_1)
+
+    link_user.grid(row=0, column=2, padx=10, sticky="WE")
+
+    link_user.focus_force()
+
+    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
+
+    link_pass = ttk.Entry(frame_1, show="*")
+
+    link_pass.grid(row=1, column=2, padx=10, sticky="WE")
+
+
+    tk.Label(frame_1, text="SSH Private PPK Key: ").grid(row=2, column=1, padx=10, sticky="W")
+
+    link_key = ttk.Entry(frame_1)
+    link_key.grid(row=2, column=2, padx=10, sticky="WE")
+
+    sett = iset.read()
+    k_file = sett["putty"]["ssh_key"]
+
+    if k_file != None:
+        link_key.insert(0, k_file)
+        
+
+    key_b = ttk.Button(frame_1, text="...", command=browse_key, width=4)
+    key_b.grid(row=2, column=3, padx=0, sticky="W")
+    
+    machines = []
+
+    frame_1.grid(row=1, column=0, padx=20, sticky="SWE", columnspan=2)
+    frame_1.grid_columnconfigure(2, weight=1)
+
+    frame_3 = tk.Frame(boxRoot)  # , padding="0.15i")
+
+    close_b = ttk.Button(frame_3, text="Cancel", command=quitter)
+    close_b.grid(column=0, row=0, sticky="SW", padx=10)
+
+    test_b = ttk.Button(frame_3, text="Login", command=login)
+    test_b.grid(column=2, row=0, sticky="SE", padx=10)
+
+    frame_3.grid(row=3, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
+
+    frame_3.grid_columnconfigure(2, weight=1)
+
+    frame_3.grid_columnconfigure(1, weight=1)
+
+    frame_3.grid_columnconfigure(0, weight=1)
+
+    boxRoot.grid_rowconfigure(1, weight=0)
+    boxRoot.grid_rowconfigure(2, weight=1)
+
+    boxRoot.grid_rowconfigure(3, weight=0)
+
+    boxRoot.bind("<Return>", login)
+    boxRoot.grid_columnconfigure(0, weight=1)
+    boxRoot.deiconify()
+    boxRoot.wm_attributes("-topmost", 1)
+
+    while True:
+        # draw(canvas, mouse=False)
+        time.sleep(0.05)
+        boxRoot.update()
+        if boxRoot.running == False:
+            break
+        if creds != {}:
+            return creds
+
+def get_login_old(machine):
     global root
     if root:
         root.withdraw()
@@ -2350,7 +2661,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     docker_blacklist = []
     for i in machines:
         for a in avoid:
-            if a.lower() in i.lower():
+            if str(a).lower() in str(i).lower():
                 docker_blacklist.append(i)
 
     for i in docker_blacklist:
@@ -2500,6 +2811,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     # imager.save("test.ico", sizes=[(24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (255, 255)])
 
 
+
 def putty():
     global root
     if root:
@@ -2540,14 +2852,31 @@ def putty():
         ip_config = ip.get()
         if ip_config != "":
             creds = get_login(ip_config)
+            if creds == None:
+                return False
             sett = iset.read()
             sett["putty"]["ip"] = ip.get()
             iset.set(sett)
-
+            
             password = creds["pass"]
 
             user = creds["user"]
-            prog = cmd(command=["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip.get()}", "-pw", f"{password}", "-X"],
+
+            key_file = creds["key"]
+            
+            port_str = "-P"
+            por = "22"
+            if port.get() != "":
+                port_str = f"-P"
+                por = str(port.get())
+
+            commander = ["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip.get()}", port_str, por, "-pw", f"{password}", "-X"]
+
+            if key_file != "":
+                commander.append("-i")
+                commander.append(f'"{key_file}"')
+                
+            prog = cmd(command=commander,
                        console=True)
             quitter()
 
@@ -2557,10 +2886,13 @@ def putty():
         iset.set(sett)
 
         if ip.get() != "":
-            command = f'--r --ssh --ip="{ip.get()} --command="open_putty"'
-
+            porter = port.get()
+            if porter == "":
+                porter = 22
+            command = f'--r --ssh --ip="{ip.get()}:{porter}" --command="open_putty"'
+            
             print(command)
-            create_shortcut(command, "Graphical SSH on " + ip.get(), asset_dir + "computer.ico")
+            create_shortcut(command, "Graphical SSH on " + ip.get() + " port " + porter, asset_dir + "computer.ico")
             quitter()
 
     # First frame
@@ -2579,17 +2911,30 @@ def putty():
 
     ip = ttk.Entry(frame_1)
 
+    port = ConstrainedEntry(frame_1, width=5)
+    port.insert(0, 22)
+    
+    
     sett = iset.read()
     save_ip = sett["putty"]["ip"]
     if save_ip != None:
         ip.insert(0, save_ip)
+        if ":" in save_ip:
+            port_n = save_ip[save_ip.index(":") + 1:]
+            port.delete(0,"end")
+            port.insert(0, port_n)
+            ip.delete(0,"end")
+            ip.insert(0, save_ip[:save_ip.index(":")])
+
     # iset.set(sett)
 
     ip.grid(row=0, column=2, padx=10, rowspan=2, sticky="WE")
+    port.grid(row=0, column=4, padx=10, rowspan=2, columnspan=1, sticky="W")
 
     ip.focus_force()
 
     frame_1.grid_columnconfigure(2, weight=1)
+    
 
     frame_1.grid(row=1, column=0, padx=20, pady=0, sticky="NEW")
 
@@ -2787,7 +3132,7 @@ def draw(canvas, mouse=False):
 
     icon_font = ui.font(ico_font, int(ui.inch2pix(0.4)))
 
-    sett = icon_font.render("", True, white)
+    sett = icon_font.render(icons["laptop"], True, white)
     sett.set_alpha(int(launch * 255))
     canvas.blit(sett, [ui.inch2pix(0.3), ui.inch2pix(0.28) + (1 - launch) * ui.inch2pix(0.1)])
 
@@ -2890,6 +3235,7 @@ def draw(canvas, mouse=False):
                 subprocess.Popen("wsl.exe ~ -d " + str(machine))
             else:
                 subprocess.Popen(f'wt -p "{machine}"')
+                
 
     def apper():
         machine = choose_machine()
@@ -2907,18 +3253,28 @@ def draw(canvas, mouse=False):
         webbrowser.get('windows-default').open(
             "https://support.microsoft.com/en-us/help/4028685/windows-10-get-the-update")
 
-    heart = ""
+    def discorder():
+        webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
+
+    def browse_wsl():
+        machine = choose_machine()
+        subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+
+
+    heart = icons["heart"]
     if installed == True:
-        buttons = [[_("GWSL Distro Tools"), "", setter],
-                   [_("Shortcut Creator"), "", short],
-                   [_("Linux Apps"), "", apper],
-                   [_("Linux Shell"), "", shells],
-                   [_("Graphical SSH Connection"), "", putty],
-                   [_("Donate With PayPal"), "", donate]]
+        buttons = [[_("GWSL Distro Tools"), icons["settings"], setter],
+                   [_("Shortcut Creator"), icons["link"], short],
+                   [_("Linux Apps"), icons["app_list"], apper],
+                   [_("Linux Files"), icons["folder"], browse_wsl],
+                   [_("Linux Shell"), icons["shell"], shells],
+                   [_("Graphical SSH Connection"), icons["network"], putty],
+                   [_("Donate With PayPal etc."), icons["heart"], donate]]
     else:
-        buttons = [[_("Graphical SSH Connection"), "", putty],
-                   [_("Install WSL for More Features"), "", wsl_installer],
-                   [_("Donate With PayPal"), "", donate]]  # 
+        buttons = [[_("Graphical SSH Connection"), icons["network"], putty],
+                   [_("Install WSL for More Features"), icons["question"], wsl_installer],
+                   #[_("Get Help on Discord."), icons["discord"], discorder],
+                   [_("Donate With PayPal etc."), icons["heart"], donate]]  # 
 
     selected = False
     q = 0
@@ -2961,7 +3317,11 @@ def draw(canvas, mouse=False):
             txt.set_alpha(int(launch * 255))
             sett.set_alpha(int(launch * 255))
 
-        canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2])
+        modern_offset = 0
+        if modern == True:
+            modern_offset = -1 * ui.inch2pix(0.01)
+            
+        canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2 + modern_offset])
         canvas.blit(txt, [pos[0] + sett.get_width() + ui.inch2pix(0.2),
                           pos[1] + box / 2 - txt.get_height() / 2 - ui.inch2pix(0.025)])
 
@@ -2969,7 +3329,7 @@ def draw(canvas, mouse=False):
         if s2 == True or q == last:
             sett = icon_font.render(i[1], True, accent)
             sett.set_alpha(int(launch * 255 * s3))
-            canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2])
+            canvas.blit(sett, [pos[0], pos[1] + box / 2 - sett.get_height() / 2 + modern_offset])
             txt = title_font.render(i[0], True, accent)
             txt.set_alpha(int(launch * 255 * s3))
             canvas.blit(txt, [pos[0] + sett.get_width() + ui.inch2pix(0.2),
@@ -2977,7 +3337,9 @@ def draw(canvas, mouse=False):
 
         # square(mask, [ui.inch2pix(0.1), pos[1]], [WIDTH - ui.inch2pix(0.1) * 2,
         #                                                            ui.inch2pix(0.3) + ui.inch2pix(0.4)], width=2)
-        start += ui.inch2pix(0.3) + ui.inch2pix(0.5) - ui.inch2pix(0.15)
+
+
+        start += ui.inch2pix(0.22) + ui.inch2pix(0.5) - ui.inch2pix(0.15) #first used to be 0.3
         s += ui.inch2pix(0.17) #used to be 0.17
         q += 1
 
@@ -3058,53 +3420,7 @@ def draw(canvas, mouse=False):
     # draw(canvas)
 
     # edit mask
-    """
-    arr = pygame.PixelArray(mask)
-    arr.replace((0, 255, 0), (0, 0, 0, 0))
-    arr.close()
-
     
-
-    
-    lumen.fill([0, 0, 0, 0])
-    if lumen_opac > 0:
-        mouse1 = pygame.mouse.get_pos()
-        lumen.blit(light_source, [mouse1[0] - light_source.get_width() / 2,
-                              mouse1[1] - light_source.get_height() / 2], special_flags=(pygame.BLEND_RGBA_ADD))
-        
-    lumen.blit(mask, [0, 0])
-    arr = pygame.PixelArray(lumen)
-    arr.replace((255, 0, 0), (0, 0, 0, 0))
-    arr.close()
-
-    """
-    """
-    mouse = pygame.mouse.get_pos()
-
-    if pygame.mouse.get_pressed()[0] == 1:
-        lumen_opac = 0
-        light_source = pygame.image.load(asset_dir + "lumens/" + str(lumen_opac + 1) + ".png").convert_alpha()
-
-    
-    if pygame.mouse.get_pressed()[0] != 1 and pygame.mouse.get_focused() == 1:
-        if lumen_opac < 6:
-            wait += 1
-            if wait >= 1:
-                lumen_opac += 1
-                wait = 0
-                light_source = pygame.image.load(asset_dir + "lumens/" + str(lumen_opac + 1) + ".png").convert_alpha()
-
-                
-    if pygame.mouse.get_focused() == 0:
-        if lumen_opac > 0:
-            wait += 1
-            if wait >= 1:
-                lumen_opac -= 1
-                wait = 0
-                light_source = pygame.image.load(asset_dir + "lumens/" + str(lumen_opac + 1) + ".png").convert_alpha()
-
-    
-    """
     # if service_loaded == False:
     #    lumen_opac = 0
 
@@ -3118,7 +3434,7 @@ def draw(canvas, mouse=False):
         txt2 = title_font.render(_("Error Starting Service"), True, white)
         loading_angle = 0
         icon_font = ui.font(ico_font, int(ui.inch2pix(0.22)))  # 0.19
-        loader = icon_font.render("", True, white)
+        loader = icon_font.render(icons["error"], True, white)
 
     else:
         txt2 = title_font.render(_("Starting Service"), True, white)
@@ -3213,6 +3529,49 @@ if "--r" not in args:
         def toggle(self):
             self._variable.set(not self._variable.get())
             self._activate()
+            
+    class PlaceholderEntry(ttk.Entry):
+        def __init__(self, container, placeholder, *args, **kwargs):
+            super().__init__(container, *args, style="Placeholder.TEntry", **kwargs)
+            self.placeholder = placeholder
+            
+
+            self.insert("0", self.placeholder)
+            self.bind("<FocusIn>", self._clear_placeholder)
+            self.bind("<FocusOut>", self._add_placeholder)
+
+        def _clear_placeholder(self, e):
+                if self["style"] == "Placeholder.TEntry":
+                    self.delete("0", "end")
+                    self["style"] = "TEntry"
+
+        def _add_placeholder(self, e):
+                if not self.get():
+                    self.insert("0", self.placeholder)
+                    self["style"] = "Placeholder.TEntry"
+                    
+    class ConstrainedEntry(ttk.Entry):
+        def __init__(self, *args, **kwargs):
+            ttk.Entry.__init__(self, *args, **kwargs)
+
+            vcmd = (self.register(self.on_validate),"%P")
+            self.configure(validate="key", validatecommand=vcmd)
+
+        def disallow(self):
+            self.bell()
+
+        def on_validate(self, new_value):
+            try:
+                if new_value.strip() == "": return True
+                value = int(new_value)
+                if value < 0 or value > 99999:
+                    self.disallow()
+                    return False
+            except ValueError:
+                self.disallow()
+                return False
+
+            return True
 
 if "--r" not in args: # start normally
     running = True
@@ -3246,7 +3605,7 @@ if "--r" not in args: # start normally
         wait = 0
         loading_angle = 0
         icon_font = ui.font(ico_font, int(ui.inch2pix(1)))  # 0.19
-        loader = icon_font.render("", True, white)
+        loader = icon_font.render(icons["refresh"], True, white)
 
         day = time.localtime().tm_wday
         # if day in dd:
@@ -3255,6 +3614,7 @@ if "--r" not in args: # start normally
         # else:
         #   donate_asker = False
 
+        
         while True:
             try:
                 loading_angle -= 10
@@ -3451,6 +3811,8 @@ elif args[1] == "--r" and "--ssh" in args:
 
         user = creds["user"]
 
+        key_file = creds["key"]
+
         if get_running("GWSL_service") != True:
             try:
                 subprocess.Popen('GWSL_service.exe')
@@ -3459,8 +3821,29 @@ elif args[1] == "--r" and "--ssh" in args:
                 print("Can't run service...")
 
         timer = time.perf_counter()
-        if command != "open_putty":
-            prog = cmd(command=["PUTTY/GWSL_plink.exe", "-ssh", f"{user}@{ip}", "-pw", f"{password}", "-X", "-batch"])
+        if command != "open_putty": #this is obsolete I think...
+            
+            if ":" in ip:
+                port = ip[ip.index(":") + 1:]
+                ip = ip[:ip.index(":")]
+
+            port_str = "-P"
+            por = "22"
+            if port != "":
+                port_str = f"-P"
+                por = str(port)
+
+            
+            commander = ["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip}", port_str, por, "-pw", f"{password}", "-X"]
+
+            if key_file != "":
+                commander.append("-i")
+                commander.append(f'"{key_file}"')
+                
+            commander.append("-batch")
+            #print(commander)
+            
+            prog = cmd(command=commander)
 
             if rooter == "true":
                 prog.run(
@@ -3486,7 +3869,24 @@ elif args[1] == "--r" and "--ssh" in args:
                     pass
                 """
         else:
-            prog = cmd(command=["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip}", "-pw", f"{password}", "-X"],
+            if ":" in ip:
+                port = ip[ip.index(":") + 1:]
+                ip = ip[:ip.index(":")]
+
+            port_str = "-P"
+            por = "22"
+            if port != "":
+                port_str = f"-P"
+                por = str(port)
+
+            
+            commander = ["PUTTY/GWSL_putty.exe", "-ssh", f"{user}@{ip}", port_str, por, "-pw", f"{password}", "-X"]
+
+            if key_file != "":
+                commander.append("-i")
+                commander.append(f'"{key_file}"')
+                
+            prog = cmd(command=commander,
                        console=True)
 
     except Exception as e:

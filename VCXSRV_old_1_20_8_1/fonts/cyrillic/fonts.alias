@@ -1,0 +1,55 @@
+! Copyright (C) 1994-95 Cronyx Ltd.
+! Author: Serge Vakulenko, <vak@cronyx.ru>
+!
+! This software may be used, modified, copied, distributed, and sold,
+! in both source and binary form provided that the above copyright
+! and these terms are retained. Under no circumstances is the author
+! responsible for the proper functioning of this software, nor does
+! the author assume any responsibility for damages incurred with its use.
+!
+! $XFree86$
+!
+fixed  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
+variable -*-helvetica-bold-r-normal-*-*-120-*-*-*-*-koi8-r
+5x8	-misc-fixed-medium-r-normal--8-80-75-75-c-50-koi8-r
+6x9	-misc-fixed-medium-r-normal--9-90-75-75-c-60-koi8-r
+6x10  -cronyx-fixed-medium-r-normal--10-100-75-75-c-60-koi8-r
+6x13  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
+6x13bold  -misc-fixed-bold-r-semicondensed--13-120-75-75-c-60-koi8-r
+7x14 -misc-fixed-medium-r-normal--14-130-75-75-c-70-koi8-r
+7x14b -misc-fixed-bold-r-normal--14-130-75-75-c-70-koi8-r
+8x13  -misc-fixed-medium-r-normal--13-120-75-75-c-80-koi8-r
+8x16  -misc-fixed-medium-r-normal--16-160-75-75-c-80-koi8-r
+8x16bold  -misc-fixed-bold-r-normal--16-160-75-75-c-80-koi8-r
+9x15  -misc-fixed-medium-r-normal--15-140-75-75-c-90-koi8-r
+9x15bold -misc-fixed-bold-r-normal--15-140-75-75-c-90-koi8-r
+9x18 -misc-fixed-medium-r-normal--18-120-100-100-c-90-koi8-r
+9x18bold -misc-fixed-bold-r-normal--18-120-100-100-c-90-koi8-r
+10x16bold -cronyx-fixed-bold-r-normal--16-120-100-100-c-80-koi8-r
+10x20  -cronyx-fixed-medium-r-normal--20-200-75-75-c-100-koi8-r
+12x24  -misc-fixed-medium-r-normal--24-170-100-100-c-120-koi8-r
+12x24bold  -misc-fixed-bold-r-normal--24-170-100-100-c-120-koi8-r
+nil2   -cronyx-nil-medium-r-normal--2-20-75-75-c-10-koi8-r
+koi-fixed  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
+koi-variable -*-helvetica-bold-r-normal-*-*-120-*-*-*-*-koi8-r
+koi5x8	-misc-fixed-medium-r-normal--8-80-75-75-c-50-koi8-r
+koi6x9	-misc-fixed-medium-r-normal--9-90-75-75-c-60-koi8-r
+koi6x10  -cronyx-fixed-medium-r-normal--10-100-75-75-c-60-koi8-r
+koi6x13  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
+koi6x13bold  -misc-fixed-bold-r-semicondensed--13-120-75-75-c-60-koi8-r
+koi7x14 -misc-fixed-medium-r-normal--14-130-75-75-c-70-koi8-r
+koi7x14b -misc-fixed-bold-r-normal--14-130-75-75-c-70-koi8-r
+koi8x13  -misc-fixed-medium-r-normal--13-120-75-75-c-80-koi8-r
+koi8x16  -misc-fixed-medium-r-normal--16-160-75-75-c-80-koi8-r
+koi8x16bold  -misc-fixed-bold-r-normal--16-160-75-75-c-80-koi8-r
+koi9x15  -misc-fixed-medium-r-normal--15-140-75-75-c-90-koi8-r
+koi9x15bold -misc-fixed-bold-r-normal--15-140-75-75-c-90-koi8-r
+koi9x18 -misc-fixed-medium-r-normal--18-120-100-100-c-90-koi8-r
+koi9x18bold -misc-fixed-bold-r-normal--18-120-100-100-c-90-koi8-r
+koi10x16bold -cronyx-fixed-bold-r-normal--16-120-100-100-c-80-koi8-r
+koi10x20  -cronyx-fixed-medium-r-normal--20-200-75-75-c-100-koi8-r
+koi12x24  -misc-fixed-medium-r-normal--24-170-100-100-c-120-koi8-r
+koi12x24bold  -misc-fixed-bold-r-normal--24-170-100-100-c-120-koi8-r
+koinil2   -cronyx-nil-medium-r-normal--2-20-75-75-c-10-koi8-r
+screen8x16  -screen-fixed-medium-r-normal--16-120-100-100-c-80-koi8-r
+screen8x16b -screen-fixed-bold-r-normal--16-120-100-100-c-80-koi8-r

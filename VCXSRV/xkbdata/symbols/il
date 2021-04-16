@@ -1,5 +1,3 @@
-// based on a keyboard map from an 'xkb/symbols/il' file
-
 // This is an implemetation of the Israeli standard SI-1452 (2013)
 // It does not implement changes to the English layout, as that part
 // of the standard is not normative nor really useful in the context
@@ -7,7 +5,7 @@
 // This implementation extends the standard with Yiddish digraphs
 // (a common extension) and Nun Hafukha (a fun character).
 
-default  partial alphanumeric_keys
+default partial alphanumeric_keys
 xkb_symbols "basic" {
     // uses the kbd layout in use in Israel.
 
@@ -141,11 +139,24 @@ xkb_symbols "lyx" {
 partial alphanumeric_keys
 xkb_symbols "phonetic" {
 
-    // uses the phonetic layout from old Slackware 'il.map' file
+    include "il(basic)"
 
     name[Group1]= "Hebrew (phonetic)";
 
-    key <AE12> {        [     equal,    plus, hebrew_doublelowline, hebrew_doublelowline ]};
+    // Implements the phonetic layout from the old Slackware 'il.map' file.
+
+    key <AE09> {	[	  9,	parenleft	]	};
+    key <AE10> {	[	  0,	parenright	]	};
+    key <TLDE> {	[     grave,	asciitilde	]	};
+
+    key <AD11> {	[ bracketleft,	braceleft	]	};
+    key <AD12> {	[ bracketright,	braceright	]	};
+    key <AC10> {	[ semicolon,	colon		]	};
+    key <AC11> {	[ apostrophe,	quotedbl	]	};
+    key <AB08> {	[     comma,	less		]	};
+    key <AB09> {	[    period,	greater		]	};
+    key <AB10> {	[     slash,	question	]	};
+    key <BKSL> {	[ backslash,         bar	]	};
 
     key <LatQ> {	[ hebrew_qoph, hebrew_qoph	]	};
     key <LatW> {	[ hebrew_waw, hebrew_waw	]	};

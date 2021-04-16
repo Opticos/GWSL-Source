@@ -25,6 +25,7 @@ else:
 # Nulls
 systray = None
 exiter = False
+server_PID = 0
 
 # Globals
 clipboard = True
@@ -43,30 +44,17 @@ profile_dict = {}
 custom_profiles = []
 
 # DPI Stuff
-from winreg import *
-from winreg import CloseKey, ConnectRegistry, CreateKey, OpenKey, QueryValue, QueryValueEx, SetValueEx
-modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARE"]
-REG_PATH = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
-
-
-def set_reg(name, value):
-    """Set DPI via registry key"""
-    try:
-        CreateKey(HKEY_CURRENT_USER, REG_PATH)
-        registry_key = OpenKey(HKEY_CURRENT_USER, REG_PATH, 0, KEY_WRITE)
-        SetValueEx(registry_key, name, 0, REG_SZ, value)
-        CloseKey(registry_key)
-        return True
-    except:
-        logger.exception("Exception occurred - Cannot Change DPI (set_reg)")
+hidpi = True
     
 
 def rescan(systray=False):
-    """Rescan profiles"""
-    global profile_dict, custom_profiles
+    """Rescan config"""
+    global profile_dict, custom_profiles, hidpi
     try:
         sett = iset.read()
         profile_dict = sett["xserver_profiles"]
+        hidpi = sett["graphics"]["hidpi"]
+        
         if systray != False:
             menu = build_menu()
             systray.update(menu_options=menu)
@@ -196,6 +184,10 @@ def open_help(s):
     import webbrowser
     webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
 
+def open_discord(s):
+    """Open browser to GWSL Discord invite page"""
+    import webbrowser
+    webbrowser.get('windows-default').open('https://discord.com/invite/VkvNgkH')
 
 def add_profile(systray):
     """Allows one to add a custom XServer profile (config)"""
@@ -214,20 +206,23 @@ def add_profile(systray):
         logger.exception("Exception occurred - Cannot Create Profile")
 
 
-def dpi_set(systray, mode):
-    """Modifies the DPI registry key in Windows (DPI implementation to chanage soon)"""
-    server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
-    instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
-    print(server_location)
-    print(instance_location)
-    try:
-        set_reg(server_location, modes[int(mode)])
-        set_reg(instance_location, modes[int(mode)])
-    except:
-        logger.exception("Exception occurred - Cannot Change DPI (dpi_set)")
+def dpi_set(systray, hi_dpi):
+    """Changes vcxsrv main dpi backend server"""
+    global hidpi
+    if hi_dpi != hidpi:
+        try:
+            sett = iset.read()
+            sett["graphics"]["hidpi"] = hi_dpi
+            iset.set(sett)
+            #hidpi = hi_dpi
+        except:
+            logger.exception("Exception occurred - Cannot Change DPI (dpi_set)")
 
-    if ask_dpi() == True:
-        restart_server()
+        if ask_dpi() == True:
+            rescan()
+            menu = build_menu()
+            systray.update(menu_options=menu)
+            restart_server()
 
 
 def reset_config(systray):
@@ -270,13 +265,21 @@ def build_menu():
 
         mode_names = {"m": "Multi Window", "s": "Single Window", "f": "Fullscreen", "c": current_custom_profile}
 
-        defaults = [("Multi Window Mode", icon("multi"), set_default_profile, "m"),
-                    ("Single Window Mode", icon("single"), set_default_profile, "s"),
-                    ("Fullscreen Mode", icon("full"), set_default_profile, "f")]
+        defaults = [["Multi Window Mode", icon("multi"), set_default_profile, "m"],
+                    ["Single Window Mode", icon("single"), set_default_profile, "s"],
+                    ["Fullscreen Mode", icon("full"), set_default_profile, "f"]]
 
-        dpi_options = [("DPI Scaling Mode", icon("dpi"), [("Linux (GTK and QT)", icon("dpi_lin"), dpi_set, 0),
-                                                          ("Windows (Faster but Blurrier)", icon("dpi_win"), dpi_set, 1),
-                                                          ("Windows GDI Enhanced", icon("dpi_enhanced"), dpi_set, 2)])]
+        l = [" (active)", icon("check")]
+        w = ["", icon("dpi_win")]
+        dpi_mode = "(Linux)"
+        if hidpi == False:
+            w = l
+            l = ["", icon("dpi_lin")]
+            dpi_mode = "(Windows)"
+        
+        dpi_options = [(f"DPI Scaling Mode {dpi_mode}", icon("dpi"), [("Linux - Sharper but Slower" + l[0], l[1], dpi_set, True),
+                                                          ("Windows - Faster but Blurrier" + w[0], w[1], dpi_set, False)])]#,
+                                                          #("Windows GDI Enhanced", icon("dpi_enhanced"), dpi_set, 2)])]
         
         options = [("Configure GWSL", icon("config"), config),
                    ("Log and Configuration Cleanup", icon("refresh"), reset_config),
@@ -284,20 +287,38 @@ def build_menu():
                    ("Dashboard", icon("dashboard"), open_dashboard),
                    ("About", icon("info"), open_about),
                    ("Help", icon("help"), open_help),
+                   #("GWSL Discord Server", icon("discord"), open_discord),
                    ("Exit", icon("quit"), shutdown)]
 
         current_icon = icon(modes[display_mode])
 
-        profiles = []
+        profiles = defaults
         
         for profile in custom_profiles:
             text = "Custom - " + str(profile) + ""
-            prof = (text, icon("custom"), set_custom_profile, profile)
+            prof = [text, icon("custom"), set_custom_profile, profile]
             profiles.append(prof)
         
         mode_name = mode_names[display_mode]
+        
+        for p in profiles:
+            profile_id = p[3]
+            if display_mode == "c":
+                if profile_id == mode_name:
+                    p[0] = p[0] + " (active)"
+                    p[1] = icon("check")
+
+            else:
+                if display_mode == profile_id:
+                    p[0] = p[0] + " (active)"
+                    p[1] = icon("check")
+
+            
+            
+        profiles = [tuple(l) for l in profiles] #make it a list of tuples
+        
         menu.append((f"XServer Profiles ({mode_name})", current_icon,
-                     defaults + profiles + [("Add A Profile", icon("add"), add_profile)]))
+                     profiles + [("Add A Profile", icon("add"), add_profile)]))
             
         menu.append(("Rescan Profiles", icon("refresh"), rescan))
         
@@ -373,7 +394,7 @@ def ask_reset():
 def ask_restart():
     """Prompts user to confirm restarting the GWSL service"""
     answer = pymsgbox.confirm(
-        text="Hmm... The GWSL service just crashed or was closed. Do you want to restart the service?",
+        text="Hmm... The main GWSL service just crashed or was closed. Do you want to restart the service? If any GWSL windows are still open, they will be closed. Please save your work in those windows before clicking yes.",
         title="XServer Has Stopped",
         buttons=['Yes', 'No'])
     if answer == "Yes":
@@ -384,18 +405,37 @@ def ask_restart():
 
 def restart_server():
     """Restarts GWSL services"""
+    global server_PID
+    server_PID = "reloading"
     kill_server()
     start_server()
 
 
-def kill_server():
+def kill_server(all_servers=False):
     """Stops the GWSL services"""
+
+    """
+    #subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
+    #subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+    print("startkill")
+    #Make sure PID actually points to vcxsrv
+    service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
+    if "GWSL_vcxsrv" in service_name:
+        print(f'taskkill /F /pid {server_PID}')
+        subprocess.getoutput(f'taskkill /F /pid {server_PID}')
+    else:
+        #resort to older method
+        print("killing all vcxsrv")
+    """
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
-
+    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv_lowdpi.exe')
+    
+    
 
 def start_server():
     """Starts the GWSL services"""
+    global server_PID
     try:
         if display_mode != "c":
             default_arguments = default_profiles[display_mode]
@@ -407,17 +447,25 @@ def start_server():
                 default_arguments.append("-noprimary")
         else:
             default_arguments = ["-ac"] + get_args(current_custom_profile)
-        subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
+        hidpi_str = ""
+        if hidpi == False:
+            hidpi_str = "_lowdpi"
+        proc = subprocess.Popen([f"VCXSRV/GWSL_vcxsrv{hidpi_str}.exe"] + default_arguments)
+        server_PID = proc.pid
     except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
 
 
 def get_running():
     """Checks whether the GWSL service is currently running"""
-    proc_list = os.popen('tasklist').readlines()
-    for proc in proc_list:
-        if "GWSL_vcxsrv" in proc:
-            return True
+    service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
+    if server_PID == "reloading":
+        return True
+    #print(service_name)
+    #proc_list = os.popen('tasklist').readlines()
+    
+    if "GWSL_vcxsrv" in service_name:
+        return True
     return False
 
 
@@ -425,8 +473,9 @@ def main():
     """Main entry point for application"""
     global systray, display_mode, clipboard, exiter, ic, timer
     # Kill VcXsrv if already running
-    if get_running():
-        kill_server()
+    #if get_running(): we dont need to check do we...
+
+    kill_server()
 
     # Start VcXsrv
     start_server()
@@ -459,7 +508,6 @@ def main():
                         restart_server()
                     elif ask_restart():
                         restart_server()
-
                     else:
                         systray.shutdown()
                         kill_server()
@@ -543,6 +591,7 @@ if __name__ == "__main__":
             print("We have a custom profile")
             current_custom_profile = mode
             display_mode = "c"
+
 
         rescan()
 

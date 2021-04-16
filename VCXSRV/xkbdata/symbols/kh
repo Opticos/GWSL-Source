@@ -24,7 +24,7 @@
 //         but with a leading 'XK_'
 //
 
-default  partial alphanumeric_keys
+default partial alphanumeric_keys
 xkb_symbols "basic" {
     name[Group1]= "Khmer (Cambodia)";
 
@@ -93,7 +93,6 @@ xkb_symbols "basic" {
 
 // third level with right-Alt
     include "level3(ralt_switch)"
-
 };
 
 partial alphanumeric_keys

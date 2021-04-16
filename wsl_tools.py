@@ -89,27 +89,38 @@ def get_apps(machine):
             apps.update({name: {"cmd": run, "ico": icon}})
     return apps
 
+def export_v(machine, name, value):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + f'" export-v {name} {value}'
+    print(os.popen(cmd).read()[:-1])
 
 def gtk(machine, scale):
+    export_v(machine, "GDK_SCALE", scale)
+    """
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" gtk' + str(scale)
-        print(os.popen(cmd).read()[:-1])
+        print(os.popen(cmd).read()[:-1])"""
+    
 
+def qt(machine, scale):
+    export_v(machine, "QT_SCALE_FACTOR", scale)
+    """
+    if scale == 1 or scale == 2:
+        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" qt' + str(scale)
+        print(os.popen(cmd).read()[:-1])"""
+        
 
 def dbus(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" dbus'
     print(os.popen(cmd).read()[:-1])
 
 
-def qt(machine, scale):
-    if scale == 1 or scale == 2:
-        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" qt' + str(scale)
-        print(os.popen(cmd).read()[:-1])
+
 
 
 def export(machine, version):
     if version == 1 or version == 2:
-        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export' + str(version)
+        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-d ' + str(version)
+        print(cmd)
         print(os.popen(cmd).read()[:-1])
 
 

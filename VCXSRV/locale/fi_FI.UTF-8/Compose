@@ -1,6 +1,6 @@
 
 #
-# Official compose sequences for Finland based on SFS 5966 standard
+# Official compose sequences for Finland based on SFS 5966:2019 standard
 #
 # This compose sequence map implements all the functionality of Annex 3
 # and Annex 4 of the standard and additionally defines the sequences
@@ -153,6 +153,12 @@ include "X11_LOCALEDATADIR/en_US.UTF-8/Compose"
 <dead_circumflex> <W>                   :  "Ŵ"  U0174  #  LATIN CAPITAL LETTER W WITH CIRCUMFLEX
 <dead_circumflex> <y>                   :  "ŷ"  U0177  #  LATIN SMALL LETTER Y WITH CIRCUMFLEX
 <dead_circumflex> <Y>                   :  "Ŷ"  U0176  #  LATIN CAPITAL LETTER Y WITH CIRCUMFLEX
+
+# Sequences with COMBINING COMMA BELOW / <dead_belowcomma>
+<dead_belowcomma> <s>                   :  "ș"  U0219  #  LATIN SMALL LETTER S WITH COMMA BELOW
+<dead_belowcomma> <S>                   :  "Ș"  U0218  #  LATIN CAPITAL LETTER S WITH COMMA BELOW
+<dead_belowcomma> <t>                   :  "ț"  U021B  #  LATIN SMALL LETTER T WITH COMMA BELOW
+<dead_belowcomma> <T>                   :  "Ț"  U021A  #  LATIN CAPITAL LETTER T WITH COMMA BELOW
 
 # Sequences with COMBINING DIAERESIS / <dead_diaeresis>
 <dead_diaeresis> <space>                :  "¨"  U00A8  #  DIAERESIS
@@ -334,7 +340,7 @@ include "X11_LOCALEDATADIR/en_US.UTF-8/Compose"
 <dead_grave>    <dead_circumflex> <e>   :  "ề"  U1EC1  #  LATIN SMALL LETTER E WITH CIRCUMFLEX AND GRAVE
 <dead_hook>     <dead_circumflex> <e>   :  "ể"  U1EC3  #  LATIN SMALL LETTER E WITH CIRCUMFLEX AND HOOK ABOVE
 <dead_tilde>    <dead_circumflex> <e>   :  "ễ"  U1EC5  #  LATIN SMALL LETTER E WITH CIRCUMFLEX AND TILDE
-<dead_acute>    <dead_circumflex> <E>   :  "Ệ"  U1EC6  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND ACUTE
+<dead_acute>    <dead_circumflex> <E>   :  "Ế"  U1EBE  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND ACUTE
 <dead_belowdot> <dead_circumflex> <E>   :  "Ệ"  U1EC6  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND DOT BELOW
 <dead_grave>    <dead_circumflex> <E>   :  "Ề"  U1EC0  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND GRAVE
 <dead_hook>     <dead_circumflex> <E>   :  "Ể"  U1EC2  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND HOOK ABOVE
@@ -422,7 +428,3 @@ include "X11_LOCALEDATADIR/en_US.UTF-8/Compose"
 <Multi_key> <f> <s>                     :  "ſ"  U017F  #  LATIN SMALL LETTER LONG S
 <dead_abovedot> <Multi_key> <f> <s>     :  "ẛ"  U1E9B  #  LATIN SMALL LETTER LONG S WITH DOT ABOVE
 <Multi_key> <dead_abovedot> <f> <s>     :  "ẛ"  U1E9B  #  LATIN SMALL LETTER LONG S WITH DOT ABOVE
-<dead_belowcomma> <s>                   :  "ș"  U0219  #  LATIN SMALL LETTER S WITH COMMA BELOW
-<dead_belowcomma> <S>                   :  "Ș"  U0218  #  LATIN CAPITAL LETTER S WITH COMMA BELOW
-<dead_belowcomma> <t>                   :  "ț"  U021B  #  LATIN SMALL LETTER T WITH COMMA BELOW
-<dead_belowcomma> <T>                   :  "Ț"  U021A  #  LATIN CAPITAL LETTER T WITH COMMA BELOW

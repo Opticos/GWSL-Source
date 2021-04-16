@@ -1,4 +1,4 @@
-default  partial alphanumeric_keys
+default partial alphanumeric_keys
 xkb_symbols "basic" {
 
     name[Group1]= "Arabic";
@@ -68,7 +68,6 @@ xkb_symbols "qwerty" {
 };
 
 
-
 // Replaces the Western numeral signs with Arabic-script digits on the keypad, pushing the Western digits to the third level accessible by the right alt key.
 // As this set of definitions is unlisted, it is not usable without parallel mapping on the numeric row in the ara(digits) layout which includes it.
 partial hidden keypad_keys
@@ -99,7 +98,7 @@ xkb_symbols "digits" {
 
     include       "ara(basic)"
     
-    name[Group1]= "Arabic (digits)";
+    name[Group1]= "Arabic (Eastern Arabic numerals)";
 
     key <TLDE> { [Arabic_thal,Arabic_shadda, percent,U2030]};
     key <AE01> { [ Arabic_1,         exclam, 1, NoSymbol ] };
@@ -120,9 +119,8 @@ xkb_symbols "digits" {
 partial alphanumeric_keys
 xkb_symbols "qwerty_digits" {
     include "ara(digits)"
-    name[Group1]= "Arabic (qwerty/digits)";
+    name[Group1]= "Arabic (QWERTY, Eastern Arabic numerals)";
 };
-
 
 
 partial alphanumeric_keys
@@ -156,7 +154,7 @@ xkb_symbols "azerty" {
 partial alphanumeric_keys
 xkb_symbols "azerty_digits" {
     include "ara(azerty)"
-    name[Group1]= "Arabic (AZERTY/digits)";
+    name[Group1]= "Arabic (AZERTY, Eastern Arabic numerals)";
 
     key <AE01> { [      ampersand, Arabic_1, 1, NoSymbol ] };
     key <AE02> { [         eacute, Arabic_2, 2, NoSymbol ] };
@@ -169,8 +167,6 @@ xkb_symbols "azerty_digits" {
     key <AE09> { [       ccedilla, Arabic_9, 9, NoSymbol ] };
     key <AE10> { [         agrave, Arabic_0, 0, NoSymbol ] };
 };
-
-
 
 
 // Arabic keyboard using Buckwalter transliteration
@@ -244,9 +240,10 @@ xkb_symbols "buckwalter" {
 
 partial alphanumeric_keys
 xkb_symbols "olpc" {
-    name[Group1]= "Arabic (OLPC)";
 
     include "ara(basic)"
+
+    name[Group1]= "Arabic (OLPC)";
 
     // This OLPC layout comprises the following changes in comparison to the default Arabic one:
     //  ‣ Arabic and European digits are swapped (which entails swapping of the percent and permille signs).
@@ -340,7 +337,6 @@ xkb_symbols "mac" {
     key <AB08> {  [     Arabic_comma,     greater                     ]     };
     key <AB09> {  [           period,     less                  ]     };
     key <AB10> {  [            slash,     Arabic_question_mark     ]     };
-    
 };
 
 // EXTRAS:
@@ -353,7 +349,7 @@ partial alphanumeric_keys
 partial alphanumeric_keys
 xkb_symbols "basic_ext" {
 
-    name[Group1]= "Arabic (with extensions for Arabic-written other languages and European digits preferred)";
+    name[Group1]= "Arabic (Arabic numerals, extensions in the 4th level)";
 
     key.type[Group1]="FOUR_LEVEL";
     
@@ -443,7 +439,7 @@ xkb_symbols "basic_ext_digits" {
 
     include       "ara(basic_ext)"
     
-    name[Group1]= "Arabic (with extensions for Arabic-written other languages and Arabic digits preferred)";
+    name[Group1]= "Arabic (Eastern Arabic numerals, extensions in the 4th level)";
 
     key <TLDE> { [Arabic_thal,Arabic_shadda, percent, Arabic_ddal ]};
     key <AE01> { [ Arabic_1,         exclam, 1, Farsi_1 ] };
@@ -519,5 +515,4 @@ xkb_symbols "uga" {
     key <AB08> { [   U10386,      comma          ]};  // 𐎆 ,
     key <AB09> { [   U10387,      period         ]};  // 𐎇 .
     key <AB10> { [   U10391,      periodcentered ]};  // 𐎑 ·
-
 };
