@@ -39,12 +39,56 @@ def get_themes(machine):
     return themes
 
 
+from xdg.DesktopEntry import DesktopEntry
+class WSLApp: #Credit to @sanzoghenzo on github. I did some adapting
+    def from_dotdesktop(app_def):
+        """
+        Return a WSLApp from a .desktop file.
+
+        Args:
+            app_def: .desktop file path
+        """
+        de = DesktopEntry(app_def)
+        name = de.getName()
+        generic_name = de.getGenericName()
+        cmd = de.getExec()
+        gui = not de.getTerminal()
+        icon = de.getIcon()
+        
+        return {"name":name, "generic_name":generic_name, "cmd":cmd, "gui":gui, "icon":icon}
+
+        #raise IOError("Cannot read the .desktop entry")
+
+
 def get_apps(machine):
+    #first make sure the machine is booted. Scanning should do the trick
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listapps'
+    read = os.popen(cmd).read()
+    apps = read.splitlines()
+    #apps.remove("")
+    app_dict = {}
+    for app in apps:
+        if "screensaver" in app:
+            continue
+        try:
+            path = r"\\wsl$" + "\\" + machine + app
+            wsl_app = WSLApp.from_dotdesktop(path)
+            if wsl_app["gui"] == True:
+                app_dict.update({wsl_app["name"]: {"cmd": wsl_app["cmd"], "ico": wsl_app["icon"]}})
+        except:
+            pass
+        
+                
+    #print(read)
+    return app_dict
+
+
+def get_apps_old(machine):
     # try:
     #    os.remove(script[:-15] + ".scanapps")
     # except:
     #    pass
-    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listapps'
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listappsold'
     read = os.popen(cmd).read()
     # print("copy")
     # cmd2 = 'wsl.exe -d ' + str(machine) + ' cp ~/.scanapps ' + str(pat_con(script[:-15]))
@@ -74,6 +118,7 @@ def get_apps(machine):
             run = app[ind + 10:]
 
             if "Exec=" in run:
+                #print(run)
                 run = run[:run.index("Exec=") - 1]
             if ":ico:" in run:
                 run = run[:run.index(":ico:")]
@@ -89,20 +134,20 @@ def get_apps(machine):
             apps.update({name: {"cmd": run, "ico": icon}})
     return apps
 
-def export_v(machine, name, value):
-    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + f'" export-v {name} {value}'
+def export_v(machine, name, value, shell="bash"):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + f'" export-v {name} {value} {shell}'
     print(os.popen(cmd).read()[:-1])
 
-def gtk(machine, scale):
-    export_v(machine, "GDK_SCALE", scale)
+def gtk(machine, scale, shell="bash"):
+    export_v(machine, "GDK_SCALE", scale, shell=shell)
     """
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" gtk' + str(scale)
         print(os.popen(cmd).read()[:-1])"""
     
 
-def qt(machine, scale):
-    export_v(machine, "QT_SCALE_FACTOR", scale)
+def qt(machine, scale, shell="bash"):
+    export_v(machine, "QT_SCALE_FACTOR", scale, shell=shell)
     """
     if scale == 1 or scale == 2:
         cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" qt' + str(scale)
@@ -117,13 +162,17 @@ def dbus(machine):
 
 
 
-def export(machine, version):
-    if version == 1 or version == 2:
-        cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-d ' + str(version)
-        print(cmd)
-        print(os.popen(cmd).read()[:-1])
+def export(machine, version, shell="bash"):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-d ' + str(version) + " " + shell
+    print(cmd)
+    print(os.popen(cmd).read()[:-1])
 
-
-def profile(machine):
-    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" profile'
+def cleanup(machine):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" cleanup'
+    print(cmd)
+    print(os.popen(cmd).read()[:-1])
+    
+    
+def profile(machine, shell="bash"):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" profile ' + shell
     return os.popen(cmd).read()

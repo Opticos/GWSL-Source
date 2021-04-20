@@ -33,10 +33,11 @@ import winreg
 from winreg import *
 from exe_layer import cmd
 import logging
+import ipaddress
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.3.8"
+version = "1.3.8 beta 1 build2"
 
 lc_name = "Licenses138.txt"
 
@@ -533,16 +534,16 @@ def help_ssh():
 
 def wsl_run(distro, command, caller, nolog=False):
     """
-    One Run to Rule Them All
+    One Run to Rule Them All... nvm
     """
-    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -lc " + '"' + str(command) + '&"'
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
     
     if nolog == False:
         logger.info(f"(runos) WSL SHELL $ {cmd}")
         #logger.info(f"WSL OUTPUT > {out}")
         
     #subprocess.Popen(cmd, shell=True)
-    print(caller, cmd)
+    #print(caller, cmd)
     run = subprocess.Popen(
             cmd,
             shell=True,
@@ -550,73 +551,107 @@ def wsl_run(distro, command, caller, nolog=False):
             universal_newlines=True
     )
     out = str(run.stdout.read().rstrip())
-    print(out)
+    #print(out)
     return out
     
     #return out
 
 
-def runs(distro, command):
-    """
+def runs(distro, command, nolog=False):
+    
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
-    logger.info(f"(runos) WSL SHELL $ {cmd}")
+    if nolog == False:
+        logger.info(f"(runos) WSL SHELL $ {cmd}")
     subprocess.Popen(cmd,
                      shell=True)  # .readlines()
+    print("runs. it would be", cmd)
     return None
-    """
-    return wsl_run(distro, command, "runs")
+    
+    
+    #return wsl_run(distro, command, "runs")
 
 
-def run(distro, command):
-    """
+def run(distro, command, nolog=False):
+    #"""
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"'
     out = subprocess.getoutput(cmd)  # .readlines()
-    logger.info(f"(run) WSL SHELL $ {cmd}")
-    logger.info(f"WSL OUTPUT > {out}")
+    if nolog == False:
+        logger.info(f"(run) WSL SHELL $ {cmd}")
+        logger.info(f"WSL OUTPUT > {out}")
+    print("run. it would be", cmd)
     return out
-    """
-    return wsl_run(distro, command, "run")
+    #"""
+    #return wsl_run(distro, command, "run")
 
 
-def runo3(distro, command):
-    """
+def runo3(distro, command, nolog=False):
+    #"""
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;/bin/sh -c " + '"' + str(command) + '"'
     out = subprocess.getoutput(cmd)  # .readlines()
-    logger.info(f"(runo3) WSL SHELL $ {cmd}")
-    logger.info(f"WSL OUTPUT > {out}")
+    if nolog == False:
+        logger.info(f"(runo3) WSL SHELL $ {cmd}")
+        logger.info(f"WSL OUTPUT > {out}")
+    print("runo3. it would be", cmd)
     return out
-    """
-    return wsl_run(distro, command, "runo3")
+    #"""
+    #return wsl_run(distro, command, "runo3")
 
 
-def runo2(distro, command):
-    """
+def runo2(distro, command, nolog=False):
+    #"""
     cmd = "wsl.exe -d " + str(distro) + ' ' + "/bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
-    logger.info(f"(runo2) WSL SHELL $ {cmd}")
-    logger.info(f"WSL OUTPUT > {out}")
+    if nolog == False:
+        logger.info(f"(runo2) WSL SHELL $ {cmd}")
+        logger.info(f"WSL OUTPUT > {out}")
+    print("runo2. it would be", cmd)
     return out
-    """
-    return wsl_run(distro, command, "runo2")
+    #"""
+    #return wsl_run(distro, command, "runo2")
 
-
+""" obselete
 def runo(distro, command):
-    """
     cmd = "wsl.exe -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
     out = os.popen(cmd).readlines()
     logger.info(f"(runo) WSL SHELL $ {cmd}")
     logger.info(f"WSL OUTPUT > {out}")
     return out
-    """
-    return wsl_run(distro, command, "runo")
 
 
+"""
 def get_ip(machine):
     """
     Get IP of select WSL instance
     :return:
     """
-    return runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")  # [0][:-1]
+    #print("get_ip")
+    cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""" + '"'
+
+    
+    print(cmd)
+    result = os.popen(cmd).readlines()[0]
+
+    try:
+        result = result.rstrip()
+    except:
+        pass
+    if "nameserver" in result:
+        result = result[len("nameserver") + 1:]
+        
+    try:
+        ipa = ipaddress.ip_address(result)
+    except:
+        cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""" + '"'
+        result = os.popen(cmd).readlines()[0]
+        #result = "localhost"
+    
+        
+    #print("ipa", ipa, "ipd")
+
+    
+    #result = runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")
+    #print("ip", result, "done")
+    return result  # [0][:-1]
 
 
 def test_x():
@@ -1005,6 +1040,7 @@ def configure_machine(machine):
     QT = 1
     GTK = 1
     x_configured = False
+    libgl_indirect = False
     loading = True
     loading_angle = 0
     icon_font = ui.font(ico_font, int(ui.inch2pix(1)))  # 0.19
@@ -1014,7 +1050,7 @@ def configure_machine(machine):
     m_version = ""
 
     def get():
-        nonlocal q_button, g_button, QT, GTK, x_configured, loading, themes, them, m_version
+        nonlocal q_button, g_button, QT, GTK, x_configured, loading, themes, them, m_version, libgl_indirect
         profile = tools.profile(machine)
         m_version = get_version(machine)
 
@@ -1036,6 +1072,9 @@ def configure_machine(machine):
         ver = get_version(machine)
         if "export DISPLAY=" in profile:
             x_configured = True
+
+        if "export LIBGL_ALWAYS_INDIRECT=1" in profile:
+            libgl_indirect = True
 
         try:
             themes = tools.get_themes(machine)
@@ -1067,11 +1106,13 @@ def configure_machine(machine):
     while True:
         loading_angle -= 10
         mouse = False
+        
         if win32gui.GetFocus() != HWND:
             if animator.get("start")[0] == 100:
                 animator.animate("start", [0, 0])
                 animator.animate("start2", [0, 0])
                 break
+        
         if animator.get("start")[0] < 100:
             break
         selected = False
@@ -1178,7 +1219,7 @@ def configure_machine(machine):
             toaster.show_toast("Display Exported",
                                str(machine) + " is set to forward X through port 0.",
                                icon_path=asset_dir + "icon.ico",
-                               duration=7,
+                               duration=5,
                                threaded=True)
 
             restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?',
@@ -1188,13 +1229,143 @@ def configure_machine(machine):
                 rebooter = True
                 machine = None
 
+        def ask_reboot():
+            nonlocal rebooter, machine
+            restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?',
+                                       buttons=["Yes", "No"])
+            if restart == "Yes":
+                reboot(machine)
+                rebooter = True
+                machine = None
+                
+        def alternate_conf():
+            nonlocal loading
+            #loading = True
+            options = [["Bash: Display Export"],
+                      ["Bash: Enable LibGL Indirect"],
+                      ["Bash: Toggle GTK DPI"],
+                      ["Bash: Toggle QT DPI"],
+                      
+                      ["Zsh: Display Export"],
+                      ["Zsh: Enable LibGL Indirect"],
+                      ["Zsh: Toggle GTK DPI"],
+                      ["Zsh: Toggle QT DPI"],
+
+                      ["Fish: Display Export"],
+                      ["Fish: Enable LibGL Indirect"],
+                      ["Fish: Toggle GTK DPI"],
+                      ["Fish: Toggle QT DPI"],
+                      ["~Clean GWSL additions"]] #must be alphabetical because of reused chooser code
+            icos = []
+            s_list = []
+            for option in options:
+                s_list.append(option[0])
+                pass
+                #profile = tools.profile(machine, shell=shell_v)
+                """
+                if "QT_SCALE_FACTOR=2" in profile:
+                    QT = 2
+                if "GDK_SCALE=2" in profile:
+                    GTK = 2
+
+                """
+                #if "export DISPLAY=" in profile or "set -gx DISPLAY" in profile:
+                #    icos.append("check")
+                #else:
+                icos.append("shell")
+                    
+            
+            option = chooser(canvas, "More Options", s_list, icon_override=icos)
+            print(option)
+            
+            if option != None:
+                if "Bash" in option:
+                    shell = "bash"
+                elif "Zsh" in option:
+                    shell = "zsh"
+                elif "Fish" in option:
+                    shell = "fish"
+                else:
+                    shell = "bash"
+                    
+                profile = tools.profile(machine, shell=shell)
+                m_version = get_version(machine)
+                
+                if "Clean" in option:
+                    tools.cleanup(machine)
+                    ask_reboot()
+                elif "Export" in option:
+                    tools.export(machine, m_version, shell=shell)
+                    ask_reboot()
+                    print("export")
+                elif "LibGL" in option:
+                    tools.export_v(machine, "LIBGL_ALWAYS_INDIRECT", 1, shell=shell)
+                    ask_reboot()
+                    print("libgl")
+                elif "GTK" in option:
+                    if shell == "fish":
+                        if "GDK_SCALE 2" in profile:
+                            print("gtk is 2. changing to 1")
+                            tools.gtk(machine, 1, shell="fish")
+                        else:
+                            print("gtk is 1. changing to 2")
+                            tools.gtk(machine, 2, shell="fish")
+                    else:
+                        if "GDK_SCALE=2" in profile:
+                            print("gtk is 2. changing to 1")
+                            tools.gtk(machine, 1, shell=shell)
+                        else:
+                            print("gtk is 1. changing to 2")
+                            tools.gtk(machine, 2, shell=shell)
+                    ask_reboot()
+                    print("gtk")
+                elif "QT" in option:
+                    if shell == "fish":
+                        if "QT_SCALE_FACTOR 2" in profile:
+                            print("qt is 2. changing to 1")
+                            tools.qt(machine, 1, shell="fish")
+                        else:
+                            print("qt is 1. changing to 2")
+                            tools.qt(machine, 2, shell="fish")
+                    else:
+                        if "QT_SCALE_FACTOR=2" in profile:
+                            print("qt is 2. changing to 1")
+                            tools.qt(machine, 1, shell=shell)
+                        else:
+                            print("qt is 1. changing to 2")
+                            tools.qt(machine, 2, shell=shell)
+                    ask_reboot()
+                    print("qt")
+                    
+
+                    
+
+                
+            
         def browse_wsl():
             nonlocal machine
             #chooser(canvas, "Alternate Shell Display Export", ["Bash (choose if unsure)", "Zsh", "Fish"], icon_override="shell")
             subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
             
         def indirect_conf():
-            chooser(canvas, "Alternate Shell Display Export", ["Bash (choose if unsure)", "Zsh", "Fish"], icon_override="shell")
+            nonlocal rebooter, libgl_indirect, machine
+            
+            # if x_configured == False:
+            ver = get_version(machine)
+
+            
+            tools.export_v(machine, "LIBGL_ALWAYS_INDIRECT", 1)
+
+            libgl_indirect = True
+            
+
+            restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?',
+                                       buttons=["Yes", "No"])
+            if restart == "Yes":
+                reboot(machine)
+                rebooter = True
+                machine = None
+                
 
             
         def conf_dbus():
@@ -1204,11 +1375,11 @@ def configure_machine(machine):
                 return None
             passw = 'echo "' + code + '" | sudo -H -S '
             print("Cheching DBus Install...")
-            run(machine, passw + "sudo apt -y install dbus dbus-x11")
+            run(machine, passw + "sudo apt -y install dbus dbus-x11", nolog=True)
             print("Preparing Systemd...")
-            run(machine, passw + "sudo systemd-machine-id-setup")
+            run(machine, passw + "sudo systemd-machine-id-setup", nolog=True)
             print("Starting Bus...")
-            run(machine, passw + "sudo /etc/init.d/dbus start")
+            run(machine, passw + "sudo /etc/init.d/dbus start", nolog=True)
             # print("Injecting into .profile")
             # tools.dbus(machine)
             # print(run(machine, passw + 'echo -e "#!/bin/sh -e \n" >> /etc/rc.local'))
@@ -1304,15 +1475,25 @@ def configure_machine(machine):
         if x_configured == False:
             buttons.append(["Auto-Export Display", confx, icons["x"]])
         else:
-            buttons.append(["Display Is Set To Auto-Export", confx, icons["export"]])
+            buttons.append(["Display Is Set To Auto-Export", confx, icons["check"]])
+
+
+        if libgl_indirect == False:
+            buttons.append(["Enable LibGL Indirect (optional)", indirect_conf, icons["x"]])
+        else:
+            buttons.append(["LibGL Indirect is Enabled", indirect_conf, icons["laptop"]])
+        
+        buttons.append(["More Shells and Options", alternate_conf, icons["shell"]])
+
+        
         if machine != None:
             if "deb" in machine.lower() or "ubuntu" in machine.lower():
                 buttons.append(["Configure DBus (optional)", conf_dbus, icons["dbus_config"]])
 
-        buttons.append(["LibGL Always Indirect (optional)", indirect_conf, icons["laptop"]]) #TODO
+         
 
         #if m_version == 2:
-        buttons.append(["Browse Distro Files", browse_wsl, icons["folder"]]) #TODO
+        #buttons.append(["Browse Distro Files", browse_wsl, icons["folder"]]) #TODO
         
  
         if "HI" in g_button:
@@ -1475,9 +1656,18 @@ def app_launcher(machine):
                 continue
 
             cmd = read[i]["cmd"]
-            if " " in cmd:
-                cmd = cmd.split(" ")[0]
+            #if " " in cmd:
+            #    cmd = cmd.split(" ")[0] #Hope this was here for a reason...
+            
+            if ' ' in cmd and '"' in cmd:
+                #print("replace", cmd)
+                cmd = cmd.replace('"', "'") #this fixes paths in commands
+                ## nope cmd = cmd.replace(" ", "\\ ")
 
+            if  "%" in cmd:
+                cmd = cmd[:cmd.index("%")]
+            
+            #print(cmd)
             size = ui.inch2pix(0.4)
             ico_name = read[i]["ico"]
             if ico_name == None or "." in ico_name:
@@ -1783,10 +1973,19 @@ def chooser(backdrop, title, options, icon_override=None):
     size = ui.inch2pix(0.4)
     ui.set_icons(asset_dir + "Paper/")
 
-    icon = "paint"
-    if icon_override != None:
-        icon = icon_override
+    ico_list = False
+    import typing
+    
+    if isinstance(icon_override, str):
+        icon = "paint"
+        if icon_override != None:
+            icon = icon_override
+        iconer = pygame.transform.smoothscale(ui.pygame_icon(icon, bundle_dir), [size, size])
+            
+    elif isinstance(icon_override, list):
+        ico_list = True
         
+    icon = "paint"
     iconer = pygame.transform.smoothscale(ui.pygame_icon(icon, bundle_dir), [size, size])
 
     list_length = 0
@@ -1913,7 +2112,8 @@ def chooser(backdrop, title, options, icon_override=None):
         alpha = {}
         c = 0
         h2 = 0
-
+        icon_font = ui.font(ico_font, int(ui.inch2pix(0.33)))
+        
         for a in pretty_options:
             if option_names[a][0].lower() != old_key:
                 new_key = option_names[a][0].lower()
@@ -1927,14 +2127,26 @@ def chooser(backdrop, title, options, icon_override=None):
                 txt = title_font.render(a, True, white)
                 txt.set_alpha(int(v3 * 255))
 
-                icon_surf.blit(iconer, [w + ui.inch2pix(0.4) - iconer.get_width() - ui.inch2pix(0.1),
-                                        h + txt.get_height() / 2 - iconer.get_height() / 2 - int(
-                                            (v3 - 1) * d) + scroll + ui.inch2pix(0.03)],
-                               special_flags=(pygame.BLEND_RGBA_ADD))
+                if ico_list == True:
+                    sett = icon_font.render(icons[icon_override[pretty_options.index(a)]], True, white)
+                    sett.set_alpha(int(v3 * 255))
+                    modern_offset = 0
+                    if modern == True:
+                        modern_offset = ui.inch2pix(0.02)
+                
+                    icon_surf.blit(sett, [w + ui.inch2pix(0.4) - iconer.get_width() - ui.inch2pix(0.1),
+                                       modern_offset + h + txt.get_height() / 2 - iconer.get_height() / 2 - int((v3 - 1) * d) + scroll + ui.inch2pix(0.03)],
+                                    special_flags=(pygame.BLEND_RGBA_ADD))
+                
+                else:
+                    icon_surf.blit(iconer, [w + ui.inch2pix(0.4) - iconer.get_width() - ui.inch2pix(0.1),
+                                            h + txt.get_height() / 2 - iconer.get_height() / 2 - int(
+                                                (v3 - 1) * d) + scroll + ui.inch2pix(0.03)],
+                                   special_flags=(pygame.BLEND_RGBA_ADD))
 
                 txt_width = WIDTH - (w + ui.inch2pix(0.4) + ui.inch2pix(0.2) + ui.inch2pix(0.6))
                 ext = title_font.render("... ", True, white)
-
+                
                 icon_surf.blit(txt, [w + ui.inch2pix(0.4), h - int((v3 - 1) * d) + scroll],
                                [0, 0, txt_width, txt.get_height()], special_flags=(pygame.BLEND_RGBA_ADD))
                 if txt.get_width() > txt_width:
@@ -1976,6 +2188,15 @@ def chooser(backdrop, title, options, icon_override=None):
         txt.set_alpha(int(v * 255))
         canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, ui.inch2pix(0.5) - int(ui.inch2pix(0.1) * v)])
 
+
+        title_font = ui.font(default_font, int(ui.inch2pix(0.13)))
+        s_str = "(Type to Search)"
+        txt3 = title_font.render(s_str, True, white)
+        txt3.set_alpha(int(v * v3 * 200))
+        
+        canvas.blit(txt3, [WIDTH / 2 - txt3.get_width() / 2, ui.inch2pix(0.45) + txt.get_height() - int(ui.inch2pix(0.2) * (v - 1))])
+
+        
         title_font = ui.font(default_font, int(ui.inch2pix(0.19)))
         txt = title_font.render("?", True, white)
         txt.set_alpha(int(v * 255))
@@ -2072,12 +2293,14 @@ def create_shortcut(command, name, icon):
         logger.exception("Exception occurred - Cannot Create Shortcut")
 
 
-def start_server(port, mode, clipboard):
+def start_server(port, mode, clipboard, extra=None):
     default_arguments = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi", "auto"]
     if mode == "multi":
         default_arguments.append("-multiwindow")
     elif mode == "full":
         default_arguments.append("-fullscreen")
+    elif mode == "c" and extra != None:
+        default_arguments = extra
     if clipboard == True:
         default_arguments.append("-clipboard")
         default_arguments.append("-primary")
@@ -2124,9 +2347,9 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
         if passw == "":
             code = pymsgbox.password(text="Enter Sudo Password To Start DBus:", title='DBus Not Started.', mask='*')
 
-            runo3(machine, "echo '" + code + "' | sudo -H -S " + "/etc/init.d/dbus start")
+            runo3(machine, "echo '" + code + "' | sudo -H -S " + "/etc/init.d/dbus start", nolog=True)
         else:
-            runo3(machine, passw + "/etc/init.d/dbus start")
+            runo3(machine, passw + "/etc/init.d/dbus start", nolog=True)
 
     if theme == "Follow Windows":
         k = get_light()
@@ -2175,18 +2398,18 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
             else:
                 append = " " + appends
             if ver == 1:
-                print("check1")
-                runs(machine, passw + l_mode + "DISPLAY=:0 " + qt + gtk + command + append)
+                #print("check1")
+                runs(machine, passw + l_mode + "DISPLAY=:0 " + qt + gtk + command + append, nolog=True)
             else:
                 ip = get_ip(machine)
-                print("check2")
-                runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append)
+                #print("check2")
+                runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append, nolog=True)
 
         else:
             # In this case, we need to start a new server, run in a new thread that self closes
             # VCXSRV after command if in multi window mode
             port = str(random.randrange(1000, 9999))
-
+            extra = None
             if w_mode == "Multi Window":
                 mode = "multi"
             elif w_mode == "Single Window":
@@ -2196,6 +2419,13 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
             elif w_mode == "Default":
                 sett = iset.read()
                 mode = sett["graphics"]["window_mode"]
+                if mode != "multi" and mode != "single" and mode != "full":
+                    print("custom fallback")
+                    sett = iset.read()
+                    profile_dict = sett["xserver_profiles"]
+                    extra = profile_dict[mode]
+                    mode = "c"
+                
             else:
                 mode = w_mode
 
@@ -2207,7 +2437,7 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
             elif w_clipboard == "Disabled" or w_clipboard == False:
                 clipboard = False
 
-            PID = start_server(port, mode, clipboard)
+            PID = start_server(port, mode, clipboard, extra)
             ver = get_version(machine)
 
             if GTK == "Default":
@@ -2229,14 +2459,14 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 print("running in thread")
                 # runo2 #runo
                 if ver == 1:
-                    print("check3")
-                    print(runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append))
+                    #print("check3")
+                    print(runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append, nolog=True))
 
                 elif ver == 2:
                     ip = get_ip(machine)
-                    print("check4")
+                    #print("check4")
                     print(runs(machine,
-                               passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append))
+                               passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append, nolog=True))
 
                 while True:
                     time.sleep(2)
@@ -2253,14 +2483,14 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
             if mode == "single":
                 if ver == 1:
-                    print("check5")
-                    runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append)
+                    #print("check5")
+                    runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append, nolog=True)
 
                 elif ver == 2:
                     ip = get_ip(machine)
-                    print("check6")
+                    #print("check6")
                     runs(machine,
-                         passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append)
+                         passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append, nolog=True)
 
             else:
                 if cmd == False:
@@ -3258,7 +3488,8 @@ def draw(canvas, mouse=False):
 
     def browse_wsl():
         machine = choose_machine()
-        subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+        if machine != None:
+            subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
 
 
     heart = icons["heart"]
@@ -3624,6 +3855,7 @@ if "--r" not in args: # start normally
                         animator.animate("start2", [0, 0])
                 if animator.get("start")[0] <= 0:
                     pygame.quit()
+                    time.sleep(1)
                     sys.exit()
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -3705,7 +3937,7 @@ elif args[1] == "--r" and "--ssh" not in args: # launch a shortcut
 
             elif "--clip_enabled" in arg:
                 clipboard = arg[15:]
-                if clipboard == "true":
+                if clipboard == "Enabled":
                     clipboard = "Enabled"
                 elif clipboard == "Default":
                     pass

@@ -19,19 +19,20 @@ then
 		then
 			# Configure Fish
 			sed -i.bak '/DISPLAY=/d' ~/.config/fish/config.fish
-			echo "export DISPLAY=:0.0" >> ~/.config/fish/config.fish
+			echo "export DISPLAY=:0.0 #GWSL" >> ~/.config/fish/config.fish
 		elif [ $wsl_shell == "zsh" ]
 		then
 			# Configure Zsh
 			sed -i.bak '/DISPLAY=/d' ~/.zshrc
-			echo "export DISPLAY=:0.0" >> ~/.zshrc
+			echo "export DISPLAY=:0.0  #GWSL" >> ~/.zshrc
 		elif [ $wsl_shell == "bash" ]
 		then
 			# Configure Bash
 			sed -i.bak '/DISPLAY=/d' ~/.profile
-			echo "export DISPLAY=:0.0" >> ~/.profile
+			echo "export DISPLAY=:0.0  #GWSL" >> ~/.profile
 			sed -i.bak '/DISPLAY=/d' ~/.bashrc
-			echo "export DISPLAY=:0.0" >> ~/.bashrc
+			echo "export DISPLAY=:0.0  #GWSL" >> ~/.bashrc
+		fi
 	
 	elif [ $wsl_version == "2" ]
 	then
@@ -40,79 +41,54 @@ then
 		then
 			# Configure Fish
 			sed -i.bak '/DISPLAY /d' ~/.config/fish/config.fish
-			echo "set -gx DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.config/fish/config.fish
+			echo "set -gx DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.config/fish/config.fish
 		elif [ $wsl_shell == "zsh" ]
 		then
 			# Configure Zsh
 			sed -i.bak '/DISPLAY=/d' ~/.zshrc
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.zshrc
-			elif [ $wsl_shell == "bash" ]
+			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.zshrc
+		elif [ $wsl_shell == "bash" ]
 		then
 			# Configure Bash
 			sed -i.bak '/DISPLAY=/d' ~/.profile
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.profile
+			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.profile
 			sed -i.bak '/DISPLAY=/d' ~/.bashrc
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0" >> ~/.bashrc
+			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.bashrc
+		fi
 	fi
 
 elif [ "export-v" == $i ] # set env variable in all wsl shells. Usage: tools export-v var val
 then
     var_name="$2"
 	var_value="$3"
-	echo Exporting Variable $var_name for WSL with value $var_value
-	# Configure Fish
-	sed -i.bak '/set -gx '"$var_name"'/d' ~/.config/fish/config.fish
-	echo 'set -gx '"$var_name"' '"$var_value" >> ~/.config/fish/config.fish
-	# Configure Zsh
-	sed -i.bak '/'"$var_name"'=/d' ~/.zshrc
-	echo 'export '"$var_name"'='"$var_value" >> ~/.zshrc
-	# Configure Bash
-	sed -i.bak '/'"$var_name"'=/d' ~/.profile
-	echo 'export '"$var_name"'='"$var_value" >> ~/.profile
-	sed -i.bak '/'"$var_name"'=/d' ~/.bashrc
-	echo 'export '"$var_name"'='"$var_value" >> ~/.bashrc
+	wsl_shell="$4"
+	echo Exporting Variable $var_name for WSL with value $var_value on $wsl_shell
 	
+	if [ $wsl_shell == "fish" ]
+	then
+		# Configure Fish
+		sed -i.bak '/set -gx '"$var_name"'/d' ~/.config/fish/config.fish
+		echo 'set -gx '"$var_name"' '"$var_value"' #GWSL' >> ~/.config/fish/config.fish
+		
+	elif [ $wsl_shell == "zsh" ]
+	then
+		# Configure Zsh
+		sed -i.bak '/'"$var_name"'=/d' ~/.zshrc
+		echo 'export '"$var_name"'='"$var_value"' #GWSL' >> ~/.zshrc
+		
+	elif [ $wsl_shell == "bash" ]
+	then
+		# Configure Bash
+		sed -i.bak '/'"$var_name"'=/d' ~/.profile
+		echo 'export '"$var_name"'='"$var_value"' #GWSL' >> ~/.profile
+		sed -i.bak '/'"$var_name"'=/d' ~/.bashrc
+		echo 'export '"$var_name"'='"$var_value"' #GWSL' >> ~/.bashrc
+	fi
 
-elif [ "qt1" == $i ] #QT scale 1
-then
-	echo "exporting qt=1"
-	sed -i.bak '/QT_SCALE_FACTOR=/d' ~/.profile
-	echo "export QT_SCALE_FACTOR=1" >> ~/.profile
-
-	sed -i.bak '/QT_SCALE_FACTOR=/d' ~/.bashrc
-	echo "export QT_SCALE_FACTOR=1" >> ~/.bashrc
-
-elif [ "qt2" == $i ] #QT scale 2
-then
-	echo "exporting qt=2"
-	sed -i.bak '/QT_SCALE_FACTOR=/d' ~/.profile
-	echo "export QT_SCALE_FACTOR=2" >> ~/.profile
-
-	sed -i.bak '/QT_SCALE_FACTOR=/d' ~/.bashrc
-	echo "export QT_SCALE_FACTOR=2" >> ~/.bashrc
-
-elif [ "gtk1" == $i ] #GTK scale 1
-then
-	echo "exporting gtk=1"
-	sed -i.bak '/GDK_SCALE=/d' ~/.profile
-	echo "export GDK_SCALE=1" >> ~/.profile
-
-	sed -i.bak '/GDK_SCALE=/d' ~/.bashrc
-	echo "export GDK_SCALE=1" >> ~/.bashrc
-
-elif [ "gtk2" == $i ] #GTK scale 2
-then
-	echo "exporting gtk=2"
-	sed -i.bak '/GDK_SCALE=/d' ~/.profile
-	echo "export GDK_SCALE=2" >> ~/.profile
-
-	sed -i.bak '/GDK_SCALE=/d' ~/.bashrc
-	echo "export GDK_SCALE=2" >> ~/.bashrc
-
-elif [ "listapps" == $i ] #return list of installed gui apps and commands
+elif [ "listappsold" == $i ] #return list of installed gui apps and commands
 then
 	all_apps=()
-	apps=`find /usr/share/applications -name '*.desktop' -print0 |xargs -0 grep -i -l "Terminal=False"`
+	apps=`find -L /usr/share/applications -name '*.desktop' -print0 |xargs -0 grep -i -l "Terminal=False"`
 	for app in $apps
 	do
 		all_apps+=`cat $app | sed -En '/^Name=/p'`
@@ -123,10 +99,33 @@ then
 		all_apps+="/:/"
 	done
 	echo -e $all_apps
+	
+elif [ "listapps" == $i ] #return list of installed gui apps and commands
+then
+	all_apps=()
+	apps=`find -L /usr/share/applications -name '*.desktop' -print0 |xargs -0 grep -i -l "Terminal=False"`
+	for app in $apps
+	do
+		all_apps+=$app"\n"
+		
+	done
+	echo -e $all_apps
 
 elif [ "profile" == $i ] #cat of .profile
 then
-	cat ~/.profile
+	wsl_shell="$2"
+	
+	
+	if [ $wsl_shell == "fish" ]
+	then
+		cat ~/.config/fish/config.fish
+	elif [ $wsl_shell == "zsh" ]
+	then
+		cat ~/.zshrc
+	elif [ $wsl_shell == "bash" ]
+	then
+		cat ~/.profile
+	fi
 
 elif [ "listthemes" == $i ] #return list of installed themes in usr themes and home themes
 then
@@ -163,6 +162,18 @@ then
 
 	sed -i.bak '//etc/init.d/dbus start/d' ~/.bashrc
 	echo "sudo /etc/init.d/dbus start" >> ~/.bashrc
+	
+elif [ "cleanup" == $i ] #cleanup all modifications made by GWSL
+then
+	echo "cleaning .profile"
+	sed -i.bak '/#GWSL/d' ~/.profile
+	echo "cleaning .bashrc"
+	sed -i.bak '/#GWSL/d' ~/.bashrc
+	echo "cleaning .zshrc"
+	sed -i.bak '/#GWSL/d' ~/.zshrc
+	echo "cleaning .config/fish/config.fish"
+	sed -i.bak '/#GWSL/d' ~/.config/fish/config.fish
+
 
 else
    echo "Not recognized"
