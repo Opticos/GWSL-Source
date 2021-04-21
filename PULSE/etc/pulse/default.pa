@@ -40,7 +40,9 @@ load-module module-augment-properties
 ### (it's probably better to not load these drivers manually, but instead
 ### use module-udev-detect -- see below -- for doing this automatically)
 
-load-module module-native-protocol-tcp port=4713 auth-ip-acl=172.16.0.0/12
+load-module module-native-protocol-tcp auth-anonymous=1
+ 
+#load-module module-native-protocol-tcp port=4713 auth-ip-acl=172.16.0.0/12
 load-module module-esound-protocol-tcp port=4714 auth-ip-acl=172.16.0.0/12
 load-module module-waveout
 

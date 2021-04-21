@@ -37,7 +37,7 @@ import ipaddress
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.3.8 beta 1 build2"
+version = "1.3.8 beta 1 build3"
 
 lc_name = "Licenses138.txt"
 
@@ -1211,9 +1211,11 @@ def configure_machine(machine):
             if ver == 1:
                 # WSL1
                 tools.export(machine, 1)
+                tools.export_audio(machine, 1, shell="bash")
             elif ver == 2:
                 # WSL2
                 tools.export(machine, 2)
+                tools.export_audio(machine, 2, shell="bash")
 
             x_configured = True
             toaster.show_toast("Display Exported",
@@ -1241,17 +1243,17 @@ def configure_machine(machine):
         def alternate_conf():
             nonlocal loading
             #loading = True
-            options = [["Bash: Display Export"],
+            options = [["Bash: Display/Audio Export"],
                       ["Bash: Enable LibGL Indirect"],
                       ["Bash: Toggle GTK DPI"],
                       ["Bash: Toggle QT DPI"],
                       
-                      ["Zsh: Display Export"],
+                      ["Zsh: Display/Audio Export"],
                       ["Zsh: Enable LibGL Indirect"],
                       ["Zsh: Toggle GTK DPI"],
                       ["Zsh: Toggle QT DPI"],
 
-                      ["Fish: Display Export"],
+                      ["Fish: Display/Audio Export"],
                       ["Fish: Enable LibGL Indirect"],
                       ["Fish: Toggle GTK DPI"],
                       ["Fish: Toggle QT DPI"],
@@ -1294,10 +1296,18 @@ def configure_machine(machine):
                 if "Clean" in option:
                     tools.cleanup(machine)
                     ask_reboot()
+                    
                 elif "Export" in option:
                     tools.export(machine, m_version, shell=shell)
+                    tools.export_audio(machine, m_version, shell=shell)
                     ask_reboot()
                     print("export")
+                    
+                #elif "Audio" in option:
+                #    tools.export_audio(machine, m_version, shell=shell)
+                #    ask_reboot()
+                #    print("export audio")
+                    
                 elif "LibGL" in option:
                     tools.export_v(machine, "LIBGL_ALWAYS_INDIRECT", 1, shell=shell)
                     ask_reboot()
@@ -1512,7 +1522,7 @@ def configure_machine(machine):
         else:
             buttons.append(["No GTK Themes Installed", theme, icons["theme"]])
 
-        buttons.append(["Reboot " + ni, reb, icons["refresh"]])
+        buttons.append(["Reboot " + ni, ask_reboot, icons["refresh"]])
         click = None
         v5 = (1 - animator.get("loading_c")[0] / 100)
 
@@ -2399,11 +2409,11 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 append = " " + appends
             if ver == 1:
                 #print("check1")
-                runs(machine, passw + l_mode + "DISPLAY=:0 " + qt + gtk + command + append, nolog=True)
+                runs(machine, passw + l_mode + "DISPLAY=:0 PULSE_SERVER=tcp:localhost " + qt + gtk + command + append, nolog=True)
             else:
                 ip = get_ip(machine)
-                #print("check2")
-                runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + ":0 " + qt + gtk + command + append, nolog=True)
+                print("check2")
+                runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + f":0 PULSE_SERVER=tcp:{ip} " + qt + gtk + command + append, nolog=True)
 
         else:
             # In this case, we need to start a new server, run in a new thread that self closes
@@ -2460,13 +2470,13 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 # runo2 #runo
                 if ver == 1:
                     #print("check3")
-                    print(runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append, nolog=True))
+                    print(runs(machine, passw + l_mode + "DISPLAY=:" + port + " PULSE_SERVER=tcp:localhost " + qt + gtk + command + append, nolog=True))
 
                 elif ver == 2:
                     ip = get_ip(machine)
                     #print("check4")
                     print(runs(machine,
-                               passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append, nolog=True))
+                               passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + f" PULSE_SERVER=tcp:{ip} " + qt + gtk + command + append, nolog=True))
 
                 while True:
                     time.sleep(2)
@@ -2484,13 +2494,13 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
             if mode == "single":
                 if ver == 1:
                     #print("check5")
-                    runs(machine, passw + l_mode + "DISPLAY=:" + port + " " + qt + gtk + command + append, nolog=True)
+                    runs(machine, passw + l_mode + "DISPLAY=:" + port + " PULSE_SERVER=tcp:localhost " + qt + gtk + command + append, nolog=True)
 
                 elif ver == 2:
                     ip = get_ip(machine)
                     #print("check6")
                     runs(machine,
-                         passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + " " + qt + gtk + command + append, nolog=True)
+                         passw + l_mode + "DISPLAY=" + str(ip) + ":" + port + f" PULSE_SERVER=tcp:{ip} " + qt + gtk + command + append, nolog=True)
 
             else:
                 if cmd == False:

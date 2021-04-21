@@ -18,8 +18,8 @@ then
 		if [ $wsl_shell == "fish" ]
 		then
 			# Configure Fish
-			sed -i.bak '/DISPLAY=/d' ~/.config/fish/config.fish
-			echo "export DISPLAY=:0.0 #GWSL" >> ~/.config/fish/config.fish
+			sed -i.bak '/DISPLAY /d' ~/.config/fish/config.fish
+			echo "set -gx DISPLAY :0.0 #GWSL" >> ~/.config/fish/config.fish
 		elif [ $wsl_shell == "zsh" ]
 		then
 			# Configure Zsh
@@ -54,6 +54,56 @@ then
 			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.profile
 			sed -i.bak '/DISPLAY=/d' ~/.bashrc
 			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.bashrc
+		fi
+	fi
+
+elif [ "export-a" == "$i" ] #Bash Export audio = tcp:ip. Usage: tools export-a 1 shell
+then
+	wsl_version="$2"
+	wsl_shell="$3"
+	
+	if [ $wsl_version == "1" ]
+	then
+		echo Configuring Audio for WSL 1 and $wsl_shell
+		if [ $wsl_shell == "fish" ]
+		then
+			# Configure Fish
+			sed -i.bak '/PULSE_SERVER /d' ~/.config/fish/config.fish
+			echo "set -gx PULSE_SERVER tcp:localhost #GWSL" >> ~/.config/fish/config.fish
+		elif [ $wsl_shell == "zsh" ]
+		then
+			# Configure Zsh
+			sed -i.bak '/PULSE_SERVER=/d' ~/.zshrc
+			echo "export PULSE_SERVER=tcp:localhost #GWSL" >> ~/.zshrc
+		elif [ $wsl_shell == "bash" ]
+		then
+			# Configure Bash
+			sed -i.bak '/PULSE_SERVER=/d' ~/.profile
+			echo "export PULSE_SERVER=tcp:localhost #GWSL" >> ~/.profile
+			sed -i.bak '/PULSE_SERVER=/d' ~/.bashrc
+			echo "export PULSE_SERVER=tcp:localhost #GWSL" >> ~/.bashrc
+		fi
+	
+	elif [ $wsl_version == "2" ]
+	then
+		echo Configuring Audio for WSL 2 and $wsl_shell
+		if [ $wsl_shell == "fish" ]
+		then
+			# Configure Fish
+			sed -i.bak '/PULSE_SERVER /d' ~/.config/fish/config.fish
+			echo "set -gx PULSE_SERVER tcp:(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.config/fish/config.fish
+		elif [ $wsl_shell == "zsh" ]
+		then
+			# Configure Zsh
+			sed -i.bak '/PULSE_SERVER=/d' ~/.zshrc
+			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.zshrc
+		elif [ $wsl_shell == "bash" ]
+		then
+			# Configure Bash
+			sed -i.bak '/PULSE_SERVER=/d' ~/.profile
+			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.profile
+			sed -i.bak '/PULSE_SERVER=/d' ~/.bashrc
+			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.bashrc
 		fi
 	fi
 

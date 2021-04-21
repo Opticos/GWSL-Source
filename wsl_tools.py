@@ -167,6 +167,11 @@ def export(machine, version, shell="bash"):
     print(cmd)
     print(os.popen(cmd).read()[:-1])
 
+def export_audio(machine, version, shell="bash"):
+    cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-a ' + str(version) + " " + shell
+    print(cmd)
+    print(os.popen(cmd).read()[:-1])
+
 def cleanup(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" cleanup'
     print(cmd)

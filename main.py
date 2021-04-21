@@ -26,6 +26,7 @@ else:
 systray = None
 exiter = False
 server_PID = 0
+audio_server_PID = 0
 
 # Globals
 clipboard = True
@@ -430,12 +431,32 @@ def kill_server(all_servers=False):
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
     subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv_lowdpi.exe')
+
     
+def kill_audio():
+    print(subprocess.getoutput("taskkill /IM pulseaudio.exe /F"))
+    try:
+        print(subprocess.getoutput(r"del %USERPROFILE%\.pulse\%USERDOMAIN%-runtime\pid /q"))
+    except:
+        pass
+    try:
+        print(subprocess.getoutput(r"del %USERPROFILE%\.pulse\%COMPUTERNAME%-runtime\pid /q"))
+    except:
+        pass
     
+def start_audio():
+    global audio_server_PID
+    print("starting audio")
+    #proc = subprocess.Popen([f"PULSE/bin/pulseaudio.exe", "--cleanup-shm"], shell=True)
+    proc = subprocess.Popen(["PULSE/bin/pulseaudio.exe", "-D"], stdout = subprocess.PIPE,
+                           creationflags = subprocess.CREATE_NO_WINDOW)
+
+    #audio_server_PID = proc.pid
 
 def start_server():
     """Starts the GWSL services"""
     global server_PID
+    #start video
     try:
         if display_mode != "c":
             default_arguments = default_profiles[display_mode]
@@ -468,6 +489,16 @@ def get_running():
         return True
     return False
 
+def get_audio_running():
+    """Checks whether the GWSL service is currently running"""
+    service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "IMAGENAME eq pulseaudio.exe"').split(",")[0]
+    #service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {audio_server_PID}"').split(",")[0]
+    #print(service_name)
+    #proc_list = os.popen('tasklist').readlines()
+    if "pulseaudio.exe" in service_name:
+        return True
+    return False
+
 
 def main():
     """Main entry point for application"""
@@ -476,9 +507,12 @@ def main():
     #if get_running(): we dont need to check do we...
 
     kill_server()
+    kill_audio()
 
     # Start VcXsrv
     start_server()
+    # Start audio
+    start_audio()
 
     # Start Tray Icon
     menu = build_menu()
@@ -511,11 +545,17 @@ def main():
                     else:
                         systray.shutdown()
                         kill_server()
+                        kill_audio()
                         subprocess.getoutput('taskkill /F /IM GWSL.exe')
                         sys.exit()
-
+                if not get_audio_running():
+                    #if pulseaudio crashes
+                    kill_audio()
+                    start_audio()
+                    
             if exiter:
                 kill_server()
+                kill_audio()
                 subprocess.getoutput('taskkill /F /IM GWSL.exe')
                 systray.shutdown()
                 sys.exit()
