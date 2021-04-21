@@ -41,7 +41,7 @@ TODO (FAILED ATTEMPT) Add xserver text to logo on the store because title cannot
 1.3.8 OR FUTURE
 *  DONE AND TEST update vcxsrv to latest 64
 *  DONE DPI in store version and remove duplicate vcxsrv. POC Done. TEST AND RELEASE
-*  TODO sound POC COMPLETED
+*  DONE sound. POC COMPLETED
 *  DONE port number in ssh box
 *  DONE more shell compatability (Goes with consolidation of run commands)
 *  DONE maybe: Remove "." to specify profile and use -l to start a login shell (it is an L) #doesnt work
