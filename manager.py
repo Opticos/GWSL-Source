@@ -564,7 +564,7 @@ def runs(distro, command, nolog=False):
         logger.info(f"(runos) WSL SHELL $ {cmd}")
     subprocess.Popen(cmd,
                      shell=True)  # .readlines()
-    print("runs. it would be", cmd)
+    #print("runs. it would be", cmd)
     return None
     
     
@@ -578,7 +578,7 @@ def run(distro, command, nolog=False):
     if nolog == False:
         logger.info(f"(run) WSL SHELL $ {cmd}")
         logger.info(f"WSL OUTPUT > {out}")
-    print("run. it would be", cmd)
+    #print("run. it would be", cmd)
     return out
     #"""
     #return wsl_run(distro, command, "run")
@@ -591,7 +591,7 @@ def runo3(distro, command, nolog=False):
     if nolog == False:
         logger.info(f"(runo3) WSL SHELL $ {cmd}")
         logger.info(f"WSL OUTPUT > {out}")
-    print("runo3. it would be", cmd)
+    #print("runo3. it would be", cmd)
     return out
     #"""
     #return wsl_run(distro, command, "runo3")
@@ -604,7 +604,7 @@ def runo2(distro, command, nolog=False):
     if nolog == False:
         logger.info(f"(runo2) WSL SHELL $ {cmd}")
         logger.info(f"WSL OUTPUT > {out}")
-    print("runo2. it would be", cmd)
+    #print("runo2. it would be", cmd)
     return out
     #"""
     #return wsl_run(distro, command, "runo2")
@@ -628,7 +628,7 @@ def get_ip(machine):
     cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""" + '"'
 
     
-    print(cmd)
+    #print(cmd)
     result = os.popen(cmd).readlines()[0]
 
     try:
@@ -3998,7 +3998,7 @@ elif args[1] == "--r" and "--ssh" not in args: # launch a shortcut
                 logger.exception("Exception occurred - Cannot Start Service")
                 print("Can't run service...")
 
-        print("keep", keeper)
+        #print("keep", keeper)
         machines = os.popen("wsl.exe -l -q").read()  # lines()
         machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
         machines[:] = (value for value in machines if value != "")
