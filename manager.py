@@ -37,7 +37,7 @@ import ipaddress
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.3.8 beta 1 build3"
+version = "1.3.8 beta 1 build4"
 
 lc_name = "Licenses138.txt"
 
@@ -993,8 +993,8 @@ def about():
                             elif i == "Allow GWSL Through The Firewall": #TODO
                                 os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
                                 pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall \
-                                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe" \
-                                                and "GWSL_vcxsrv_lowdpi.exe". You will need Admin Priviledges to do this.'),
+                                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", \
+                                                "GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
                             elif i == "GWSL Discord Server":
                                 webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
@@ -1483,9 +1483,9 @@ def configure_machine(machine):
 
         buttons = []
         if x_configured == False:
-            buttons.append(["Auto-Export Display", confx, icons["x"]])
+            buttons.append(["Auto-Export Display/Audio", confx, icons["x"]])
         else:
-            buttons.append(["Display Is Set To Auto-Export", confx, icons["check"]])
+            buttons.append(["Display/Audio Set To Auto-Export", confx, icons["check"]])
 
 
         if libgl_indirect == False:
