@@ -35,9 +35,9 @@ from exe_layer import cmd
 import logging
 import ipaddress
 
-BUILD_MODE = "WIN32"  # MSIX or WIN32
+BUILD_MODE = "MSIX"  # MSIX or WIN32
 
-version = "1.3.8 beta 1 build6"
+version = "1.3.8 beta 1 build7"
 
 lc_name = "Licenses138.txt"
 
