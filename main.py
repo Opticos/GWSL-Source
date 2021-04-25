@@ -7,7 +7,7 @@ import time
 import keyboard
 
 import GWSL_profiles as profile
-# Copyright Paul-E/Opticos Studios 2020
+# Copyright Paul-E/Opticos Studios 2021
 # https://opticos.github.io/gwsl/
 import iset
 import pymsgbox

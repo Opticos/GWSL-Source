@@ -37,7 +37,7 @@ import ipaddress
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.3.8 beta 1 build4"
+version = "1.3.8 beta 1 build6"
 
 lc_name = "Licenses138.txt"
 
@@ -55,6 +55,7 @@ else:
     bundle_dir = os.path.dirname(os.path.abspath(__file__))
 
 if debug == True:
+    print("debug mode")
     print('we are', frozen, 'frozen')
     print('bundle dir is', bundle_dir)
     print('sys.argv[0] is', sys.argv[0])
@@ -109,6 +110,8 @@ f_handler.setFormatter(f_format)
 logger.addHandler(f_handler)
 logger.addFilter(DuplicateFilter())
 
+
+
 try:
     iset.path = app_path + "settings.json"
 
@@ -135,6 +138,18 @@ try:
                 new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
                 new_iset["app_blacklist"] = old_iset["app_blacklist"]
                 new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
+                try:
+                    new_iset["general"]["acrylic_enabled"] = old_iset["general"]["acrylic_enabled"]
+                except:
+                    pass
+                try:
+                    new_iset["general"]["start_menu_mode"] = old_iset["general"]["start_menu_mode"]
+                except:
+                    pass
+                try:
+                    new_iset["general"]["shell_gui"] = old_iset["general"]["shell_gui"]
+                except:
+                    pass
                 iset.set(new_iset)
                 
 
@@ -415,11 +430,7 @@ if "--r" not in args:
         # mask.fill([255, 0, 0])
         # pay = pygame.image.load(asset_dir + "paypal.png").convert_alpha()
         # pay = pygame.transform.smoothscale(pay, [ui.inch2pix(1), int((pay.get_height() / pay.get_width()) * ui.inch2pix(1))])
-        # try:
-        #    mini1 = pygame.image.load(os.getenv('APPDATA') + r"\Microsoft\Windows\Themes\TranscodedWallpaper").convert()
-        # except:
-        #    bak = asset_dir + random.choice(["1", "2", "3"]) + ".jpg"
-        #    mini1 = pygame.image.load(bak).convert()
+        
         back = pygame.Surface([WIDTH, HEIGHT])  # mini1.copy()
 
 
@@ -455,6 +466,14 @@ if "--r" not in args:
         if acrylic == True:
             import blur
             blur.blur(HWND)
+        else:
+            try:
+                mini1 = pygame.image.load(os.getenv('APPDATA') + r"\Microsoft\Windows\Themes\TranscodedWallpaper").convert()
+            except:
+                bak = asset_dir + random.choice(["1", "2", "3"]) + ".jpg"
+                mini1 = pygame.image.load(bak).convert()
+            back = mini1.copy()#
+            back = pygame.transform.scale(back, screensize)
 
     except Exception as e:
         logger.exception("Exception occurred - Cannot Init Display")
@@ -573,8 +592,9 @@ def runs(distro, command, nolog=False):
 
 def run(distro, command, nolog=False):
     #"""
-    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + ' &"'
-    out = subprocess.getoutput(cmd)  # .readlines()
+    cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
+    #old out = subprocess.getoutput(cmd)  # .readlines()
+    out = subprocess.check_output(cmd, shell=True, errors="ignore")
     if nolog == False:
         logger.info(f"(run) WSL SHELL $ {cmd}")
         logger.info(f"WSL OUTPUT > {out}")
@@ -583,6 +603,16 @@ def run(distro, command, nolog=False):
     #"""
     #return wsl_run(distro, command, "run")
 
+
+def start_dbus(distro):
+    command = "/etc/init.d/dbus start"
+    cmd = "wsl.exe ~ -d " + str(distro) + " /bin/sh -c " + '"' + str(command) + '"'
+    try:
+        out = subprocess.getoutput(cmd)
+    except:
+        out = ""
+    return out
+   
 
 def runo3(distro, command, nolog=False):
     #"""
@@ -1461,8 +1491,8 @@ def configure_machine(machine):
                     def th():
                         nonlocal them, s_theme
                         if s_theme != " Default Theme":
-                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
-                            run(machine, """echo 'export GTK_THEME=""" + str(s_theme) + """' >> ~/.profile """)
+                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile""")
+                            run(machine, """echo 'export GTK_THEME=""" + str(s_theme) + """' >> ~/.profile""")
                             them = "Default"
                             profile = tools.profile(machine)
                             pl = profile.split("\n")
@@ -1471,7 +1501,7 @@ def configure_machine(machine):
                                     them = i[17:]
 
                         else:
-                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile """)
+                            run(machine, """sed -i.bak '/GTK_THEME=/d' ~/.profile""")
                             them = "Default"
 
                     themer = threading.Thread(target=th)
@@ -1648,7 +1678,7 @@ def app_launcher(machine):
 
     def get():
         nonlocal apps, loading, list_length, app_list, message, alpha
-        read = tools.get_apps(machine)
+        read = tools.get_apps(machine, logger=logger)
         ui.set_icons(asset_dir + "Paper/")
         apper = {}
         sett = iset.read()
@@ -2351,8 +2381,11 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
     else:
         passw = ""
-
-    v = run(machine, "/etc/init.d/dbus start")
+        
+    v = ""
+    
+    if dbus == "True":
+        v = start_dbus(machine)
     if dbus == "True" and "system message bus already started" not in v:
         if passw == "":
             code = pymsgbox.password(text="Enter Sudo Password To Start DBus:", title='DBus Not Started.', mask='*')
@@ -2412,7 +2445,7 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
                 runs(machine, passw + l_mode + "DISPLAY=:0 PULSE_SERVER=tcp:localhost " + qt + gtk + command + append, nolog=True)
             else:
                 ip = get_ip(machine)
-                print("check2")
+                #print("check2")
                 runs(machine, passw + l_mode + "DISPLAY=" + str(ip) + f":0 PULSE_SERVER=tcp:{ip} " + qt + gtk + command + append, nolog=True)
 
         else:
@@ -3307,7 +3340,8 @@ def draw(canvas, mouse=False):
     if mouse == False:
         hover = pygame.mouse.get_pos()
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
-        # canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
+        if acrylic == False:
+            canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
         if pos_config == "bottom":
             win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT * launch), WIDTH, HEIGHT, 1)
         elif pos_config == "top":
@@ -3325,7 +3359,8 @@ def draw(canvas, mouse=False):
         if about_open == True:
             about_open = False
             about()
-        # canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
+        if acrylic == False:
+            canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
         if pos_config == "bottom":
             win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT), WIDTH, HEIGHT, True)
         elif pos_config == "top":
@@ -3340,9 +3375,16 @@ def draw(canvas, mouse=False):
         if service_loaded == True:
             animator.animate("loading", [100, 0])
 
+    if acrylic == False:
+        ui.iris2(canvas, [0, 0],
+                 [WIDTH, HEIGHT],
+                 False, radius=20, shadow_enabled=False, resolution=10, alpha=int(255))
+        
     # print(canvas.get_at([0, 0]))
 
     launch = animator.get("start2")[0] / 100.0
+
+    
 
     if animator.get("start2")[0] > 99 and service_loaded == False:
         animator.animate("loading", [0, 0])

@@ -60,12 +60,20 @@ class WSLApp: #Credit to @sanzoghenzo on github. I did some adapting
         #raise IOError("Cannot read the .desktop entry")
 
 
-def get_apps(machine):
+def get_apps(machine, logger=None):
     #first make sure the machine is booted. Scanning should do the trick
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listapps'
     read = os.popen(cmd).read()
     apps = read.splitlines()
     #apps.remove("")
+    """
+    if logger != None:
+        print(read)
+        print(apps)
+        print(cmd)
+        logger.info(f"app_launcher " + str(apps))
+        logger.info(f"app_launcher " + str(read))
+    """
     app_dict = {}
     for app in apps:
         if "screensaver" in app:
