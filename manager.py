@@ -258,7 +258,6 @@ if "--r" not in args:
             win32gui.EnumWindows(windowEnumerationHandler, top_windows)
             for i in top_windows:
                 if "gwsl dashboard" in i[1].lower():
-                    print(i[0])
                     win32gui.ShowWindow(i[0], 5)
                     win32gui.SetForegroundWindow(i[0])
                     break
@@ -392,7 +391,12 @@ if "--r" not in args:
         # win32gui.MoveWindow(HWND, screensize[0] - WIDTH, screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
-
+        try:
+            win32gui.ShowWindow(HWND, 5)
+            win32gui.SetForegroundWindow(HWND)
+        except:
+            pass
+                    
         ui.set_size([WIDTH, HEIGHT])
         pygame.display.set_caption("GWSL Dashboard")
         ui.start_graphics(pygame, asset_dir)
