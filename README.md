@@ -7,6 +7,7 @@ GWSL automates the process of running X on top of WSL and over SSH:
 *  It provides a simple UI for launching Linux apps, managing them graphicaly, and creating customized Windows shortcuts for them.
 *  All this at the click of a button! No memorization of commands necessary. *Easy!*
 
+Here is a video demo: https://youtu.be/S6GXBEQ5KzA
 
 This is the actual code for GWSL. And some premade binaries.
 
