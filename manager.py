@@ -1688,6 +1688,8 @@ def app_launcher(machine):
         sett = iset.read()
 
         avoid = sett["app_blacklist"]
+        size = ui.inch2pix(0.4)
+        
         for i in read:
 
             blocker = False
@@ -1712,7 +1714,7 @@ def app_launcher(machine):
                 cmd = cmd[:cmd.index("%")]
             
             #print(cmd)
-            size = ui.inch2pix(0.4)
+            #size = ui.inch2pix(0.4)
             ico_name = read[i]["ico"]
             if ico_name == None or "." in ico_name:
                 ico_name = name
@@ -1737,12 +1739,48 @@ def app_launcher(machine):
 
         animator.animate("apps", [100, 0])
         list_length = len(apps) * (ui.inch2pix(0.35) + ui.inch2pix(0.23))
-        loading = False
+        #loading = False
         if app_list == []:
             time.sleep(0.5)
             message = "No Graphical Apps Found"
             animator.animate("apps", [0, 0])
+            return False
+        ni = str(machine)[0].upper() + str(machine)[1:]
+        ni = ni.replace("-", " ")
+        icon_font = ui.font(ico_font, size)
 
+        icon = pygame.transform.smoothscale(ui.pygame_icon("Files", bundle_dir), [size, size])
+        
+        apps[f"Files on {ni}"] = {"icon":icon, "cmd":"f_manager_gw"}
+        apps[f"Terminal on {ni}"] = {"icon":icon, "cmd":"term_gw"}
+        app_list = [f"Files on {ni}", f"Terminal on {ni}"] + app_list
+        
+        ####
+        icon_surf3 = pygame.transform.smoothscale(ui.pygame_icon("Nautilus", bundle_dir), [size, size])
+
+        icon_font = ui.font(ico_font, size)
+        sett = icon_font.render(icons["folder"], True, white)
+
+        
+        icon_surf = pygame.Surface([int(size), int(size)], pygame.SRCALPHA)
+        icon_surf.blit(sett, [0, int(-ui.inch2pix(0.03))],
+                        special_flags=(pygame.BLEND_RGBA_ADD))
+
+        #####
+        icon_surf4 = pygame.transform.smoothscale(ui.pygame_icon("Terminal", bundle_dir), [size, size])
+
+        sett = icon_font.render(icons["shell"], True, white)
+
+        
+        icon_surf2 = pygame.Surface([size, size], pygame.SRCALPHA)
+        icon_surf2.blit(sett, [0, int(-ui.inch2pix(0.03))],
+                        special_flags=(pygame.BLEND_RGBA_ADD))
+
+                    
+        apps[f"Files on {ni}"] = {"icon":icon_surf, "cmd":"f_manager_gw"}
+        apps[f"Terminal on {ni}"] = {"icon":icon_surf2, "cmd":"term_gw"}
+
+        loading = False
     list_length = 0
 
     t = threading.Thread(target=get)
@@ -1869,7 +1907,7 @@ def app_launcher(machine):
                                       h + txt.get_height() / 2 - icon.get_height() / 2 - int(
                                           (v3 - 1) * d) + scroll + ui.inch2pix(0.03)],
                                special_flags=(pygame.BLEND_RGBA_ADD))
-
+        
                 txt2 = icon_font.render(icons["link"], True, white)
 
                 txt_width = WIDTH - (w + ui.inch2pix(0.4) + txt2.get_width() + ui.inch2pix(0.6))
@@ -1882,22 +1920,41 @@ def app_launcher(machine):
                                    special_flags=(pygame.BLEND_RGBA_ADD))
                     txt_width += ext.get_width()
 
-                icon_surf.blit(txt2, [WIDTH - txt2.get_width() - ui.inch2pix(0.3),
+                if i["cmd"] != "f_manager_gw" and i["cmd"] != "term_gw":
+                    icon_surf.blit(txt2, [WIDTH - txt2.get_width() - ui.inch2pix(0.3),
                                       h - int((v3 - 1) * d) + ui.inch2pix(0.06) + scroll],
                                special_flags=(pygame.BLEND_RGBA_ADD))
+                    
                 if mouse != False and mouse[1] >= top_padding and mouse[1] <= HEIGHT - bottom_padding:
                     if mouse[1] > h - ui.inch2pix(0.1) - int((v3 - 1) * d) + scroll and mouse[
                         1] < h + txt.get_height() + ui.inch2pix(0.2) - int((v3 - 1) * d) + scroll:
                         if mouse[0] > w + ui.inch2pix(0.4) - icon.get_width() - ui.inch2pix(0.1) and mouse[
                             0] < w + ui.inch2pix(0.4) + txt_width:
-                            spawn_n_run(machine, i["cmd"], "Default", "Default", "Default", "Default", "None")
-                            if animator.get("start")[0] == 100:
-                                animator.animate("start", [0, 0])
-                                animator.animate("start2", [0, 0])
-                                end = True
+                            if i["cmd"] != "f_manager_gw" and i["cmd"] != "term_gw":
+                                spawn_n_run(machine, i["cmd"], "Default", "Default", "Default", "Default", "None")
+                                if animator.get("start")[0] == 100:
+                                    animator.animate("start", [0, 0])
+                                    animator.animate("start2", [0, 0])
+                                    end = True
+                            else:
+                                if i["cmd"] == "f_manager_gw":
+                                    print("Files")
+                                    subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+                                    
+                                    
+                                elif i["cmd"] == "term_gw":
+                                    print("Terminal")
+                                    sett = iset.read()
+                                    shell_ui = sett["general"]["shell_gui"]
+                                    if shell_ui == "cmd":
+                                        subprocess.Popen("wsl.exe ~ -d " + str(machine))
+                                    else:
+                                        subprocess.Popen(f'wt -p "{machine}"')
 
+                                    
                         elif mouse[0] > w + ui.inch2pix(0.4) + txt_width and mouse[0] < WIDTH:
-                            shortcut(name=a[0].upper() + a[1:], cmd=i["cmd"], mach=machine, icn=i["icn"])
+                            if i["cmd"] != "f_manager_gw" and i["cmd"] != "term_gw":
+                                shortcut(name=a[0].upper() + a[1:], cmd=i["cmd"], mach=machine, icn=i["icn"])
 
             h += ui.inch2pix(0.35) + txt.get_height()
             d += ui.inch2pix(0.1)
@@ -3327,6 +3384,20 @@ colores = [[255, 0, 0],
         [233, 26, 38],
         [210, 21, 229]]
 
+def browse_wsl():
+    machine = choose_machine()
+    if machine != None:
+        subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+
+def shells():
+    machine = choose_machine()
+    if machine != None:
+        sett = iset.read()
+        shell_ui = sett["general"]["shell_gui"]
+        if shell_ui == "cmd":
+            subprocess.Popen("wsl.exe ~ -d " + str(machine))
+        else:
+            subprocess.Popen(f'wt -p "{machine}"')
 
 def draw(canvas, mouse=False):
     global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last
@@ -3512,15 +3583,7 @@ def draw(canvas, mouse=False):
     def short():
         shortcut()
 
-    def shells():
-        machine = choose_machine()
-        if machine != None:
-            sett = iset.read()
-            shell_ui = sett["general"]["shell_gui"]
-            if shell_ui == "cmd":
-                subprocess.Popen("wsl.exe ~ -d " + str(machine))
-            else:
-                subprocess.Popen(f'wt -p "{machine}"')
+    
                 
 
     def apper():
@@ -3542,10 +3605,7 @@ def draw(canvas, mouse=False):
     def discorder():
         webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
 
-    def browse_wsl():
-        machine = choose_machine()
-        if machine != None:
-            subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
+    
 
 
     heart = icons["heart"]
