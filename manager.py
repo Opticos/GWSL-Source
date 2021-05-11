@@ -1740,11 +1740,15 @@ def app_launcher(machine):
         animator.animate("apps", [100, 0])
         list_length = len(apps) * (ui.inch2pix(0.35) + ui.inch2pix(0.23))
         #loading = False
+        """
         if app_list == []:
             time.sleep(0.5)
             message = "No Graphical Apps Found"
             animator.animate("apps", [0, 0])
             return False
+
+        """
+        
         ni = str(machine)[0].upper() + str(machine)[1:]
         ni = ni.replace("-", " ")
         icon_font = ui.font(ico_font, size)
