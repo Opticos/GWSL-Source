@@ -1519,7 +1519,7 @@ def configure_machine(machine):
         if x_configured == False:
             buttons.append(["Auto-Export Display/Audio", confx, icons["x"]])
         else:
-            buttons.append(["Display/Audio Set To Auto-Export", confx, icons["check"]])
+            buttons.append(["Display/Audio Auto-Exporting", confx, icons["check"]])
 
 
         if libgl_indirect == False:
