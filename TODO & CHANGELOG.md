@@ -60,3 +60,5 @@ TODO (FAILED ATTEMPT) Add xserver text to logo on the store because title cannot
 *  DONE Add button saying type to jump down the list.
 *  Add "ubuntu" to store tags
 *  Add "xserver" to store icon
+
+in the next release.. bump min win ver?
