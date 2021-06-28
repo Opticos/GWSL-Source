@@ -102,6 +102,77 @@ def set_icons(iconpack_path):
             full = os.path.join(root, file)
             icons.update({file: full})
 
+def icon_path(name, spec=None):
+    filename = None  # "assets/chat.png"
+    name = name.lower()
+    names = None
+    n = 0
+    if " " in name:
+        names = name.split(" ")
+        name = names[0]
+        name = name.lower()
+    elif "." in name:
+        names = name.split(".")
+        name = names[0]
+        name = name.lower()
+
+    # name = name.replace(" ", "-")
+    if names == None:
+        names = [name]
+    for name in names:
+        for f in icons:
+            full = icons[f]
+            files = f[:-4].split("-")
+            if str(name) == str(f)[:-4].lower():
+                filename = full
+                break
+
+            elif str(name) == str(f).lower():
+                filename = full
+                break
+            elif str(name) == files[0]:
+                filename = full
+            elif name in full:
+                if spec == None:
+                    filename = full
+                    break
+                else:
+                    if spec in full:
+                        filename = full
+                        break
+            if filename != None:
+                break
+        if filename != None:
+            break
+
+    if filename == None:
+        filename = "link.png"
+    if name == "":
+        filename = "link.png"
+    try:
+        if filename.endswith(".svg") == True:
+            pass
+            # out = BytesIO()
+            # cairosvg.svg2png(url=filename, write_to=out)
+            # imager = Image.open(out)
+        else:
+            try:
+                imager = Image.open(filename)
+            except:
+                with open(filename) as f:
+                    reader = f.read()
+                    if ".png" in reader:
+                        filename = os.path.dirname(filename) + "\\" + reader
+                        #imager = Image.open(filename)
+                    else:
+                        #imager = Image.open(asset_dir + "link.png")
+                        filename = asset_dir + "link.png"
+        return filename#imager
+
+    except:
+        #imager = Image.open(asset_dir + "link.png")
+        return asset_dir + "link.png"#imager
+    return asset_dir + "link.png"
 
 def icon(name, spec=None):
     filename = None  # "assets/chat.png"

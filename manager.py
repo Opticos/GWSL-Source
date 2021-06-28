@@ -3,7 +3,6 @@
 # Copyright Paul-E/Opticos Studios 2021
 # https://sites.google.com/bartimee.com/opticos-studios/home
 
-
 # Dedicated to the Sacred Heart of Jesus
 
 #                #########
@@ -37,7 +36,7 @@ import ipaddress
 
 BUILD_MODE = "MSIX"  # MSIX or WIN32
 
-version = "1.3.8 beta 1 build7"
+version = "1.3.8 beta 2 build7"
 
 lc_name = "Licenses138.txt"
 
@@ -1087,6 +1086,7 @@ def configure_machine(machine):
         nonlocal q_button, g_button, QT, GTK, x_configured, loading, themes, them, m_version, libgl_indirect
         profile = tools.profile(machine)
         m_version = get_version(machine)
+
 
         if "QT_SCALE_FACTOR=2" in profile:
             QT = 2
@@ -2855,7 +2855,7 @@ def get_login_old(machine):
         if creds != {}:
             return creds
 
-
+from ttkbootstrap import Style
 def shortcut(name=None, cmd=None, mach=None, icn=None):
     ui.set_icons(asset_dir + "Paper/")
     k = get_light()
@@ -2878,6 +2878,10 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         # pygame.quit()
         # sys.exit()
         return None
+
+    #style = Style(theme='superhero')#darkly')
+    #boxRoot = style.master
+    
 
     boxRoot.title("Shortcut Creator")
     boxRoot.iconname("Dialog")
@@ -3421,6 +3425,7 @@ def draw(canvas, mouse=False):
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
         if acrylic == False:
             canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
+        
         if pos_config == "bottom":
             win32gui.MoveWindow(HWND, winpos, screensize[1] - taskbar - int(HEIGHT * launch), WIDTH, HEIGHT, 1)
         elif pos_config == "top":
@@ -3430,7 +3435,6 @@ def draw(canvas, mouse=False):
                                 HEIGHT, 1)
         elif pos_config == "left":
             win32gui.MoveWindow(HWND, taskbar - WIDTH + int(WIDTH * launch), screensize[1] - HEIGHT, WIDTH, HEIGHT, 1)
-
         lumen_opac = 0
         win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
 

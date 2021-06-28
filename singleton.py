@@ -68,8 +68,8 @@ class SingleInstance(object):
             try:
                 fcntl.lockf(self.fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except IOError:
-                logger.warning(
-                    "Another instance is already running, quitting.")
+                #logger.warning(
+                #    "Another instance is already running, quitting.")
                 raise SingleInstanceException()
         self.initialized = True
 
@@ -87,10 +87,10 @@ class SingleInstance(object):
                 if os.path.isfile(self.lockfile):
                     os.unlink(self.lockfile)
         except Exception as e:
-            if logger:
-                logger.warning(e)
-            else:
-                print("Unloggable error: %s" % e)
+            #if logger:
+            #    logger.warning(e)
+            #else:
+            #    print("Unloggable error: %s" % e)
             sys.exit(-1)
 
 
