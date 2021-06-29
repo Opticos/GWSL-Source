@@ -36,7 +36,7 @@ import ipaddress
 
 BUILD_MODE = "MSIX"  # MSIX or WIN32
 
-version = "1.3.8 beta 2 build7"
+version = "1.3.9"
 
 lc_name = "Licenses138.txt"
 
@@ -201,7 +201,7 @@ import PIL.ImageTk
 
 import win32con
 import win32api
-
+import keyboard
 
 def get_system_light():
     """
@@ -226,6 +226,28 @@ def get_system_light():
         white = [255, 255, 255]
         light = False
 
+def raise_windows(*args):
+    hwnd = HWND
+    
+    SetWindowPos = windll.user32.SetWindowPos
+    
+    if pos_config == "bottom":
+        w, h = winpos, screensize[1] - taskbar - int(HEIGHT)
+    elif pos_config == "top":
+        w, h =  winpos, taskbar
+    elif pos_config == "right":
+        w, h = winpos - taskbar, screensize[1] - HEIGHT
+    elif pos_config == "left":
+        w, h = taskbar, screensize[1] - HEIGHT
+    
+    SetWindowPos(hwnd, -1, w, h, 0, 0, 0x0001)
+    """
+    try:
+        win32gui.ShowWindow(HWND, 5)
+        win32gui.SetForegroundWindow(HWND)
+    except Exception as e:
+        logger.exception("Exception occurred - cannot raise window")
+    """
 
 # import gettext
 # zh = gettext.translation('manager', localedir='locale', languages=['zh'])
@@ -387,6 +409,11 @@ if "--r" not in args:
         py_root = pygame.display.set_mode([WIDTH, HEIGHT], NOFRAME)
 
         HWND = pygame.display.get_wm_info()["window"]
+        
+        keyboard.add_hotkey('alt+ctrl+g', raise_windows)#, args=HWND)
+        raise_windows()
+
+        
         # win32gui.MoveWindow(HWND, screensize[0] - WIDTH, screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
 
         canvas = pygame.Surface([WIDTH, HEIGHT])  # , pygame.SRCALPHA)
