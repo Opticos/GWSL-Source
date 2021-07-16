@@ -204,6 +204,9 @@ except Exception as e:
 
 tools.script = app_path + "\\GWSL_helper.sh"
 
+show_ad = False
+
+
 try:
     import ctypes
     import platform
