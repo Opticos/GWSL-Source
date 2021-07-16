@@ -5,6 +5,7 @@ import subprocess
 import sys
 import time
 import keyboard
+import psutil
 
 import GWSL_profiles as profile
 # Copyright Paul-E/Opticos Studios 2021
@@ -38,6 +39,9 @@ hashtag_the_most_default = ["-ac", "-wgl", "-compositewm", "-notrayicon", "-dpi"
 default_profiles = {"m": hashtag_the_most_default + ["-multiwindow"],
                     "s": hashtag_the_most_default,
                     "f": hashtag_the_most_default + ["-fullscreen"]}
+
+audio_enabled = True
+
 
 current_custom_profile = None
 
@@ -445,13 +449,16 @@ def kill_audio():
         pass
     
 def start_audio():
-    global audio_server_PID
-    print("starting audio")
-    #proc = subprocess.Popen([f"PULSE/bin/pulseaudio.exe", "--cleanup-shm"], shell=True)
-    proc = subprocess.Popen(["PULSE/bin/pulseaudio.exe", "-D"], stdout = subprocess.PIPE,
-                           creationflags = subprocess.CREATE_NO_WINDOW)
+    global audio_server_PID, audio_enabled
+    if audio_enabled:
+        print("starting audio")
+        #proc = subprocess.Popen([f"PULSE/bin/pulseaudio.exe", "--cleanup-shm"], shell=True)
+        proc = subprocess.Popen(["PULSE/bin/pulseaudio.exe", "-D"], stdout = subprocess.PIPE,
+                               creationflags = subprocess.CREATE_NO_WINDOW)
 
-    #audio_server_PID = proc.pid
+        #audio_server_PID = proc.pid
+    else:
+        print("Audio Disabled")
 
 def start_server():
     """Starts the GWSL services"""
@@ -479,30 +486,50 @@ def start_server():
 
 def get_running():
     """Checks whether the GWSL service is currently running"""
+    """
     service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
     if server_PID == "reloading":
         return True
-    #print(service_name)
-    #proc_list = os.popen('tasklist').readlines()
-    
     if "GWSL_vcxsrv" in service_name:
         return True
     return False
+    """
+    #Psutil method
+    if server_PID == "reloading":
+        return True
+    
+    for p in psutil.process_iter(attrs=["pid"]):
+        try:
+            name = int(p.info['pid'])
+            if int(server_PID) == name:
+                return True
+        except:
+            continue
+    return False
+
 
 def get_audio_running():
     """Checks whether the GWSL service is currently running"""
+    """
     service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "IMAGENAME eq pulseaudio.exe"').split(",")[0]
-    #service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {audio_server_PID}"').split(",")[0]
-    #print(service_name)
-    #proc_list = os.popen('tasklist').readlines()
     if "pulseaudio.exe" in service_name:
         return True
+    return False
+    """
+    #Psutil method
+    for p in psutil.process_iter(attrs=["name"]):
+        try:
+            name = p.info['name'].lower()
+            if "pulseaudio.exe" in name:
+                return True
+        except:
+            continue
     return False
 
 
 def main():
     """Main entry point for application"""
-    global systray, display_mode, clipboard, exiter, ic, timer
+    global systray, display_mode, clipboard, exiter, ic, timer, audio_enabled
     # Kill VcXsrv if already running
     #if get_running(): we dont need to check do we...
 
@@ -512,6 +539,11 @@ def main():
     # Start VcXsrv
     start_server()
     # Start audio
+    try:
+        sett = iset.read()
+        audio_enabled = sett["general"]["pulseaudio"]
+    except:
+        pass
     start_audio()
 
     # Start Tray Icon
@@ -548,10 +580,11 @@ def main():
                         kill_audio()
                         subprocess.getoutput('taskkill /F /IM GWSL.exe')
                         sys.exit()
-                if not get_audio_running():
-                    #if pulseaudio crashes
-                    kill_audio()
-                    start_audio()
+                if audio_enabled == True:
+                    if not get_audio_running():
+                        #if pulseaudio crashes
+                        kill_audio()
+                        start_audio()
                     
             if exiter:
                 kill_server()

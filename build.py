@@ -3,7 +3,7 @@ import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "138 MSIX Beta 1 build 7"
+version = "139 WIN32 build 1"
 
 
 print("\nBuilding Dashboard...")
