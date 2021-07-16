@@ -1618,6 +1618,7 @@ def configure_machine(machine):
         def browse_wsl():
             nonlocal machine
             #chooser(canvas, "Alternate Shell Display Export", ["Bash (choose if unsure)", "Zsh", "Fish"], icon_override="shell")
+            v = subprocess.getoutput(rf'wsl -d {machine} echo "hi"')
             subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
             
         def indirect_conf():
@@ -3677,6 +3678,7 @@ colores = [[255, 0, 0],
 def browse_wsl():
     machine = choose_machine()
     if machine != None:
+        v = subprocess.getoutput(rf'wsl -d {machine} echo "hi"')
         subprocess.Popen(rf'explorer.exe "\\wsl$\{machine}"', shell=True)# + str(machine))
 
 def shells():
