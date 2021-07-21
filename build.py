@@ -3,7 +3,7 @@ import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "139 WIN32 build 1"
+version = "139 WIN32 build 2"
 
 
 print("\nBuilding Dashboard...")

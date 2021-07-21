@@ -204,7 +204,7 @@ except Exception as e:
 
 tools.script = app_path + "\\GWSL_helper.sh"
 
-show_ad = False
+
 
 
 try:
@@ -1249,7 +1249,7 @@ def announce():
                 0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
                 if mouse[1] > WIDTH / 2 + ui.inch2pix(2.2) - int(ui.inch2pix(0.1) * v) - ui.inch2pix(0.1) and mouse[
                     1] < WIDTH / 2 + ui.inch2pix(2.2) - int(ui.inch2pix(0.1) * v) + txt.get_height() + ui.inch2pix(0.1):
-                    webbrowser.open("www.getoiw.com")
+                    webbrowser.open("ms-windows-store://pdp/?productid=9ngmqpwcg7sf")
                     #animator.animate("choose", [0, 0])
 
                     
@@ -3120,7 +3120,7 @@ def get_login_old(machine):
         if creds != {}:
             return creds
 
-from ttkbootstrap import Style
+#from ttkbootstrap import Style
 def shortcut(name=None, cmd=None, mach=None, icn=None):
     ui.set_icons(asset_dir + "Paper/")
     k = get_light()
