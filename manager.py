@@ -177,10 +177,10 @@ try:
 
     if os.path.exists(app_path + "oiw_update.txt") == False:
         print("show ad")
-        with open(app_path + "oiw_update.txt", "w") as filer:
-            filer.write("Delete this file to get the OpenInWSL Ad on startup again")
-            filer.close()
-            show_ad = True
+        #with open(app_path + "oiw_update.txt", "w") as filer:
+        #    filer.write("Delete this file to get the OpenInWSL Ad on startup again")
+        #    filer.close()
+        show_ad = True
         
 
         
@@ -1268,6 +1268,20 @@ def announce():
         txt = title_font.render(_("Ok"), True, white)
         txt.set_alpha(int(v * 255))
         canvas.blit(txt,
+                    [WIDTH / 2 - txt.get_width() / 2, HEIGHT - ui.inch2pix(0.8) - txt.get_height() - int((v - 1) * d)])
+        if mouse != False:
+            if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
+                0] < WIDTH / 2 - txt.get_width() / 2 + txt.get_width() + ui.inch2pix(0.2):
+                if mouse[1] > HEIGHT - ui.inch2pix(0.8) - txt.get_height() - int((v - 1) * d) and mouse[
+                    1] < HEIGHT - ui.inch2pix(0.8) - txt.get_height() - int(
+                        (v - 1) * d) + txt.get_height() + ui.inch2pix(0.1):
+                    machine = None
+                    animator.animate("choose", [0, 0])
+
+
+        txt = title_font.render(_("Don't Show Again"), True, white)
+        txt.set_alpha(int(v * 255))
+        canvas.blit(txt,
                     [WIDTH / 2 - txt.get_width() / 2, HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int((v - 1) * d)])
         if mouse != False:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
@@ -1276,7 +1290,11 @@ def announce():
                     1] < HEIGHT - ui.inch2pix(0.4) - txt.get_height() - int(
                         (v - 1) * d) + txt.get_height() + ui.inch2pix(0.1):
                     machine = None
+                    with open(app_path + "oiw_update.txt", "w") as filer:
+                        filer.write("Delete this file to get the OpenInWSL Ad on startup again")
+                        filer.close()
                     animator.animate("choose", [0, 0])
+                    
 
         fpsClock.tick(60)
         animator.update()
