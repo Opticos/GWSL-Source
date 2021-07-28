@@ -53,6 +53,8 @@ Pillow
 imtools
 keyboard
 pyinstaller==3.5
+pyxdg
+psutil
 ```
 
 # Building GWSL
