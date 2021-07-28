@@ -48,7 +48,7 @@ def add(asset_dir):
     lbl = tk.Label(boxRoot, text="Add", justify=LEFT)  # , font=("Helvetica", 16))
     # lbl.grid(row=0, padx=10, sticky="W")
     boxRoot.grid_rowconfigure(0, weight=0)
-
+    boxRoot.iconbitmap(asset_dir + "\icon.ico")
     # First frame
 
     frame_1 = ttk.Frame(boxRoot, padding="0.15i")

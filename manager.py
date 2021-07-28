@@ -34,7 +34,7 @@ from exe_layer import cmd
 import logging
 import ipaddress
 
-BUILD_MODE = "WIN32"  # MSIX or WIN32
+BUILD_MODE = "MSIX"  # MSIX or WIN32
 
 version = "1.3.9"
 
@@ -512,7 +512,7 @@ if "--r" not in args:
         long = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
         win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
                                long | win32con.WS_EX_LAYERED)
-        win32con.WS_BORDER
+        #win32con.WS_BORDER
 
         #win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*[100, 100, 100]), int(255), win32con.LWA_COLORKEY)
         
@@ -3398,7 +3398,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     save_b.grid(column=1, row=0, sticky="SWE", padx=10)
 
     test_b = ttk.Button(frame_3, text="Test Configuration", command=test)
-    test_b.grid(column=2, row=0, sticky="SE", padx=10)
+    test_b.grid(column=2, row=0, sticky="SE", padx=10, ipadx=5)
 
     frame_3.grid(row=2, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
 
@@ -4199,7 +4199,7 @@ if "--r" not in args:
             # Creating Checkbutton
             self._button = ttk.Checkbutton(self, variable=self._variable,
                                            command=self._activate, style="TButton")
-            self._button.grid(row=0, column=0)
+            self._button.grid(row=0, column=0, ipadx=5)
             # Create a Horizontal line
             # self._separator = ttk.Separator(self, orient="horizontal")
             # self._separator.grid(row=0, column=1, sticky="we")
