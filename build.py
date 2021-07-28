@@ -3,14 +3,14 @@ import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "139 MSIX build 2 debug"
+version = "139 MSIX build 3"
 
 
 print("\nBuilding Dashboard...")
 PyInstaller.__main__.run([
     'manager.py',
     '-i=assets/icon.ico',
-    #'-w',
+    '-w',
     '-y',
     '-n=GWSL',
     '--hidden-import=pkg_resources.py2_warn'
@@ -21,7 +21,7 @@ print("\nBuilding Service...")
 PyInstaller.__main__.run([
     'main.py',
     '-i=assets/icon.ico',
-    #'-w',
+    '-w',
     '-y',
     '-n=GWSL_service',
     '--hidden-import=pkg_resources',
