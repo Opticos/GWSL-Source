@@ -36,7 +36,7 @@ import ipaddress
 
 BUILD_MODE = "MSIX"  # MSIX or WIN32
 
-version = "1.3.9"
+version = "1.4.0"
 
 lc_name = "Licenses138.txt"
 
@@ -441,7 +441,7 @@ if "--r" not in args:
         
         keyboard.add_hotkey('alt+ctrl+g', raise_windows)#, args=HWND)
 
-        pad = 0
+        
         
         # win32gui.MoveWindow(HWND, screensize[0] - WIDTH, screensize[1] - taskbar - HEIGHT, WIDTH, HEIGHT, True)
 
@@ -518,6 +518,14 @@ if "--r" not in args:
         
         #region = win32gui.CreateRoundRectRgn(0, 0, WIDTH, HEIGHT, 20, 20)
         #win32gui.SetWindowRgn(hwnd, region, True)
+        import rounder
+        if rounder.round(HWND) == True:
+            pad = ui.inch2pix(0.14)
+            fade = False
+        else:
+            pad = 0
+            fade = True
+        
 
         sett = iset.read()
         try:
@@ -525,6 +533,8 @@ if "--r" not in args:
         except Exception as e:
             logger.exception("Exception occurred - Please reset settings")
             acrylic = True
+
+
         if acrylic == True:
             import blur
             blur.blur(HWND)
@@ -3710,7 +3720,7 @@ def shells():
             subprocess.Popen(f'wt -p "{machine}"')
 
 def draw(canvas, mouse=False):
-    global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last, show_ad
+    global mask, light_source, heartbeat, lumen_opac, wait, running, ter, about_open, loading_angle, loader, last, show_ad, pad
     # mask.fill([255, 0, 0])
     canvas.fill([0, 0, 0, 0])
     
@@ -3742,7 +3752,13 @@ def draw(canvas, mouse=False):
         elif pos_config == "left":
             win32gui.MoveWindow(HWND, taskbar - WIDTH + int(WIDTH * launch) + pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
         lumen_opac = 0
+
+        if fade == False:
+            animator.pop("start2", [100, 0])
         win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
+        #else:
+            #win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(255), win32con.LWA_ALPHA)
+            #animator.pop("start2", [100, 0])
 
     else:
         if about_open == True:
@@ -3761,8 +3777,11 @@ def draw(canvas, mouse=False):
             win32gui.MoveWindow(HWND, winpos - taskbar - pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
         elif pos_config == "left":
             win32gui.MoveWindow(HWND, taskbar + pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
-        
+        #if fade == True:
+            
         win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
+        #else:
+        #    win32gui.SetLayeredWindowAttributes(HWND, win32api.RGB(*fuchsia), int(255), win32con.LWA_ALPHA)
         
         #win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*[100, 100, 100]), int(100), win32con.LWA_COLORKEY)#ALPHA)
 
@@ -3807,19 +3826,22 @@ def draw(canvas, mouse=False):
     # pygame.draw.circle(canvas, [255, 0, 0, 255], [100, 100], 50)
 
     # Draw light/dark accent for readability
-    
+    #light = False
     if light == False:
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
 
+        #if fade == True:
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [180, 180, 180, int(80 * launch)])
 
     else:
-        pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [255, 255, 255, 200])
-        pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, 50])
+        #pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [255, 255, 255, 200]) pre win11
+        pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [255, 255, 255, 180])
+        #pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0, 50])
 
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
         pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
 
+        #if fade == True:
         pygame.gfxdraw.line(canvas, padd, l_h, WIDTH - padd, l_h, [0, 0, 0, int(80 * launch)])
     
     # canvas.fill(fuchsia)

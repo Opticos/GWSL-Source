@@ -9,6 +9,9 @@ from PIL import Image
 import PIL
 import PIL.ImageTk
 
+import ctypes
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 
 
@@ -41,12 +44,18 @@ def add(asset_dir):
 
     boxRoot.title("XServer Profile Creator")
     boxRoot.iconname("Dialog")
-    boxRoot.minsize(700, 120)
+    width, height = 700, 120
+    boxRoot.minsize(width, height)#700, 120)
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
     options = {}
     lbl = tk.Label(boxRoot, text="Add", justify=LEFT)  # , font=("Helvetica", 16))
     # lbl.grid(row=0, padx=10, sticky="W")
+    
+    boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - width / 2,
+                                 screensize[1] / 2 - height / 2))
+
+
     boxRoot.grid_rowconfigure(0, weight=0)
     boxRoot.iconbitmap(asset_dir + "\\assets\\icon.ico")
     # First frame
@@ -119,7 +128,10 @@ def add(asset_dir):
     boxRoot.grid_columnconfigure(0, weight=1)
     boxRoot.deiconify()
     boxRoot.wm_attributes("-topmost", 1)
-
+    boxRoot.update()
+    #boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - boxRoot.winfo_width() / 2,
+    #                             screensize[1] / 2 - boxRoot.winfo_height() / 2))
+    
     while True:
         # draw(canvas, mouse=False)
         time.sleep(0.05)
