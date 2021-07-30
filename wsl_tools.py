@@ -1,4 +1,5 @@
 import os
+import pathlib
 import subprocess
 import time
 
@@ -6,14 +7,13 @@ script = None
 
 
 def pat_con(path):
-    if "/" in path:
-        pt = path.split("/")
-    else:
-        pt = path.split("\\")
-    lin = "/mnt/" + pt[0][0].lower()
-    for f in pt[1:]:
-        lin += "/" + str(f.lower())
-    return lin
+    if not isinstance(path, pathlib.PureWindowsPath):
+        raise ValueError("Path must be an instance of pathlib.PureWindowsPath.")
+    if path.drive == '':
+        raise ValueError("Path must start with a drive.")
+    return pathlib.PurePath("/mnt/{}/{}".format(
+        path.drive[0].lower(),
+        path.relative_to(path.drive).as_posix()))
 
 
 def get_themes(machine):
