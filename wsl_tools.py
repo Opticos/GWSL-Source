@@ -7,8 +7,7 @@ script = None
 
 
 def pat_con(path):
-    if not isinstance(path, pathlib.PureWindowsPath):
-        raise ValueError("Path must be an instance of pathlib.PureWindowsPath.")
+    path = pathlib.PureWindowsPath(path)
     if path.drive == '':
         raise ValueError("Path must start with a drive.")
     return pathlib.PurePath("/mnt/{}/{}".format(
