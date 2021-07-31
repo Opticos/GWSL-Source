@@ -526,7 +526,10 @@ if "--r" not in args:
             pad = 0
             fade = True
         
-
+        if start_menu == True:
+            padx = -1 * pad
+        else:
+            padx = pad
         sett = iset.read()
         try:
             acrylic = sett["general"]["acrylic_enabled"]
@@ -3741,16 +3744,15 @@ def draw(canvas, mouse=False):
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
         if acrylic == False:
             canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
-        
         if pos_config == "bottom":
-            win32gui.MoveWindow(HWND, winpos - pad, screensize[1] - taskbar - int(HEIGHT * launch) - pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, winpos - padx, screensize[1] - taskbar - int(HEIGHT * launch) - pad, WIDTH, HEIGHT, 1)
         elif pos_config == "top":
-            win32gui.MoveWindow(HWND, winpos - pad, taskbar - HEIGHT + int(HEIGHT * launch) + pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, winpos - padx, taskbar - HEIGHT + int(HEIGHT * launch) + pad, WIDTH, HEIGHT, 1)
         elif pos_config == "right":
-            win32gui.MoveWindow(HWND, winpos - taskbar + WIDTH - int(WIDTH * launch) - pad, screensize[1] - HEIGHT - pad, WIDTH,
+            win32gui.MoveWindow(HWND, winpos - taskbar + WIDTH - int(WIDTH * launch) - padx, screensize[1] - HEIGHT - pad, WIDTH,
                                 HEIGHT, 1)
         elif pos_config == "left":
-            win32gui.MoveWindow(HWND, taskbar - WIDTH + int(WIDTH * launch) + pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, taskbar - WIDTH + int(WIDTH * launch) + padx, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
         lumen_opac = 0
 
         if fade == False:
@@ -3770,13 +3772,13 @@ def draw(canvas, mouse=False):
         if acrylic == False:
             canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
         if pos_config == "bottom":
-            win32gui.MoveWindow(HWND, winpos - pad, screensize[1] - taskbar - int(HEIGHT) - pad, WIDTH, HEIGHT, True)
+            win32gui.MoveWindow(HWND, winpos - padx, screensize[1] - taskbar - int(HEIGHT) - pad, WIDTH, HEIGHT, True)
         elif pos_config == "top":
-            win32gui.MoveWindow(HWND, winpos - pad, taskbar + pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, winpos - padx, taskbar + pad, WIDTH, HEIGHT, 1)
         elif pos_config == "right":
-            win32gui.MoveWindow(HWND, winpos - taskbar - pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, winpos - taskbar - padx, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
         elif pos_config == "left":
-            win32gui.MoveWindow(HWND, taskbar + pad, screensize[1] - HEIGHT - pad, WIDTH, HEIGHT, 1)
+            win32gui.MoveWindow(HWND, taskbar + pad, screensize[1] - HEIGHT - padx, WIDTH, HEIGHT, 1)
         #if fade == True:
             
         win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), int(launch * 255), win32con.LWA_ALPHA)
