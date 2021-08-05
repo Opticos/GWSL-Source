@@ -1664,7 +1664,7 @@ def configure_machine(machine):
             libgl_indirect = True
             
 
-            restart = pymsgbox.confirm(text='Restart ' + machine + " To Apply Changes?", title='Restart Machine?',
+            restart = pymsgbox.confirm(text='Restart ' + str(machine) + " To Apply Changes?", title='Restart Machine?',
                                        buttons=["Yes", "No"])
             if restart == "Yes":
                 reboot(machine)
@@ -3739,11 +3739,16 @@ def draw(canvas, mouse=False):
     hover = mouse
     if mouse == False:
         hover = pygame.mouse.get_pos()
-
+    #fade = False
     #pad = 10
+    #print(int(HEIGHT * launch))
     if animator.get("start")[0] < 100 and animator.get("start")[0] > 0:
+        #print("1")
+        #print(screensize[1] - taskbar - (HEIGHT * launch) - pad)
         if acrylic == False:
             canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT * launch))])
+
+            
         if pos_config == "bottom":
             win32gui.MoveWindow(HWND, winpos - padx, screensize[1] - taskbar - int(HEIGHT * launch) - pad, WIDTH, HEIGHT, 1)
         elif pos_config == "top":
@@ -3769,6 +3774,8 @@ def draw(canvas, mouse=False):
         if show_ad == True:
             show_ad = False
             announce()
+
+        #print(screensize[1] - taskbar - int(HEIGHT) - pad)
         if acrylic == False:
             canvas.blit(back, [-1 * (screensize[0] - WIDTH), -1 * (screensize[1] - taskbar - int(HEIGHT))])
         if pos_config == "bottom":
@@ -3791,7 +3798,7 @@ def draw(canvas, mouse=False):
 
         #win32.
 
-        
+    if animator.get("start")[0] >= 98:
         animator.animate("start2", [100, 0])
         if service_loaded == True:
             animator.animate("loading", [100, 0])
@@ -4386,6 +4393,7 @@ if "--r" not in args: # start normally
 
                 draw(canvas)
                 pygame.display.update()
+
             except Exception as e:
                 logger.exception("Exception occurred - Error in Mainloop")
 

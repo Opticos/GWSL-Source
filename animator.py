@@ -31,10 +31,11 @@ class animation:
             if self.pos[axis] != self.new_pos[axis]:
                 if func == "ease":
                     if self.pos[axis] < self.new_pos[axis] - (((self.new_pos[axis] - self.pos[axis]) / (2 * scale))):
-                        vel[axis] = (self.new_pos[axis] - self.pos[axis]) / (2 * scale)
+                        vel[axis] = (self.new_pos[axis] - self.pos[axis]) / (2.0 * scale)
 
                     elif self.pos[axis] > self.new_pos[axis] + (((self.pos[axis] - self.new_pos[axis]) / (2 * scale))):
                         vel[axis] = -1 * (self.pos[axis] - self.new_pos[axis]) / (2 * scale)
+
                 elif func == "old":
                     if self.pos[axis] < self.new_pos[axis]:
                         vel[axis] = 1 * scale
@@ -52,9 +53,11 @@ class animation:
                 diff = self.new_pos[axis] - self.pos[axis]
                 if diff < 0:
                     diff *= -1
-                if diff < 1:
+                if diff < 1 and self.id != "start": #ugly fix for popping animation
                     self.pos[axis] = self.new_pos[axis]
                     # self.vel[axis] = 0
+                elif diff < 0.1 and self.id == "start":
+                    self.pos[axis] = self.new_pos[axis]
 
             # bounce
             """

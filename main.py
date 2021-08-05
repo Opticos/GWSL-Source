@@ -455,8 +455,8 @@ def start_audio():
         #proc = subprocess.Popen([f"PULSE/bin/pulseaudio.exe", "--cleanup-shm"], shell=True)
         proc = subprocess.Popen(["PULSE/bin/pulseaudio.exe", "-D"], stdout = subprocess.PIPE,
                                creationflags = subprocess.CREATE_NO_WINDOW)
-
-        #audio_server_PID = proc.pid
+        #print("as", proc.pid)
+        audio_server_PID = proc.pid
     else:
         print("Audio Disabled")
 
@@ -497,7 +497,16 @@ def get_running():
     #Psutil method
     if server_PID == "reloading":
         return True
+
+    try:
+        running = psutil.pid_exists(server_PID)
+        #print("X", running)
+        return running
+    except:
+        return False
+
     
+    """
     for p in psutil.process_iter(attrs=["pid"]):
         try:
             name = int(p.info['pid'])
@@ -505,7 +514,8 @@ def get_running():
                 return True
         except:
             continue
-    return False
+    """ #SLOW BC WE ALREADY GOT THE PID
+    #return False
 
 
 def get_audio_running():
@@ -516,14 +526,24 @@ def get_audio_running():
         return True
     return False
     """
+
+    try:
+        running = psutil.pid_exists(audio_server_PID)
+        #print("audio", running)
+        return running
+    except:
+        return False
+    """
     #Psutil method
-    for p in psutil.process_iter(attrs=["name"]):
+    for p in psutil.process_iter(attrs=["name", "pid"]):
         try:
             name = p.info['name'].lower()
             if "pulseaudio.exe" in name:
+                print(p.info["pid"])
                 return True
         except:
             continue
+    """
     return False
 
 
@@ -557,11 +577,12 @@ def main():
     systray.start()
 
     # start service listener
-    timer = time.perf_counter()
+    timer = time.time()
     while True:
         try:
-            if time.perf_counter() - timer > 4:
-                timer = timer = time.perf_counter()
+            #print(time.time() - timer)
+            if time.time() - timer > 4:
+                timer = time.time()
                 if not get_running():
                     # In case someone closes a single-window server... restart as multi window.
                     if display_mode == "s":
@@ -600,6 +621,7 @@ def main():
             sys.exit()
 
         time.sleep(2)
+        
 
     kill_server()
     systray.shutdown()
