@@ -777,6 +777,7 @@ def choose_machine():
     machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
+    
     sett = iset.read()
 
     avoid = sett["distro_blacklist"]
@@ -793,7 +794,10 @@ def choose_machine():
     if len(machines) == 1:
         return machines[0]
     elif len(machines) > 7:
-        return pymsgbox.confirm(text=_('Select a WSL Machine'), title=_('Choose WSL Machine'), buttons=machines)
+        if len(machines) != 23:
+            return pymsgbox.confirm(text=_('Select a WSL Machine'), title=_('Choose WSL Machine'), buttons=machines)
+        else:
+            machines = []
 
     animator.animate("choose", [100, 0])
     machine = False
@@ -854,10 +858,10 @@ def choose_machine():
                  False, radius=10, shadow_enabled=False, resolution=30, alpha=int(v * 255))
 
         if light == False:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, int(v*100)])
         else:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, int(v*80)])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, int(v*80)])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -1013,10 +1017,10 @@ def about():
                  [0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(v * 255))
 
         if light == False:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, int(100 * v)])
         else:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, int(80 * v)])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, int(80 * v)])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -1419,7 +1423,7 @@ def configure_machine(machine):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
-                if loading == False:
+                if loading == False and event.button == 1:
                     mouse = event.pos
             elif event.type == VIDEORESIZE:
                 WIDTH, HEIGHT = event.size
@@ -1454,10 +1458,10 @@ def configure_machine(machine):
                  [0, 0, 0], radius=10, shadow_enabled=False, resolution=30, alpha=int(v * 255))
 
         if light == False:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, int(v*100)])
         else:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, int(v*80)])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, int(v*80)])
 
         # pygame.gfxdraw.box(canvas, [0, 0, WIDTH, HEIGHT], [0, 0, 0] + [int(v * 180)])
 
@@ -2322,10 +2326,10 @@ def app_launcher(machine):
         
 
         if light == False:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, int(v*100)])
         else:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, int(v*80)])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, int(v*80)])
 
         fpsClock.tick(60)
         animator.update()
@@ -2617,10 +2621,10 @@ def chooser(backdrop, title, options, icon_override=None):
                     animator.animate("choose1", [0, 0])
 
         if light == False:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, 100])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [100, 100, 100, int(v*100)])
         else:
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, 80])
-            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, 80])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [255, 255, 255, int(v*80)])
+            pygame.gfxdraw.rectangle(canvas, [0, 0, WIDTH, HEIGHT + 1], [0, 0, 0, int(v*80)])
 
         fpsClock.tick(60)
         animator.update()
@@ -3303,6 +3307,8 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
+    if len(machines) == 23:
+        machines = []
     sett = iset.read()
 
     avoid = sett["distro_blacklist"]
@@ -4002,6 +4008,8 @@ def draw(canvas, mouse=False):
         if hover[0] > ui.inch2pix(0.1) and hover[0] < WIDTH - ui.inch2pix(0.1):
             if hover[1] > pos[1] + ui.inch2pix(0.1) and hover[1] < pos[1] + ui.inch2pix(0.3) + ui.inch2pix(0.3):
                 if mouse != False:
+                    #animator.pop("donate", [255, 0, 0])
+                    #animator.pop("select", [0, 0])
                     i[2]()
                 selected = True
                 s2 = True
@@ -4092,6 +4100,9 @@ def draw(canvas, mouse=False):
                 webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/help.html')
             selected = True
             txt = title_font.render(_("Help"), True, accent)
+            txt.set_alpha(int(launch * 255))
+            #if s > 0.1:
+            #    canvas.fill([0, 0, 0, 0], rect=[WIDTH - ui.inch2pix(1.3), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60, txt.get_width(), txt.get_height()])
             txt.set_alpha(int(launch * 255 * s))
             canvas.blit(txt, [WIDTH - ui.inch2pix(1.3), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 60])
             last = 100
@@ -4113,6 +4124,8 @@ def draw(canvas, mouse=False):
             last = 100
             txt = title_font.render(_("About"), True, accent)
             txt.set_alpha(int(launch * 255 * s))
+
+            #txt.set_alpha(int(launch * 255 * s))
             canvas.blit(txt, [WIDTH - ui.inch2pix(0.7), HEIGHT - ui.inch2pix(0.5) + (1 - launch) * 80])
 
     if selected == True:
@@ -4631,3 +4644,4 @@ elif args[1] == "--r" and "--ssh" in args:
             print("killing service")
         except:
             pass
+
