@@ -111,7 +111,7 @@ f_handler.setFormatter(f_format)
 logger.addHandler(f_handler)
 logger.addFilter(DuplicateFilter())
 
-
+updated = False
 
 
 try:
@@ -126,10 +126,56 @@ try:
             iset.create(app_path + "\\settings.json")
             print("Updating settings")
         else:
-            if sett["conf_ver"] >= 5:
+            if sett["conf_ver"] >= 6:
                 if debug == True:
                     print("Settings up to date")
+                try:
+                    v = sett["gwsl_ver"]
+                    if v != version:
+                        updated = True
+                        sett["gwsl_ver"] = version
+                        iset.set(sett)
+                except:
+                    updated = True
+                    print("Updating settings")
+                    old_iset = iset.read()
+                    iset.create(app_path + "\\settings.json")
+                    new_iset = iset.read()
+
+                    #migrate user settings
+                    new_iset["putty"]["ip"] = old_iset["putty"]["ip"]
+                    new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
+                    new_iset["app_blacklist"] = old_iset["app_blacklist"]
+                    new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
+                    try:
+                        new_iset["general"]["acrylic_enabled"] = old_iset["general"]["acrylic_enabled"]
+                    except:
+                        pass
+                    try:
+                        new_iset["general"]["clipboard"] = old_iset["general"]["clipboard"]
+                    except:
+                        pass
+                    try:
+                        new_iset["general"]["start_menu_mode"] = old_iset["general"]["start_menu_mode"]
+                    except:
+                        pass
+                    try:
+                        new_iset["general"]["shell_gui"] = old_iset["general"]["shell_gui"]
+                    except:
+                        pass
+                    
+                    try:
+                        new_iset["graphics"]["hidpi"] = old_iset["graphics"]["hidpi"]
+                    except:
+                        pass
+                    try:
+                        new_iset["putty"]["ssh_key"] = old_iset["putty"]["ssh_key"]
+                    except:
+                        pass
+                    iset.set(new_iset)
+                        
             else:
+                updated = True
                 print("Updating settings")
                 old_iset = iset.read()
                 iset.create(app_path + "\\settings.json")
@@ -4355,7 +4401,21 @@ if "--r" not in args: # start normally
         # else:
         #   donate_asker = False
 
-        
+        if updated == True:
+            #os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
+            ch = pymsgbox.confirm(text=_(f'GWSL was just updated to version {version}. \
+                            Sometimes after an update, GWSL firewall access is reset,\
+                            This is the most likely cause of issues after an update.\
+                            If GWSL does not work, re-allow it through the firewall with: \
+                            "GWSL Dashboard --> About --> Allow GWSL through the Firewall" \
+                            You can also ensure firewall access is enabled from here with "Check Now".'),
+                             title=_('GWSL Updated Message'), buttons=["Ok", "Check Now"])
+            if ch == "Check Now":
+                os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
+                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall \
+                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", \
+                                "GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
+                                 title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
         while True:
             try:
                 loading_angle -= 10

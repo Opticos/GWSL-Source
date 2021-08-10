@@ -233,7 +233,7 @@ def _buttonbox(msg, title, choices, root=None, timeout=None):
     # -------------------- place the widgets in the frames -----------------------
     messageWidget = tk.Message(messageFrame, text=msg, width=400)
     #messageWidget.configure(font=(PROPORTIONAL_FONT_FAMILY, PROPORTIONAL_FONT_SIZE))
-    messageWidget.pack(side=tk.TOP, expand=tk.YES, fill=tk.X, padx="3m", pady="3m")
+    messageWidget.pack(side=tk.TOP, expand=tk.YES, fill=tk.X, padx="3m", pady="3m", ipady="3m")
 
     __put_buttons_in_buttonframe(choices)
 
@@ -269,7 +269,7 @@ def __put_buttons_in_buttonframe(choices):
         tempButton = ttk.Button(buttonsFrame, takefocus=1, text=buttonText)
         _bindArrows(tempButton)
         tempButton.pack(
-            expand=tk.YES, side=tk.LEFT, padx="0m", pady="0m", ipadx="0m", ipady="0m"
+            expand=tk.YES, side=tk.LEFT, padx="0m", pady="3m", ipadx="0m", ipady="0m"
         )
 
         # remember the text associated with this widget

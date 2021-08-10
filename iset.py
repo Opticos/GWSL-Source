@@ -6,7 +6,8 @@ path = None
 
 def create(path):
     with open(path, "w") as obj:
-        app = {"conf_ver": 5,
+        app = {"conf_ver": 6,
+               "gwsl_ver": "1.4.0",
                "general": {"pulseaudio":True, "clipboard": True, "start_menu_mode": False, "shell_gui": "cmd", "acrylic_enabled": True},
                "graphics": {"window_mode": "multi", "hidpi": True},
                "putty": {"ip": None, "ssh_key": None},
