@@ -34,7 +34,7 @@ from exe_layer import cmd
 import logging
 import ipaddress
 
-BUILD_MODE = "MSIX"  # MSIX or WIN32
+BUILD_MODE = "WIN32"  # MSIX or WIN32
 
 version = "1.4.0"
 
@@ -112,6 +112,7 @@ logger.addHandler(f_handler)
 logger.addFilter(DuplicateFilter())
 
 updated = False
+new_install = False
 
 
 try:
@@ -120,6 +121,7 @@ try:
     if os.path.exists(app_path + "\\settings.json") == False:
         iset.create(app_path + "\\settings.json")
         print("creating settings")
+        new_install = True
     else:
         sett = iset.read()
         if "conf_ver" not in sett:
@@ -1152,9 +1154,9 @@ def about():
                                 
                             elif i == "Allow GWSL Through The Firewall": #TODO
                                 os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
-                                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall \
-                                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", \
-                                                "GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
+                                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall '
+                                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", '
+                                                '"GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
                             elif i == "GWSL Discord Server":
                                 webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
@@ -4359,6 +4361,15 @@ if "--r" not in args:
 if "--r" not in args: # start normally
     running = True
     service_loaded = False
+    if new_install == True:
+        ch = pymsgbox.confirm(text=_('Welcome to GWSL! '
+                                'Note: GWSL needs access through the Windows Firewall '
+                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe" and'
+                                '"pulseaudio.exe" for audio if Windows Firewall prompts appear. '
+                                'Missing this step is the most common cause of GWSL issues.'),
+                                 title=_('Allow GWSL Firewall Access'), buttons=["Ok", "Help"])
+        if ch == "Help":
+            webbrowser.open("https://opticos.github.io/gwsl/tutorials/manual.html#installing-gwsl")
     updater = threading.Thread(target=update_running)
     updater.daemon = True
     updater.start()
@@ -4403,18 +4414,19 @@ if "--r" not in args: # start normally
 
         if updated == True:
             #os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
-            ch = pymsgbox.confirm(text=_(f'GWSL was just updated to version {version}. \
-                            Sometimes after an update, GWSL firewall access is reset,\
-                            This is the most likely cause of issues after an update.\
-                            If GWSL does not work, re-allow it through the firewall with: \
-                            "GWSL Dashboard --> About --> Allow GWSL through the Firewall" \
-                            You can also ensure firewall access is enabled from here with "Check Now".'),
+            ch = pymsgbox.confirm(text=_(f'GWSL was just updated to version {version}. '
+                            'Sometimes after an update, GWSL firewall access is reset, '
+                            'This is the most likely cause of issues after an update. '
+                            'You may recieve the firewall prompts again. Be sure to check the public access box. '
+                            'If you miss these and/or GWSL does not work, re-allow it through the firewall with: '
+                            '"GWSL Dashboard --> About --> Allow GWSL through the Firewall". '
+                            'You can also ensure firewall access is enabled from here with "Check Now".'),
                              title=_('GWSL Updated Message'), buttons=["Ok", "Check Now"])
             if ch == "Check Now":
                 os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
-                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall \
-                                to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", \
-                                "GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
+                pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall '
+                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", '
+                                '"GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
         while True:
             try:
