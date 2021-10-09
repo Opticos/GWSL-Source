@@ -41,19 +41,19 @@ then
 		then
 			# Configure Fish
 			sed -i.bak '/DISPLAY /d' ~/.config/fish/config.fish
-			echo "set -gx DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.config/fish/config.fish
+			echo "set -gx DISPLAY (ip -4 route show default | cut -d' ' -f3):0.0 #GWSL" >> ~/.config/fish/config.fish
 		elif [ $wsl_shell == "zsh" ]
 		then
 			# Configure Zsh
 			sed -i.bak '/DISPLAY=/d' ~/.zshrc
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.zshrc
+			echo "export DISPLAY=\$(ip -4 route show default | cut -d' ' -f3):0.0 #GWSL" >> ~/.zshrc
 		elif [ $wsl_shell == "bash" ]
 		then
 			# Configure Bash
 			sed -i.bak '/DISPLAY=/d' ~/.profile
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.profile
+			echo "export DISPLAY=\$(ip -4 route show default | cut -d' ' -f3):0.0 #GWSL" >> ~/.profile
 			sed -i.bak '/DISPLAY=/d' ~/.bashrc
-			echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}'):0.0 #GWSL" >> ~/.bashrc
+			echo "export DISPLAY=\$(ip -4 route show default | cut -d' ' -f3):0.0 #GWSL" >> ~/.bashrc
 		fi
 	fi
 
@@ -91,19 +91,19 @@ then
 		then
 			# Configure Fish
 			sed -i.bak '/PULSE_SERVER /d' ~/.config/fish/config.fish
-			echo "set -gx PULSE_SERVER tcp:(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.config/fish/config.fish
+			echo "set -gx PULSE_SERVER tcp:(ip -4 route show default | cut -d' ' -f3) #GWSL" >> ~/.config/fish/config.fish
 		elif [ $wsl_shell == "zsh" ]
 		then
 			# Configure Zsh
 			sed -i.bak '/PULSE_SERVER=/d' ~/.zshrc
-			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.zshrc
+			echo "export PULSE_SERVER=tcp:\$(ip -4 route show default | cut -d' ' -f3) #GWSL" >> ~/.zshrc
 		elif [ $wsl_shell == "bash" ]
 		then
 			# Configure Bash
 			sed -i.bak '/PULSE_SERVER=/d' ~/.profile
-			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.profile
+			echo "export PULSE_SERVER=tcp:\$(ip -4 route show default | cut -d' ' -f3) #GWSL" >> ~/.profile
 			sed -i.bak '/PULSE_SERVER=/d' ~/.bashrc
-			echo "export PULSE_SERVER=tcp:\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2; exit;}') #GWSL" >> ~/.bashrc
+			echo "export PULSE_SERVER=tcp:\$(ip -4 route show default | cut -d' ' -f3) #GWSL" >> ~/.bashrc
 		fi
 	fi
 
