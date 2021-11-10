@@ -36,7 +36,7 @@ import ipaddress
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.4.0"
+version = "1.4.1"
 
 lc_name = "Licenses138.txt"
 
@@ -4605,32 +4605,54 @@ elif args[1] == "--r" and "--ssh" not in args: # launch a shortcut
 elif args[1] == "--r" and "--ssh" in args:
     try:
         print("started")
+        #start optic ui
+        import ctypes
+        user32 = ctypes.windll.user32
+        screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+        import OpticUI as ui
+
+        os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "4.0.2"
+
+        import pygame
+        #from pygame.locals import *
+        import pygame.gfxdraw
+        ui.init("dpi")
+        ui.set_scale(1)
+
+        
         ip = None
         user = None
         command = None
         password = None
+        key_file = ""
         rooter = "false"
         # python manager.py --r --wsl_machine="Ubuntu-20.04" --wsl_cmd="gedit" --w_mode="multi" --clip_enabled="true"
         #   --gtk_scale=1 --qt_scale=1 --append="--zoom=1"
-        for arg in args[3:]:
+        #print(args)
+        indexed = args.index("--ssh")
+        #print(args[indexed + 1:])
+        for arg in args[indexed + 1:]:
             if "--ip" in arg:
                 ip = arg[5:]
             elif "--user" in arg:
                 user = arg[7:]
+                #print("us", user)
             elif "--pass" in arg:
+                #print("pp", arg[7:])
                 password = arg[7:]
             elif "--command" in arg:
                 command = arg[10:]
             elif "--root" in arg:
                 rooter = arg[7:]
 
-        creds = get_login(ip)
+        if password == None or user == None:
+            creds = get_login(ip)
 
-        password = creds["pass"]
+            password = creds["pass"]
 
-        user = creds["user"]
+            user = creds["user"]
 
-        key_file = creds["key"]
+            key_file = creds["key"]
 
         if get_running("GWSL_service") != True:
             try:
@@ -4645,7 +4667,8 @@ elif args[1] == "--r" and "--ssh" in args:
             if ":" in ip:
                 port = ip[ip.index(":") + 1:]
                 ip = ip[:ip.index(":")]
-
+            else:
+                port = ""
             port_str = "-P"
             por = "22"
             if port != "":
@@ -4691,7 +4714,8 @@ elif args[1] == "--r" and "--ssh" in args:
             if ":" in ip:
                 port = ip[ip.index(":") + 1:]
                 ip = ip[:ip.index(":")]
-
+            else:
+                port = ""
             port_str = "-P"
             por = "22"
             if port != "":
