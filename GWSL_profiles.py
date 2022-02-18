@@ -138,7 +138,7 @@ def add(asset_dir):
         boxRoot.update()
         if boxRoot.running == False:
             break
-        if not options:
+        if options:
             return options
 
 # print(get_login("raspberrypi"))
