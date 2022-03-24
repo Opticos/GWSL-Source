@@ -217,7 +217,7 @@ def add_profile(systray):
 
 def dpi_set(systray, mode):
     """Modifies the DPI registry key in Windows (DPI implementation to chanage soon)"""
-    server_location = f"{bundle_dir}\\VCXSRV\\GWSL_vcxsrv.exe"
+    server_location = f"{bundle_dir}\\VCXSRV\\vcxsrv.exe"
     instance_location = f"{bundle_dir}\\VCXSRV\\GWSL_instance.exe"
     print(server_location)
     print(instance_location)
@@ -412,11 +412,11 @@ def kill_server():
 
     """
     #subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
-    #subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+    #subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     print("startkill")
     #Make sure PID actually points to vcxsrv
     service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
-    if "GWSL_vcxsrv" in service_name:
+    if "vcxsrv" in service_name:
         print(f'taskkill /F /pid {server_PID}')
         subprocess.getoutput(f'taskkill /F /pid {server_PID}')
     else:
@@ -424,8 +424,8 @@ def kill_server():
         print("killing all vcxsrv")
     """
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
-    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
-    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv_hidpi.exe')
+    subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
+    subprocess.getoutput('taskkill /F /IM vcxsrv_hidpi.exe')
     
 
 def start_server():
@@ -442,7 +442,7 @@ def start_server():
                 default_arguments.append("-noprimary")
         else:
             default_arguments = ["-ac"] + get_args(current_custom_profile)
-        proc = subprocess.Popen(["VCXSRV/GWSL_vcxsrv.exe"] + default_arguments)
+        proc = subprocess.Popen(["VCXSRV/vcxsrv.exe"] + default_arguments)
         server_PID = proc.pid
     except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
@@ -456,7 +456,7 @@ def get_running():
     #print(service_name)
     #proc_list = os.popen('tasklist').readlines()
     
-    if "GWSL_vcxsrv" in service_name:
+    if "vcxsrv" in service_name:
         return True
     return False
 

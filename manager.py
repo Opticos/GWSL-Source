@@ -867,7 +867,7 @@ def choose_machine():
         for event in pygame.event.get():
             if event.type == QUIT:
                 # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                # subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -1027,7 +1027,7 @@ def about():
         for event in pygame.event.get():
             if event.type == QUIT:
                 # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                # subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -1155,8 +1155,8 @@ def about():
                             elif i == "Allow GWSL Through The Firewall": #TODO
                                 os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
                                 pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall '
-                                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", '
-                                                '"GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
+                                                'to communicate with WSL version 2. Please allow public access to "vcxsrv.exe", '
+                                                '"vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
                             elif i == "GWSL Discord Server":
                                 webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
@@ -1222,7 +1222,7 @@ def announce():
         for event in pygame.event.get():
             if event.type == QUIT:
                 # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                # subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -1467,7 +1467,7 @@ def configure_machine(machine):
 
             if event.type == QUIT:
                 # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                # subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
@@ -2760,7 +2760,7 @@ def start_server(port, mode, clipboard, extra=None):
     hd = ""
     if hidpi == False:
         hd = "_lowdpi"
-    proc = subprocess.Popen([f"VCXSRV/GWSL_vcxsrv{hd}.exe", ":" + str(port)] + default_arguments)
+    proc = subprocess.Popen([f"VCXSRV/vcxsrv{hd}.exe", ":" + str(port)] + default_arguments)
     return proc.pid
 
 
@@ -3943,14 +3943,14 @@ def draw(canvas, mouse=False):
                 print("stop/start")
                 if running == True:
                     subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                    subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                     running = False
                 elif running == False:
                     subprocess.Popen(bundle_dir + '\\GWSL_service.exe', shell=True)
                     running = True
             elif running == True and mouse[0] > ui.inch2pix(0.93) + display.get_width() + ui.inch2pix(0.4) and mouse[0] < ui.inch2pix(0.93) + display.get_width() + ui.inch2pix(0.4) + reset.get_width():
                 subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                 time.sleep(1)
                 subprocess.Popen(bundle_dir + '\\GWSL_service.exe', shell=True)
     """
@@ -4364,7 +4364,7 @@ if "--r" not in args: # start normally
     if new_install == True:
         ch = pymsgbox.confirm(text=_('Welcome to GWSL! '
                                 'Note: GWSL needs access through the Windows Firewall '
-                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe" and'
+                                'to communicate with WSL version 2. Please allow public access to "vcxsrv.exe" and'
                                 '"pulseaudio.exe" for audio if Windows Firewall prompts appear. '
                                 'Missing this step is the most common cause of GWSL issues.'),
                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok", "Help"])
@@ -4425,8 +4425,8 @@ if "--r" not in args: # start normally
             if ch == "Check Now":
                 os.popen("control /name Microsoft.WindowsFirewall /page pageConfigureApps")
                 pymsgbox.confirm(text=_('GWSL needs access through the Windows Firewall '
-                                'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", '
-                                '"GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
+                                'to communicate with WSL version 2. Please allow public access to "vcxsrv.exe", '
+                                '"vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
         while True:
             try:
@@ -4442,7 +4442,7 @@ if "--r" not in args: # start normally
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         # subprocess.getoutput('taskkill /F /IM GWSL_service.exe')
-                        # subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+                        # subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
                         pygame.quit()
                         sys.exit()
                     elif event.type == MOUSEBUTTONUP:

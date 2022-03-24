@@ -421,11 +421,11 @@ def kill_server(all_servers=False):
 
     """
     #subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
-    #subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
+    #subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
     print("startkill")
     #Make sure PID actually points to vcxsrv
     service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
-    if "GWSL_vcxsrv" in service_name:
+    if "vcxsrv" in service_name:
         print(f'taskkill /F /pid {server_PID}')
         subprocess.getoutput(f'taskkill /F /pid {server_PID}')
     else:
@@ -433,8 +433,8 @@ def kill_server(all_servers=False):
         print("killing all vcxsrv")
     """
     subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
-    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv.exe')
-    subprocess.getoutput('taskkill /F /IM GWSL_vcxsrv_lowdpi.exe')
+    subprocess.getoutput('taskkill /F /IM vcxsrv.exe')
+    subprocess.getoutput('taskkill /F /IM vcxsrv_lowdpi.exe')
 
     
 def kill_audio():
@@ -478,7 +478,7 @@ def start_server():
         hidpi_str = ""
         if hidpi == False:
             hidpi_str = "_lowdpi"
-        proc = subprocess.Popen([f"VCXSRV/GWSL_vcxsrv{hidpi_str}.exe"] + default_arguments)
+        proc = subprocess.Popen([f"VCXSRV/vcxsrv{hidpi_str}.exe"] + default_arguments)
         server_PID = proc.pid
     except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
@@ -490,7 +490,7 @@ def get_running():
     service_name = subprocess.getoutput(f'tasklist /nh /fo csv /FI "PID eq {server_PID}"').split(",")[0]
     if server_PID == "reloading":
         return True
-    if "GWSL_vcxsrv" in service_name:
+    if "vcxsrv" in service_name:
         return True
     return False
     """
