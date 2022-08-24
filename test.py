@@ -3,6 +3,7 @@ from winreg import *
 modes = ["~ HIGHDPIAWARE", "~ DPIUNAWARE", "~ GDIDPISCALING DPIUNAWARsE"]
 
 
+
 # registry = ConnectRegistry(None, HKEY_CURRENT_USER)
 # key = OpenKey(registry, r'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\\')
 
