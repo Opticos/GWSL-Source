@@ -143,13 +143,12 @@ def add(asset_dir):
     #boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - boxRoot.winfo_width() / 2,
     #                             screensize[1] / 2 - boxRoot.winfo_height() / 2))
     
-    while True:
+    while boxRoot.running and not options:
         # draw(canvas, mouse=False)
         time.sleep(0.05)
         boxRoot.update()
-        if boxRoot.running == False:
-            break
-        if options != {}:
-            return options
+
+    if options:
+        return options
 
 # print(get_login("raspberrypi"))
