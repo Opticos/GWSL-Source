@@ -24,6 +24,10 @@ CreateCompatibleDC = ctypes.windll.gdi32.CreateCompatibleDC
 GetDC = ctypes.windll.user32.GetDC
 CreateCompatibleBitmap = ctypes.windll.gdi32.CreateCompatibleBitmap
 GetSysColorBrush = ctypes.windll.user32.GetSysColorBrush
+
+GetStockObject = ctypes.windll.gdi32.GetStockObject
+
+
 FillRect = ctypes.windll.user32.FillRect
 DrawIconEx = ctypes.windll.user32.DrawIconEx
 SelectObject = ctypes.windll.gdi32.SelectObject

@@ -95,7 +95,7 @@
         <shortDescription>de</shortDescription>
         <description>German</description>
         <languageList>
-          <iso639Id>ger</iso639Id>
+          <iso639Id>deu</iso639Id>
         </languageList>
       </configItem>
       <variantList>
@@ -104,7 +104,7 @@
             <name>hu</name>
             <description>German (with Hungarian letters, no dead keys)</description>
             <languageList>
-              <iso639Id>ger</iso639Id>
+              <iso639Id>deu</iso639Id>
               <iso639Id>hun</iso639Id>
             </languageList>
           </configItem>
@@ -114,7 +114,7 @@
             <name>pl</name>
             <description>Polish (Germany, no dead keys)</description>
             <languageList>
-              <iso639Id>ger</iso639Id>
+              <iso639Id>deu</iso639Id>
               <iso639Id>pol</iso639Id>
             </languageList>
           </configItem>
@@ -189,7 +189,7 @@
             <shortDescription>de_lld</shortDescription>
             <description>German (Ladin)</description>
             <languageList>
-              <iso639Id>ger</iso639Id>
+              <iso639Id>deu</iso639Id>
               <iso639Id>lld</iso639Id>
             </languageList>
           </configItem>
@@ -235,7 +235,7 @@
         <shortDescription>fa</shortDescription>
         <description>Persian</description>
         <languageList>
-          <iso639Id>per</iso639Id>
+          <iso639Id>fas</iso639Id>
         </languageList>
       </configItem>
       <variantList>
@@ -338,6 +338,12 @@
             <description>Latvian (Sun Type 6/7)</description>
           </configItem>
         </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>apostrophe-deadquotes</name>
+            <description>Latvian (apostrophe, dead quotes)</description>
+          </configItem>
+        </variant>
       </variantList>
     </layout>
     <layout>
@@ -384,9 +390,25 @@
             <description>Czech Slovak and German (US)</description>
             <languageList>
               <iso639Id>eng</iso639Id>
+              <iso639Id>ces</iso639Id>
+              <iso639Id>slk</iso639Id>
+              <iso639Id>deu</iso639Id>
+            </languageList>
+          </configItem>
+        </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>cz_sk_pl_de_es_fi_sv</name>
+            <description>Czech, Slovak, Polish, Spanish, Finnish, Swedish and German (US)</description>
+            <languageList>
+              <iso639Id>eng</iso639Id>
               <iso639Id>cze</iso639Id>
               <iso639Id>slo</iso639Id>
+              <iso639Id>pol</iso639Id>
               <iso639Id>ger</iso639Id>
+              <iso639Id>spa</iso639Id>
+              <iso639Id>fin</iso639Id>
+              <iso639Id>swe</iso639Id>
             </languageList>
           </configItem>
         </variant>
@@ -402,7 +424,7 @@
             <description>German, Swedish and Finnish (US)</description>
             <languageList>
               <iso639Id>eng</iso639Id>
-              <iso639Id>ger</iso639Id>
+              <iso639Id>deu</iso639Id>
               <iso639Id>swe</iso639Id>
               <iso639Id>fin</iso639Id>
             </languageList>
@@ -485,6 +507,24 @@
             </languageList>
           </configItem>
         </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>altgr-weur</name>
+            <description>English (Western European AltGr dead keys)</description>
+            <languageList><iso639Id>dan</iso639Id>
+                          <iso639Id>nld</iso639Id>
+                          <iso639Id>eng</iso639Id>
+                          <iso639Id>fin</iso639Id>
+                          <iso639Id>fra</iso639Id>
+                          <iso639Id>deu</iso639Id>
+                          <iso639Id>ita</iso639Id>
+                          <iso639Id>nor</iso639Id>
+                          <iso639Id>por</iso639Id>
+                          <iso639Id>spa</iso639Id>
+                          <iso639Id>swe</iso639Id>
+            </languageList>
+          </configItem>
+        </variant>
       </variantList>
     </layout>
     <layout>
@@ -509,6 +549,12 @@
             <description>Polish (Colemak)</description>
           </configItem>
         </variant>
+	<variant>
+          <configItem popularity="exotic">
+            <name>colemak_dh</name>
+            <description>Polish (Colemak-DH)</description>
+          </configItem>
+        </variant>
         <variant>
           <configItem popularity="exotic">
             <name>sun_type6</name>
@@ -521,6 +567,12 @@
             <description>Polish (Glagolica)</description>
           </configItem>
         </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>lefty</name>
+            <description>Polish (lefty)</description>
+          </configItem>
+        </variant>
       </variantList>
     </layout>
     <layout>
@@ -529,7 +581,7 @@
         <shortDescription>ro</shortDescription>
         <description>Romanian</description>
         <languageList>
-          <iso639Id>rum</iso639Id>
+          <iso639Id>ron</iso639Id>
         </languageList>
       </configItem>
       <variantList>
@@ -629,6 +681,18 @@
         </variant>
         <variant>
           <configItem popularity="exotic">
+            <name>gost-6431-75-48</name>
+            <description>Russian (GOST 6431-75)</description>
+          </configItem>
+        </variant>
+        <variant>
+          <configItem>
+            <name>gost-14289-88</name>
+            <description>Russian (GOST 14289-88)</description>
+          </configItem>
+        </variant>
+        <variant>
+          <configItem popularity="exotic">
             <name>prxn</name>
             <shortDescription>ru</shortDescription>
             <description>Russian (Polyglot and Reactionary)</description>
@@ -652,14 +716,12 @@
             </countryList>
             <languageList>
               <iso639Id>rus</iso639Id>
-              <iso639Id>rus-petr1708</iso639Id>
               <iso639Id>ukr</iso639Id>
               <iso639Id>bel</iso639Id>
               <iso639Id>srp</iso639Id>
               <iso639Id>mkd</iso639Id>
               <iso639Id>bul</iso639Id>
               <iso639Id>chu</iso639Id>
-              <iso639Id>rum-Cyrl</iso639Id>
               <iso639Id>kaz</iso639Id>
               <iso639Id>kir</iso639Id>
               <iso639Id>uzb</iso639Id>
@@ -774,6 +836,12 @@
             <description>Ugaritic instead of Arabic</description>
           </configItem>
         </variant>
+	<variant>
+          <configItem popularity="exotic">
+            <name>ergoarabic</name>
+            <description>Arabic (ErgoArabic)</description>
+          </configItem>
+	</variant>
       </variantList>
     </layout>
     <layout>
@@ -984,8 +1052,17 @@
             <shortDescription>it_lld</shortDescription>
             <description>Italian (Ladin)</description>
             <languageList>
-              <iso639Id>it</iso639Id>
+              <iso639Id>ita</iso639Id>
               <iso639Id>lld</iso639Id>
+            </languageList>
+          </configItem>
+        </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>dvorak</name>
+            <description>Italian (Dvorak)</description>
+            <languageList>
+              <iso639Id>ita</iso639Id>
             </languageList>
           </configItem>
         </variant>
@@ -1029,6 +1106,24 @@
           <configItem popularity="exotic">
             <name>sun_type6</name>
             <description>Norwegian (Sun Type 6/7)</description>
+          </configItem>
+        </variant>
+      </variantList>
+    </layout>
+    <layout>
+      <configItem popularity="exotic">
+        <name>pk</name>
+        <shortDescription>ur</shortDescription>
+        <description>Urdu (Pakistan)</description>
+      </configItem>
+      <variantList>
+        <variant>
+          <configItem popularity="exotic">
+          <name>urd-navees</name>
+          <description>Urdu (Pakistan, Navees)</description>
+          <languageList>
+              <iso639Id>urd</iso639Id>
+            </languageList>
           </configItem>
         </variant>
       </variantList>
@@ -1160,6 +1255,12 @@
             <description>Old Turkic</description>
           </configItem>
         </variant>
+        <variant>
+          <configItem popularity="exotic">
+            <name>us</name>
+            <description>Turkish (Turkey, Latin Q, Swap i and ı)</description>
+          </configItem>
+        </variant>
       </variantList>
     </layout>
     <layout>
@@ -1245,8 +1346,8 @@
           <iso639Id>est</iso639Id>
           <iso639Id>fao</iso639Id>
           <iso639Id>fin</iso639Id>
-          <iso639Id>ger</iso639Id>
-          <iso639Id>gre</iso639Id>
+          <iso639Id>deu</iso639Id>
+          <iso639Id>ell</iso639Id>
           <iso639Id>gsw</iso639Id>
           <iso639Id>ita</iso639Id>
           <iso639Id>lav</iso639Id>
@@ -1261,26 +1362,18 @@
     </layout>
     <layout>
       <configItem popularity="exotic">
-        <name>cm</name>
-        <shortDescription>cm</shortDescription>
-        <description>English (Cameroon)</description>
-      </configItem>
-      <variantList>
-        <variant>
-          <configItem popularity="exotic">
-            <name>mmuock</name>
-            <description>Mmuock</description>
-          </configItem>
-        </variant>
-      </variantList>
-    </layout>
-    <layout>
-      <configItem popularity="exotic">
         <name>trans</name>
         <!-- Keyboard layouts for transcription and transliteration systems -->
         <description>International Phonetic Alphabet</description>
       </configItem>
-      <variantList/>
+      <variantList>
+        <variant>
+          <configItem popularity="exotic">
+            <name>qwerty</name>
+            <description>International Phonetic Alphabet (QWERTY)</description>
+          </configItem>
+        </variant>
+      </variantList>
     </layout>
     <layout>
       <configItem>
@@ -1307,6 +1400,16 @@
             <description>Sanskrit symbols</description>
             <languageList>
               <iso639Id>san</iso639Id>
+            </languageList>
+          </configItem>
+        </variant>
+        <variant>
+          <configItem>
+            <name>urd-navees</name>
+            <shortDescription>ur</shortDescription>
+            <description>Urdu (Navees)</description>
+            <languageList>
+              <iso639Id>urd</iso639Id>
             </languageList>
           </configItem>
         </variant>

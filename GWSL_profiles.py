@@ -13,6 +13,8 @@ import ctypes
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
+import win32mica
+import sv_ttk
 
 
 def add(asset_dir):
@@ -42,6 +44,14 @@ def add(asset_dir):
             boxRoot.destroy()
             # boxRoot.running = False
 
+    
+    boxRoot.update()
+    sv_ttk.set_theme("dark")
+    mode = win32mica.MICAMODE.DARK
+    HWND = ctypes.windll.user32.GetParent(boxRoot.winfo_id())
+    win32mica.ApplyMica(HWND, mode)
+
+    
     boxRoot.title("XServer Profile Creator")
     boxRoot.iconname("Dialog")
     width, height = 700, 120
@@ -68,21 +78,21 @@ def add(asset_dir):
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(frame_1, text="Profile Name: ").grid(row=0, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Profile Name: ").grid(row=0, column=1, padx=10, pady=15, sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
-    link_user.grid(row=0, column=2, columnspan=4, padx=10, sticky="WE")
+    link_user.grid(row=0, column=2, columnspan=4, padx=10, pady=10, sticky="WE")
 
     link_user.focus_force()
 
-    tk.Label(frame_1, text="VcXsrv Flags: ").grid(row=1, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="VcXsrv Flags: ").grid(row=1, column=1, padx=10, pady=15, sticky="W")
 
     link_pass = ttk.Entry(frame_1)
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
 
-    tk.Label(frame_1, text="Hide VcXsrv Systray Icon: ").grid(row=2, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Hide VcXsrv Systray Icon: ").grid(row=2, column=1, padx=10, pady=15, sticky="W")
 
     var = tk.IntVar(root)
     hide_systray = ttk.Checkbutton(frame_1, variable=var)
@@ -129,6 +139,7 @@ def add(asset_dir):
     boxRoot.deiconify()
     boxRoot.wm_attributes("-topmost", 1)
     boxRoot.update()
+    
     #boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - boxRoot.winfo_width() / 2,
     #                             screensize[1] / 2 - boxRoot.winfo_height() / 2))
     

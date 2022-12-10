@@ -27,9 +27,6 @@ xkb_symbols "basic" {
     key <BKSL>	{ [numbersign, apostrophe, rightsinglequotemark,   dead_breve ]	};
     key <AB01>	{ [         y,          Y,       guillemotright,    U203A 	] };
     key <AB02>	{ [         x,          X,        guillemotleft,    U2039 	] };
-    key <AB04>	{ [         v,          V,   doublelowquotemark, singlelowquotemark ]	};
-    key <AB05>	{ [         b,          B,  leftdoublequotemark, leftsinglequotemark ] };
-    key <AB06>	{ [         n,          N, rightdoublequotemark, rightsinglequotemark ]	};
     key <AB08>  { [     comma,  semicolon,       periodcentered,     multiply	] };
     key <AB09>	{ [    period,      colon,                U2026,     division 	] };
     key <AB10>	{ [     minus, underscore,               endash,     emdash	] };
@@ -97,7 +94,7 @@ xkb_symbols "deadacute" {
 
 partial alphanumeric_keys
 xkb_symbols "e1" {
-    // German extended layout E1 based on DIN 2137-1:2018-12
+    // German extended layout E1 based on DIN 2137-1:2020-11
     // Designed for a 105-key keyboard
     // https://de.wikipedia.org/wiki/Tastaturbelegung
 
@@ -122,13 +119,13 @@ xkb_symbols "e1" {
     // second row
     key.type[Group1] = "EIGHT_LEVEL_ALPHABETIC";
     key <AD01> { [               q,          Q,                   at, NoSymbol,            masculine,                U2642, NoSymbol, NoSymbol ] };
-    key <AD02> { [               w,          W,           dead_caron, NoSymbol,          ordfeminine,                U2640, NoSymbol, NoSymbol ] };
+    key <AD02> { [               w,          W,          dead_macron, NoSymbol,          ordfeminine,                U2640, NoSymbol, NoSymbol ] };
     key <AD03> { [               e,          E,             EuroSign, NoSymbol,                schwa,                SCHWA, NoSymbol, NoSymbol ] };
     key <AD04> { [               r,          R,     dead_doubleacute, NoSymbol,            trademark,           registered, NoSymbol, NoSymbol ] };
-    key <AD05> { [               t,          T,           dead_tilde, NoSymbol,                thorn,                THORN, NoSymbol, NoSymbol ] };
+    key <AD05> { [               t,          T,           dead_caron, NoSymbol,                thorn,                THORN, NoSymbol, NoSymbol ] };
     key <AD06> { [               z,          Z,       dead_diaeresis, NoSymbol,                U0292,                U01B7, NoSymbol, NoSymbol ] };
     key <AD07> { [               u,          U,           dead_breve, NoSymbol,           rightarrow,            leftarrow, NoSymbol, NoSymbol ] };
-    key <AD08> { [               i,          I,          dead_macron, NoSymbol,             idotless,                U26A5, NoSymbol, NoSymbol ] };
+    key <AD08> { [               i,          I,           dead_tilde, NoSymbol,             idotless,                U26A5, NoSymbol, NoSymbol ] };
     key <AD09> { [               o,          O,       dead_abovering, NoSymbol,               oslash,               Oslash, NoSymbol, NoSymbol ] };
     key <AD10> { [               p,          P,            dead_hook, NoSymbol,            downarrow,              uparrow, NoSymbol, NoSymbol ] };
     key <AD11> { [      udiaeresis, Udiaeresis,            dead_horn, NoSymbol,                U2198,                U2197, NoSymbol, NoSymbol ] };
@@ -190,7 +187,7 @@ xkb_symbols "e1" {
 
 partial alphanumeric_keys
 xkb_symbols "e2" {
-    // German extended layout E2 based on DIN 2137-1:2018-12
+    // German extended layout E2 based on DIN 2137-1:2020-11
     // Designed for a 104-key keyboard
     // https://de.wikipedia.org/wiki/Tastaturbelegung
 
@@ -517,7 +514,7 @@ xkb_symbols "neo_base" {
 
     // Topmost row
     // --------------------------------------------------------------
-    key <KPDV> { [ KP_Divide,               KP_Divide,               division,                U2300,                   U2215,                   NoSymbol,                U2223,                   NoSymbol                 ] };
+    key <KPDV> { [ KP_Divide,               KP_Divide,               division,                U2300,                   U2044,                   NoSymbol,                U2223,                   NoSymbol                 ] };
     key <KPMU> { [ KP_Multiply,             KP_Multiply,             U22C5,                   U2299,                   multiply,                NoSymbol,                U2297,                   NoSymbol                 ] };
     key <KPSU> { [ KP_Subtract,             KP_Subtract,             U2212,                   U2296,                   U2216,                   NoSymbol,                U2238,                   NoSymbol                 ] };
 
@@ -613,20 +610,21 @@ xkb_symbols "dsb"
 {
 	include "latin(basic)"
 	name[Group1] = "Lower Sorbian";
-	key <AB01> { [              z,              Z,         zcaron,         Zcaron ] };
-	key <AB02> { [              x,              X,         zacute,         Zacute ] };
-	key <AB03> { [              c,              C,         cacute,         Cacute ] };
-	key <AB04> { [              v,              V,         ccaron,         Ccaron ] };
-	key <AB06> { [              n,              N,         nacute,         Nacute ] };
-	key <AC02> { [              s,              S,         sacute,         Sacute ] };
-	key <AC03> { [              d,              D,         scaron,         Scaron ] };
-	key <AC04> { [              f,              F                                 ] };
-	key <AD01> { [              q,              Q                                 ] };
-	key <AD02> { [              w,              W                                 ] };
-	key <AD03> { [              e,              E,         ecaron,         Ecaron ] };
-	key <AD04> { [              r,              R,         racute,         Racute ] };
-	key <AD05> { [              t,              T,          U20B5,       EuroSign ] };
-	key <AD09> { [              o,              O,         oacute,         Oacute ] };
+
+	key <AD03> { [    e,    E,    ecaron,    Ecaron ] };
+	key <AD04> { [    r,    R,    racute,    Racute ] };
+	key <AD05> { [    t,    T,     U20B5,  EuroSign ] };
+	key <AD09> { [    o,    O,    oacute,    Oacute ] };
+
+	key <AC02> { [    s,    S,    sacute,    Sacute ] };
+	key <AC03> { [    d,    D,    scaron,    Scaron ] };
+
+	key <AB01> { [    z,    Z,    zcaron,    Zcaron ] };
+	key <AB02> { [    x,    X,    zacute,    Zacute ] };
+	key <AB03> { [    c,    C,    cacute,    Cacute ] };
+	key <AB04> { [    v,    V,    ccaron,    Ccaron ] };
+	key <AB06> { [    n,    N,    nacute,    Nacute ] };
+
 	include "kpdl(comma)"
 	include "level3(ralt_switch)"
 };
@@ -634,24 +632,23 @@ xkb_symbols "dsb"
 partial alphanumeric_keys
 xkb_symbols "dsb_qwertz"
 {
-	include "latin(basic)"
+	include "de(basic)"
 	name[Group1] = "Lower Sorbian (QWERTZ)";
-	key <AB01> { [              y,              Y                                 ] };
-	key <AB02> { [              x,              X                                 ] };
-	key <AB03> { [              c,              C,         cacute,         Cacute ] };
-	key <AB04> { [              v,              V,         ccaron,         Ccaron ] };
-	key <AB06> { [              n,              N,         nacute,         Nacute ] };
-	key <AC02> { [              s,              S,         sacute,         Sacute ] };
-	key <AC03> { [              d,              D,         scaron,         Scaron ] };
-	key <AC04> { [              f,              F                                 ] };
-	key <AD01> { [              q,              Q                                 ] };
-	key <AD02> { [              w,              W                                 ] };
-	key <AD03> { [              e,              E,         ecaron,         Ecaron ] };
-	key <AD04> { [              r,              R,         racute,         Racute ] };
-	key <AD05> { [              t,              T,          U20B5,       EuroSign ] };
-	key <AD06> { [              z,              Z,         zcaron,         Zcaron ] };
-	key <AD07> { [              u,              U,         zacute,         Zacute ] };
-	key <AD09> { [              o,              O,         oacute,         Oacute ] };
+
+	key <AD03> { [    e,    E,    ecaron,    Ecaron ] };
+	key <AD04> { [    r,    R,    racute,    Racute ] };
+	key <AD05> { [    t,    T,     U20B5,  EuroSign ] };
+	key <AD06> { [    z,    Z,    zcaron,    Zcaron ] };
+	key <AD07> { [    u,    U,    zacute,    Zacute ] };
+	key <AD09> { [    o,    O,    oacute,    Oacute ] };
+
+	key <AC02> { [    s,    S,    sacute,    Sacute ] };
+	key <AC03> { [    d,    D,    scaron,    Scaron ] };
+
+	key <AB03> { [    c,    C,    cacute,    Cacute ] };
+	key <AB04> { [    v,    V,    ccaron,    Ccaron ] };
+	key <AB06> { [    n,    N,    nacute,    Nacute ] };
+
 	include "kpdl(comma)"
 	include "level3(ralt_switch)"
 };
@@ -1195,7 +1192,7 @@ xkb_symbols "neo_qwerty" {
 };
 
 partial alphanumeric_keys
-    xkb_symbols "lld" {
+xkb_symbols "lld" {
     include "de(basic)"
     name[Group1] = "German (Ladin)";
 

@@ -936,26 +936,31 @@
 
 ! layout	option	=	symbols
   $threelevellayouts	grp:alts_toggle = +level3(ralt_switch_for_alts_toggle)
+  *			lv3:ralt_alt	= +level3(ralt_alt)
   *			misc:typo 	= +typo(base)
   *			misc:apl	= +apl(level3)
 
 ! layout[1]	option	=	symbols
   $threelevellayouts	grp:alts_toggle = +level3(ralt_switch_for_alts_toggle):1
+  *			lv3:ralt_alt	= +level3(ralt_alt):1
   *			misc:typo 	= +typo(base):1
   *			misc:apl	= +apl(level3):1
 
 ! layout[2]	option	=	symbols
   $threelevellayouts	grp:alts_toggle = +level3(ralt_switch_for_alts_toggle):2
+  *			lv3:ralt_alt	= +level3(ralt_alt):2
   *			misc:typo 	= +typo(base):2
   *			misc:apl	= +apl(level3):2
 
 ! layout[3]	option	=	symbols
   $threelevellayouts	grp:alts_toggle = +level3(ralt_switch_for_alts_toggle):3
+  *			lv3:ralt_alt	= +level3(ralt_alt):3
   *			misc:typo 	= +typo(base):3
   *			misc:apl	= +apl(level3):3
 
 ! layout[4]	option	=	symbols
   $threelevellayouts	grp:alts_toggle = +level3(ralt_switch_for_alts_toggle):4
+  *			lv3:ralt_alt	= +level3(ralt_alt):4
   *			misc:typo 	= +typo(base):4
   *			misc:apl	= +apl(level3):4
 
@@ -966,6 +971,7 @@
   altwin:meta_alt	=	+altwin(meta_alt)
   altwin:alt_win	=	+altwin(alt_win)
   altwin:ctrl_win	=	+altwin(ctrl_win)
+  altwin:ctrl_rwin	=	+altwin(ctrl_rwin)
   altwin:ctrl_alt_win	=	+altwin(ctrl_alt_win)
   altwin:meta_win	=	+altwin(meta_win)
   altwin:left_meta_win	=	+altwin(left_meta_win)
@@ -1021,7 +1027,6 @@
   lv3:switch		=	+level3(switch)
   lv3:ralt_switch	=	+level3(ralt_switch)
   lv3:ralt_switch_multikey	=	+level3(ralt_switch_multikey)
-  lv3:ralt_alt		=	+level3(ralt_alt)
   lv3:lalt_switch	=	+level3(lalt_switch)
   lv3:alt_switch	=	+level3(alt_switch)
   lv3:menu_switch	=	+level3(menu_switch)
@@ -1088,7 +1093,7 @@
   keypad:future         =	+keypad(future)
   keypad:future_wang    =	+keypad(future_wang)
   keypad:hex            =	+keypad(ops)+keypad(hex)
-  keypad:atm            =	+keypad(ops)+keypad(hex)+keypad(atm)  
+  keypad:atm            =	+keypad(ops)+keypad(hex)+keypad(atm)
   nbsp:none             =	+nbsp(none)
   nbsp:level2           =	+nbsp(level2)
   nbsp:level3           =	+nbsp(level3)

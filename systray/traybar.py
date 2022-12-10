@@ -3,6 +3,10 @@ from .win32_adapter import *
 import threading
 import uuid
 
+import win32mica
+import win32gui
+import win32con
+import win32api
 
 class SysTrayIcon(object):
     """
@@ -81,6 +85,7 @@ class SysTrayIcon(object):
         hwnd = HANDLE(hwnd)
         wparam = WPARAM(wparam)
         lparam = LPARAM(lparam)
+                
         if msg in self._message_dict:
             self._message_dict[msg](hwnd, msg, wparam.value, lparam.value)
         return DefWindowProc(hwnd, msg, wparam, lparam)
@@ -92,13 +97,17 @@ class SysTrayIcon(object):
         self._window_class.lpszClassName = self._window_class_name
         self._window_class.style = CS_VREDRAW | CS_HREDRAW
         self._window_class.hCursor = LoadCursor(0, IDC_ARROW)
-        self._window_class.hbrBackground = COLOR_WINDOW
+        self._window_class.hbrBackground = GetSysColorBrush(win32con.COLOR_MENU)#win32con.COLOR_WINDOW#COLOR_WINDOW
+        
         self._window_class.lpfnWndProc = LPFN_WNDPROC(self.WndProc)
+        
         RegisterClass(ctypes.byref(self._window_class))
 
     def _create_window(self):
+
         style = WS_OVERLAPPED | WS_SYSMENU
-        self._hwnd = CreateWindowEx(0, self._window_class_name,
+        self._hwnd = CreateWindowEx(0,
+                                      self._window_class_name,
                                       self._window_class_name,
                                       style,
                                       0,
@@ -110,6 +119,9 @@ class SysTrayIcon(object):
                                       self._hinst,
                                       None)
         UpdateWindow(self._hwnd)
+
+        win32api.SendMessage(self._hwnd, win32con.WM_ERASEBKGND)
+        
         self._refresh_icon()
 
     def _message_loop_func(self):
@@ -269,10 +281,16 @@ class SysTrayIcon(object):
             self._create_menu(self._menu, self._menu_options)
             #SetMenuDefaultItem(self._menu, 1000, 0)
 
+
         pos = POINT()
         GetCursorPos(ctypes.byref(pos))
         # See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/menus_0hdi.asp
         SetForegroundWindow(self._hwnd)
+
+
+        #mode = win32mica.MICAMODE.DARK
+        #win32mica.ApplyMica(self._menu, mode)
+    
         TrackPopupMenu(self._menu,
                        TPM_LEFTALIGN,
                        pos.x,
@@ -280,6 +298,7 @@ class SysTrayIcon(object):
                        0,
                        self._hwnd,
                        None)
+        
         PostMessage(self._hwnd, WM_NULL, 0, 0)
 
     def _create_menu(self, menu, menu_options):
@@ -315,9 +334,10 @@ class SysTrayIcon(object):
         hdcBitmap = CreateCompatibleDC(None)
         hdcScreen = GetDC(None)
         hbm = CreateCompatibleBitmap(hdcScreen, ico_x + 10, ico_y + 10)
+        
         hbmOld = SelectObject(hdcBitmap, hbm)
         # Fill the background.
-        brush = GetSysColorBrush(COLOR_MENU)
+        brush = GetSysColorBrush(win32con.COLOR_MENU)#COLOR_MENU)
         FillRect(hdcBitmap, ctypes.byref(RECT(0, 0, ico_x + 10, ico_y + 10)), brush)
         # draw the icon
         DrawIconEx(hdcBitmap, 5, 5, hicon, ico_x, ico_y, 0, 0, DI_NORMAL)

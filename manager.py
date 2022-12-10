@@ -1,6 +1,6 @@
 # GWSL Dashboard *lets do this again*
 
-# Copyright Paul-E/Opticos Studios 2021
+# Copyright Paul-E/Opticos Studios 2022
 # https://sites.google.com/bartimee.com/opticos-studios/home
 
 # Dedicated to the Sacred Heart of Jesus
@@ -34,11 +34,17 @@ from exe_layer import cmd
 import logging
 import ipaddress
 
+
+
+import sv_ttk
+import win32mica
+
+
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.4.1"
+version = "1.4.5"
 
-lc_name = "Licenses138.txt"
+lc_name = "Licenses145.txt"
 
 show_ad = False
 
@@ -114,6 +120,53 @@ logger.addFilter(DuplicateFilter())
 updated = False
 new_install = False
 
+def set_update():
+    print("Updating settings")
+    old_iset = iset.read()
+    iset.create(app_path + "\\settings.json")
+    new_iset = iset.read()
+
+    #migrate user settings
+    new_iset["putty"]["ip"] = old_iset["putty"]["ip"]
+    new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
+    new_iset["app_blacklist"] = old_iset["app_blacklist"]
+    new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
+
+    try:
+        new_iset["general"]["acrylic_enabled"] = old_iset["general"]["acrylic_enabled"]
+    except:
+        pass
+    try:
+        new_iset["general"]["clipboard"] = old_iset["general"]["clipboard"]
+    except:
+        pass
+    try:
+        new_iset["general"]["start_menu_mode"] = old_iset["general"]["start_menu_mode"]
+    except:
+        pass
+    try:
+        new_iset["general"]["shell_gui"] = old_iset["general"]["shell_gui"]
+    except:
+        pass
+    
+    try:
+        new_iset["graphics"]["hidpi"] = old_iset["graphics"]["hidpi"]
+    except:
+        pass
+    try:
+        new_iset["putty"]["ssh_key"] = old_iset["putty"]["ssh_key"]
+    except:
+        pass
+
+    # 1.4.5
+    try:
+        new_iset["general"]["force_disable_primary"] = old_iset["general"]["force_disable_primary"]
+    except:
+        pass
+    
+    iset.set(new_iset)
+
+    
 
 try:
     iset.path = app_path + "settings.json"
@@ -128,7 +181,7 @@ try:
             iset.create(app_path + "\\settings.json")
             print("Updating settings")
         else:
-            if sett["conf_ver"] >= 6:
+            if sett["conf_ver"] >= 7:
                 if debug == True:
                     print("Settings up to date")
                 try:
@@ -139,81 +192,12 @@ try:
                         iset.set(sett)
                 except:
                     updated = True
-                    print("Updating settings")
-                    old_iset = iset.read()
-                    iset.create(app_path + "\\settings.json")
-                    new_iset = iset.read()
-
-                    #migrate user settings
-                    new_iset["putty"]["ip"] = old_iset["putty"]["ip"]
-                    new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
-                    new_iset["app_blacklist"] = old_iset["app_blacklist"]
-                    new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
-                    try:
-                        new_iset["general"]["acrylic_enabled"] = old_iset["general"]["acrylic_enabled"]
-                    except:
-                        pass
-                    try:
-                        new_iset["general"]["clipboard"] = old_iset["general"]["clipboard"]
-                    except:
-                        pass
-                    try:
-                        new_iset["general"]["start_menu_mode"] = old_iset["general"]["start_menu_mode"]
-                    except:
-                        pass
-                    try:
-                        new_iset["general"]["shell_gui"] = old_iset["general"]["shell_gui"]
-                    except:
-                        pass
-                    
-                    try:
-                        new_iset["graphics"]["hidpi"] = old_iset["graphics"]["hidpi"]
-                    except:
-                        pass
-                    try:
-                        new_iset["putty"]["ssh_key"] = old_iset["putty"]["ssh_key"]
-                    except:
-                        pass
-                    iset.set(new_iset)
+                    set_update()
                         
             else:
                 updated = True
-                print("Updating settings")
-                old_iset = iset.read()
-                iset.create(app_path + "\\settings.json")
-                new_iset = iset.read()
+                set_update()
 
-                #migrate user settings
-                new_iset["putty"]["ip"] = old_iset["putty"]["ip"]
-                new_iset["distro_blacklist"] = old_iset["distro_blacklist"]
-                new_iset["app_blacklist"] = old_iset["app_blacklist"]
-                new_iset["xserver_profiles"] = old_iset["xserver_profiles"]
-                try:
-                    new_iset["general"]["acrylic_enabled"] = old_iset["general"]["acrylic_enabled"]
-                except:
-                    pass
-                try:
-                    new_iset["general"]["clipboard"] = old_iset["general"]["clipboard"]
-                except:
-                    pass
-                try:
-                    new_iset["general"]["start_menu_mode"] = old_iset["general"]["start_menu_mode"]
-                except:
-                    pass
-                try:
-                    new_iset["general"]["shell_gui"] = old_iset["general"]["shell_gui"]
-                except:
-                    pass
-                
-                try:
-                    new_iset["graphics"]["hidpi"] = old_iset["graphics"]["hidpi"]
-                except:
-                    pass
-                try:
-                    new_iset["putty"]["ssh_key"] = old_iset["putty"]["ssh_key"]
-                except:
-                    pass
-                iset.set(new_iset)
                 
 
     # Get the script ready
@@ -605,7 +589,7 @@ if "--r" not in args:
 def get_version(machine):
     try:
         machines = os.popen("wsl.exe -l -v").read()  # lines()
-        machines = re.sub(r'[^a-z A-Z0-9./\n-]', r'', machines).splitlines()
+        machines = re.sub(r'[^a-z A-Z0-9_./\n-]', r'', machines).splitlines()
         #machines = machines.splitlines()
         machines2 = []
         wsl_1 = True
@@ -700,8 +684,10 @@ def wsl_run(distro, command, caller, nolog=False):
 
 
 def runs(distro, command, nolog=False):
-    
+
     cmd = "wsl.exe ~ -d " + str(distro) + " . ~/.profile;nohup /bin/sh -c " + '"' + str(command) + '&"'
+
+    
     if nolog == False:
         logger.info(f"(runos) WSL SHELL $ {cmd}")
     subprocess.Popen(cmd,
@@ -822,7 +808,7 @@ def choose_machine():
     """
     global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
     machines = os.popen("wsl.exe -l -q").read()  # lines()
-    machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+    machines = re.sub(r'[^a-zA-Z0-9_./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
     
@@ -1108,7 +1094,7 @@ def about():
                     "GWSL Uses:",
                     "Python - Pyinstaller - SDL",
                     "VCXSRV - Putty - Pillow",
-                    "Tcl/Tk - Paper Icon Pack",
+                    "Tcl/Tk - Paper Icon Pack - Sv-TTK",
                     "Pymsgbox - OpticUI - Infi.Systray",
                     "Visit Opticos Studios Website",
                     "More Apps!",
@@ -1517,6 +1503,7 @@ def configure_machine(machine):
 
         ni = str(machine)[0].upper() + str(machine)[1:]
         ni = ni.replace("-", " ")
+        ni = ni.replace("_", " ")
 
         txt = title_font.render("Configure " + str(ni), True, white)
 
@@ -2952,8 +2939,6 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
         logger.exception("Exception occurred - cannot spawn process")
 
 
-
-
 			
 def get_login(machine):
     if root:
@@ -2963,6 +2948,13 @@ def get_login(machine):
     else:
         boxRoot = tk.Tk()
         boxRoot.withdraw()
+
+    boxRoot.update()
+    sv_ttk.set_theme("dark")
+    mode = win32mica.MICAMODE.DARK
+    HWND = windll.user32.GetParent(boxRoot.winfo_id())
+    win32mica.ApplyMica(HWND, mode)
+    
 
     def quitter():
         boxRoot.quit()
@@ -3027,25 +3019,25 @@ def get_login(machine):
 
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Username: ").grid(row=0, column=1, padx=10, pady=10, sticky="W")
 
     link_user = ttk.Entry(frame_1)
 
-    link_user.grid(row=0, column=2, padx=10, sticky="WE")
+    link_user.grid(row=0, column=2, padx=10, pady=10, sticky="WE")
 
     link_user.focus_force()
 
-    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Password: ").grid(row=1, column=1, padx=10, pady=10, sticky="W")
 
     link_pass = ttk.Entry(frame_1, show="*")
 
     link_pass.grid(row=1, column=2, padx=10, sticky="WE")
 
 
-    tk.Label(frame_1, text="SSH Private PPK Key: ").grid(row=2, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="SSH Private PPK Key: ").grid(row=2, column=1, padx=10, pady=10, sticky="WNS")
 
     link_key = ttk.Entry(frame_1)
-    link_key.grid(row=2, column=2, padx=10, sticky="WE")
+    link_key.grid(row=2, column=2, padx=10, pady=10, sticky="WE")
 
     sett = iset.read()
     k_file = sett["putty"]["ssh_key"]
@@ -3055,7 +3047,7 @@ def get_login(machine):
         
 
     key_b = ttk.Button(frame_1, text="...", command=browse_key, width=4)
-    key_b.grid(row=2, column=3, padx=0, sticky="W")
+    key_b.grid(row=2, column=3, padx=0, pady=10, sticky="WNS")
     
     machines = []
 
@@ -3070,7 +3062,7 @@ def get_login(machine):
     test_b = ttk.Button(frame_3, text="Login", command=login)
     test_b.grid(column=2, row=0, sticky="SE", padx=10)
 
-    frame_3.grid(row=3, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
+    frame_3.grid(row=3, column=0, padx=20, pady=(0, 20), sticky="SWE", columnspan=2)
 
     frame_3.grid_columnconfigure(2, weight=1)
 
@@ -3227,8 +3219,12 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         # sys.exit()
         return None
 
-    #style = Style(theme='superhero')#darkly')
-    #boxRoot = style.master
+    boxRoot.update()
+    sv_ttk.set_theme("dark")
+    mode = win32mica.MICAMODE.DARK
+    HWND = windll.user32.GetParent(boxRoot.winfo_id())
+    win32mica.ApplyMica(HWND, mode)
+        
     
 
     boxRoot.title("Shortcut Creator")
@@ -3333,7 +3329,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         labelm.image = img
     labelm.grid(row=0, padx=10, pady=10, sticky="EW", rowspan=2)
 
-    tk.Label(frame_1, text="Shortcut Label: ").grid(row=0, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Shortcut Label: ").grid(row=0, column=1, padx=10, pady=10, sticky="W")
 
     link_label = ttk.Entry(frame_1)
     if name != None:
@@ -3342,17 +3338,17 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
     link_label.focus_force()
 
-    tk.Label(frame_1, text="Shortcut Command: ").grid(row=1, column=1, padx=10, sticky="W")
+    tk.Label(frame_1, text="Shortcut Command: ").grid(row=1, column=1, padx=10, pady=10, sticky="W")
 
     link_command = ttk.Entry(frame_1)
     if name != None:
         link_command.insert(0, cmd)
     link_command.grid(row=1, column=2, padx=10, sticky="WE")
 
-    tk.Label(frame_1, text="Run In: ").grid(row=2, column=1, padx=10, pady=7, sticky="W")
+    tk.Label(frame_1, text="Run In: ").grid(row=2, column=1, padx=10, pady=(15, 15), sticky="W")#pady old = 7
 
     machines = os.popen("wsl.exe -l -q").read()
-    machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+    machines = re.sub(r'[^a-zA-Z0-9_./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
     if len(machines) == 23:
@@ -3393,9 +3389,11 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
     reset_b.grid(row=3, column=1, padx=10, pady=0, sticky="EW", rowspan=1)
 
-    help_b = ttk.Button(frame_1, text="Help", command=help_short)
+    #help_b = ttk.Button(frame_1, text="Help", command=help_short)
 
-    help_b.grid(row=3, column=2, padx=10, pady=0, sticky="W", rowspan=1)
+    #help_b.grid(row=3, column=2, padx=10, pady=0, sticky="W", rowspan=1)
+
+    
 
     frame_1.grid_columnconfigure(2, weight=1)
 
@@ -3453,7 +3451,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     kill_chooser.grid(row=9, column=1, padx=10, sticky="WE")
 
     frame_2.grid(row=4, column=1, padx=10, pady=10, sticky="WE", columnspan=2)
-
+    
     frame_2.grid_columnconfigure(1, weight=1)
 
     frame_3 = tk.Frame(boxRoot)  # , padding="0.15i")
@@ -3461,17 +3459,23 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     close_b = ttk.Button(frame_3, text="Close", command=quitter)
     close_b.grid(column=0, row=0, sticky="SW", padx=10)
 
+    help_b = ttk.Button(frame_3, text="Help", command=help_short)
+    help_b.grid(column=1, row=0, sticky="SWE", padx=10, ipadx=5)
+
     save_b = ttk.Button(frame_3, text="Add to Start Menu", command=create)
-    save_b.grid(column=1, row=0, sticky="SWE", padx=10)
+    save_b.grid(column=2, row=0, sticky="SWE", padx=10)
 
     test_b = ttk.Button(frame_3, text="Test Configuration", command=test)
-    test_b.grid(column=2, row=0, sticky="SE", padx=10, ipadx=5)
+    test_b.grid(column=3, row=0, sticky="SE", padx=10, ipadx=5)
+
 
     frame_3.grid(row=2, column=0, padx=20, pady=20, sticky="SWE", columnspan=2)
 
-    frame_3.grid_columnconfigure(2, weight=1)
+    frame_3.grid_columnconfigure(3, weight=2)
+    
+    frame_3.grid_columnconfigure(2, weight=2)
 
-    frame_3.grid_columnconfigure(1, weight=1)
+    frame_3.grid_columnconfigure(1, weight=2)
 
     frame_3.grid_columnconfigure(0, weight=1)
 
@@ -3532,14 +3536,13 @@ def putty():
         boxRoot.running = False
         return None
 
-    hwnd2 = boxRoot.winfo_id()
+    boxRoot.update()
+    sv_ttk.set_theme("dark")
+    mode = win32mica.MICAMODE.DARK
+    HWND = windll.user32.GetParent(boxRoot.winfo_id())
+    win32mica.ApplyMica(HWND, mode)
 
-
-    # win32gui.SetWindowLong(hwnd2, win32con.GWL_EXSTYLE,
-    #                       win32gui.GetWindowLong(hwnd2, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
-    # win32gui.SetLayeredWindowAttributes(hwnd2, win32api.RGB(*(255, 0, 0)), 0, win32con.LWA_COLORKEY)
-
-    # blur.blur(hwnd2)
+    
 
     boxRoot.title("Graphical SSH Manager")
     boxRoot.iconname("Dialog")
@@ -4577,7 +4580,7 @@ elif args[1] == "--r" and "--ssh" not in args: # launch a shortcut
 
         #print("keep", keeper)
         machines = os.popen("wsl.exe -l -q").read()  # lines()
-        machines = re.sub(r'[^a-zA-Z0-9./\n-]', r'', machines).splitlines()
+        machines = re.sub(r'[^a-zA-Z0-9_./\n-]', r'', machines).splitlines()
         machines[:] = (value for value in machines if value != "")
 
         if machine not in machines:
@@ -4607,6 +4610,8 @@ elif args[1] == "--r" and "--ssh" in args:
         print("started")
         #start optic ui
         import ctypes
+        from ctypes import wintypes, windll
+        
         user32 = ctypes.windll.user32
         screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
         import OpticUI as ui

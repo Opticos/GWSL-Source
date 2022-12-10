@@ -50,7 +50,8 @@ custom_profiles = []
 
 # DPI Stuff
 hidpi = True
-    
+
+
 
 def rescan(systray=False):
     """Rescan config"""
@@ -163,6 +164,33 @@ def toggle_clipboard(systray, state):
             restart_server()
     except:
         logger.exception("Exception occurred - Cannot toggle clipboard")
+
+def toggle_audio(systray, state):
+    global audio_enabled
+    try:
+        sett = iset.read()
+        audio_enabled = sett["general"]["pulseaudio"]
+        if state == True:
+            phrase = "Enable"
+        else:
+            phrase = "Disable"
+        audio_enabled = state
+
+        menu = build_menu()
+        systray.update(menu_options=menu)
+
+            
+        sett["general"]["pulseaudio"] = audio_enabled
+        iset.set(sett)
+        
+        #print(phrase)
+        if audio_enabled:
+            start_audio()
+        else:
+            kill_audio()
+        
+    except:
+        logger.exception("Exception occurred - Cannot toggle audio")
 
 
 def config(systray):
@@ -339,6 +367,20 @@ def build_menu():
                 phrase = "Off"
             menu.append((f"Shared Clipboard ({phrase})", ico, toggle_clipboard, command))
 
+        # Audio hot-toggle testing
+        
+        if audio_enabled:
+            ico = icon("check")
+            command = False
+            phrase = "On"
+        else:
+            ico = icon("quit")
+            command = True
+            phrase = "Off"
+        menu.append((f"Audio Support ({phrase})", ico, toggle_audio, command))
+
+
+            
         menu += dpi_options
         menu += options
         return menu
@@ -460,6 +502,7 @@ def start_audio():
     else:
         print("Audio Disabled")
 
+
 def start_server():
     """Starts the GWSL services"""
     global server_PID
@@ -469,7 +512,17 @@ def start_server():
             default_arguments = default_profiles[display_mode]
             if clipboard:
                 default_arguments.append("-clipboard")
-                default_arguments.append("-primary")
+
+                # Allow disabling primary selection
+                sett = iset.read()
+                primary_disabled = sett["general"]["force_disable_primary"]
+                
+                if primary_disabled:
+                    #print("Primary is disabled")
+                    default_arguments.append("-noprimary")
+                else:
+                    #print("Primary is enabled")
+                    default_arguments.append("-primary")
             else:
                 default_arguments.append("-noclipboard")
                 default_arguments.append("-noprimary")
@@ -478,10 +531,15 @@ def start_server():
         hidpi_str = ""
         if hidpi == False:
             hidpi_str = "_lowdpi"
+
+
+            
         proc = subprocess.Popen([f"VCXSRV/GWSL_vcxsrv{hidpi_str}.exe"] + default_arguments)
         server_PID = proc.pid
+
     except:
         logger.exception("Exception occurred - Cannot Start VcXsrv")
+
 
 
 def get_running():
@@ -583,6 +641,7 @@ def main():
             #print(time.time() - timer)
             if time.time() - timer > 4:
                 timer = time.time()
+        
                 if not get_running():
                     # In case someone closes a single-window server... restart as multi window.
                     if display_mode == "s":

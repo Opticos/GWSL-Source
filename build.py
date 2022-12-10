@@ -3,7 +3,7 @@ import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "141 WIN32 build 3"
+version = "145 WIN32 build 1"
 
 
 print("\nBuilding Dashboard...")
@@ -39,7 +39,7 @@ except:
     os.mkdir(f"dist/GWSL_{version}")
 
 print("Copying Assets...")
-folders = ["assets", "locale", "PULSE", "PUTTY", "VCXSRV"]
+folders = ["assets", "locale", "PULSE", "PUTTY", "VCXSRV", "sv_ttk"]
 for folder in folders:
     print("Merging:", folder)
     shutil.copytree(folder, f"dist/GWSL_{version}/" + str(folder))
