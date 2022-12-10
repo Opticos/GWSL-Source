@@ -25,6 +25,8 @@ GetDC = ctypes.windll.user32.GetDC
 CreateCompatibleBitmap = ctypes.windll.gdi32.CreateCompatibleBitmap
 GetSysColorBrush = ctypes.windll.user32.GetSysColorBrush
 
+CreateSolidBrush = ctypes.windll.gdi32.CreateSolidBrush
+
 GetStockObject = ctypes.windll.gdi32.GetStockObject
 
 
