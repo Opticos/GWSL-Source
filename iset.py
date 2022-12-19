@@ -8,7 +8,7 @@ def create(path):
     with open(path, "w") as obj:
         app = {"conf_ver": 7,
                "gwsl_ver": "1.4.5",
-               "general": {"pulseaudio":True, "force_disable_primary":False, "clipboard": True, "start_menu_mode": False, "shell_gui": "cmd", "acrylic_enabled": True},
+               "general": {"pulseaudio":True, "hide_donation_reminder":False, "force_disable_primary":False, "clipboard": True, "start_menu_mode": False, "shell_gui": "cmd", "acrylic_enabled": True},
                "graphics": {"window_mode": "multi", "hidpi": True},
                "putty": {"ip": None, "ssh_key": None},
                "distro_blacklist": ["docker"],

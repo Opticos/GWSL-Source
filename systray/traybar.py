@@ -8,6 +8,21 @@ import win32gui
 import win32con
 import win32api
 
+import blur
+import ctypes
+
+class _MARGINS(ctypes.Structure):
+    _fields_ = [("cxLeftWidth", ctypes.c_int),
+                ("cxRightWidth", ctypes.c_int),
+                ("cyTopHeight", ctypes.c_int),
+                ("cyBottomHeight", ctypes.c_int)
+                ]
+
+            
+
+
+        
+
 class SysTrayIcon(object):
     """
     menu_options: tuple of tuples (menu text, menu icon path or None, function name)
@@ -118,10 +133,7 @@ class SysTrayIcon(object):
                                       0,
                                       self._hinst,
                                       None)
-        UpdateWindow(self._hwnd)
-
-        win32api.SendMessage(self._hwnd, win32con.WM_ERASEBKGND)
-        
+        UpdateWindow(self._hwnd)        
         self._refresh_icon()
 
     def _message_loop_func(self):
@@ -173,9 +185,6 @@ class SysTrayIcon(object):
             """
             self._menu = CreatePopupMenu()
             self._create_menu(self._menu, self._menu_options)
-            
-            
-            
             
         self._refresh_icon()
 
@@ -281,6 +290,7 @@ class SysTrayIcon(object):
             self._create_menu(self._menu, self._menu_options)
             #SetMenuDefaultItem(self._menu, 1000, 0)
 
+            
 
         pos = POINT()
         GetCursorPos(ctypes.byref(pos))
@@ -288,9 +298,8 @@ class SysTrayIcon(object):
         SetForegroundWindow(self._hwnd)
 
 
-        #mode = win32mica.MICAMODE.DARK
-        #win32mica.ApplyMica(self._menu, mode)
-    
+        
+        
         TrackPopupMenu(self._menu,
                        TPM_LEFTALIGN,
                        pos.x,
@@ -298,6 +307,8 @@ class SysTrayIcon(object):
                        0,
                        self._hwnd,
                        None)
+        
+        
         
         PostMessage(self._hwnd, WM_NULL, 0, 0)
 

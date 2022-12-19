@@ -4,7 +4,7 @@ Paul-E/Opticos Website:
 https://sites.google.com/bartimee.com/opticos-studios/home
 
 #GWSL --
-Copyright 2021 Paul-E/Opticos Studios
+Copyright 2022 Paul-E/Opticos Studios
 
 Modified MIT License
 

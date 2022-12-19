@@ -27,6 +27,8 @@ GetSysColorBrush = ctypes.windll.user32.GetSysColorBrush
 
 CreateSolidBrush = ctypes.windll.gdi32.CreateSolidBrush
 
+GetWindow = ctypes.windll.user32.GetWindow
+
 GetStockObject = ctypes.windll.gdi32.GetStockObject
 
 

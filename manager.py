@@ -40,7 +40,7 @@ import sv_ttk
 import win32mica
 
 
-BUILD_MODE = "WIN32"  # MSIX or WIN32
+BUILD_MODE = "MSIX"  # MSIX or WIN32
 
 version = "1.4.5"
 
@@ -51,6 +51,9 @@ show_ad = False
 debug = False
 
 args = sys.argv
+
+
+
 
 frozen = 'not'
 if getattr(sys, 'frozen', False):
@@ -161,6 +164,11 @@ def set_update():
     # 1.4.5
     try:
         new_iset["general"]["force_disable_primary"] = old_iset["general"]["force_disable_primary"]
+    except:
+        pass
+
+    try:
+        new_iset["general"]["hide_donation_reminder"] = old_iset["general"]["hide_donation_reminder"]
     except:
         pass
     
@@ -582,6 +590,10 @@ if "--r" not in args:
             back = mini1.copy()#
             back = pygame.transform.scale(back, screensize)
 
+
+        hide = sett["general"]["hide_donation_reminder"]
+        show_donate = not hide
+
     except Exception as e:
         logger.exception("Exception occurred - Cannot Init Display")
 
@@ -930,6 +942,7 @@ def choose_machine():
                 s2 = False
                 ni = i[0].upper() + i[1:]
                 ni = ni.replace("-", " ")
+                ni = ni.replace("_", " ")
                 txt = title_font.render(ni, True, white)
 
                 if hover[0] > (WIDTH / 2) - (txt.get_width() / 2) - ui.inch2pix(0.2) and hover[0] < (WIDTH / 2) - (
@@ -991,7 +1004,7 @@ def about():
     Handles building and displaying the about window
     :return:
     """
-    global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask
+    global selected, canvas, WIDTH, HEIGHT, mini, back, lumen, mask, show_donate
 
     animator.animate("choose", [100, 0])
     machine = False
@@ -1090,7 +1103,7 @@ def about():
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
 
         machines = ["GWSL Version" + " " + str(version),
-                    "© Copyright Paul-E/Opticos Studios 2021",
+                    "© Copyright Paul-E/Opticos Studios 2022",
                     "GWSL Uses:",
                     "Python - Pyinstaller - SDL",
                     "VCXSRV - Putty - Pillow",
@@ -1101,8 +1114,12 @@ def about():
                     "View Licenses",
                     "Edit Configuration",
                     "Allow GWSL Through The Firewall",
-                    "GWSL Discord Server",
                     "View Logs"]
+
+        if show_donate:
+            machines.append("Hide Donation Reminder")
+        else:
+            machines.append("Please Consider Donating ♥")
 
         if BUILD_MODE == "WIN32":
             machines[0] = _("GWSL Version ") + str(version) + " (win32)"
@@ -1113,7 +1130,7 @@ def about():
             for i in machines:
                 if i == "View Licenses" or i == "Visit Opticos Studios Website" or i == "Edit Configuration" or \
                         i == "View Logs" or i == "Add to Startup" or i == "Allow GWSL Through The Firewall" or \
-                        i == "GWSL Discord Server" or i == "More Apps!":
+                        i == "Please Consider Donating" or i == "More Apps!":
                     txt = title_font.render(i, True, accent)  # [0, 120, 250])
                 else:
                     txt = title_font.render(i, True, white)
@@ -1144,8 +1161,13 @@ def about():
                                                 'to communicate with WSL version 2. Please allow public access to "GWSL_vcxsrv.exe", '
                                                 '"GWSL_vcxsrv_lowdpi.exe", and "pulseaudio.exe" for audio. You will need Admin Priviledges to do this.'),
                                                  title=_('Allow GWSL Firewall Access'), buttons=["Ok"])
-                            elif i == "GWSL Discord Server":
-                                webbrowser.get('windows-default').open("https://discord.com/invite/VkvNgkH")
+                            elif i == "Please Consider Donating ♥":
+                                webbrowser.get('windows-default').open('https://opticos.github.io/gwsl/#donate')
+                            elif i == "Hide Donation Reminder":
+                                sett = iset.read()
+                                sett["general"]["hide_donation_reminder"] = True
+                                iset.set(sett)
+                                show_donate = False
                                 
 
                 h += ui.inch2pix(0.2) + txt.get_height()  # used to be 0.23
@@ -1292,8 +1314,10 @@ def announce():
 
         txt = title_font.render(_("Get it on the Microsoft Store"), True, accent)
 
+
+        d = ui.inch2pix(0.3)
         txt.set_alpha(int(v * 255))
-        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, WIDTH / 2 + ui.inch2pix(2.2) - int(ui.inch2pix(0.1) * v)])
+        canvas.blit(txt, [WIDTH / 2 - txt.get_width() / 2, WIDTH / 2 + ui.inch2pix(2.2) - int(d * v)])
 
         if mouse != False:
             if mouse[0] > WIDTH / 2 - txt.get_width() / 2 - ui.inch2pix(0.2) and mouse[
@@ -1306,7 +1330,7 @@ def announce():
                     
         
 
-        d = ui.inch2pix(0.2)
+        d = ui.inch2pix(0.6)
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
 
         
@@ -1329,7 +1353,7 @@ def announce():
                     machine = None
                     animator.animate("choose", [0, 0])
 
-
+        d = ui.inch2pix(0.8)
         txt = title_font.render(_("Don't Show Again"), True, white)
         txt.set_alpha(int(v * 255))
         canvas.blit(txt,
@@ -2191,6 +2215,7 @@ def app_launcher(machine):
 
         ni = str(machine)[0].upper() + str(machine)[1:]
         ni = ni.replace("-", " ")
+        ni = ni.replace("_", " ")
         txt = title_font.render("Apps On " + str(ni), True, white)
 
         w = ui.inch2pix(0.5)  # WIDTH / 2 - txt.get_width() / 2 + ui.inch2pix(0.1)
@@ -2950,10 +2975,15 @@ def get_login(machine):
         boxRoot.withdraw()
 
     boxRoot.update()
-    sv_ttk.set_theme("dark")
-    mode = win32mica.MICAMODE.DARK
-    HWND = windll.user32.GetParent(boxRoot.winfo_id())
-    win32mica.ApplyMica(HWND, mode)
+
+
+    if fade == False:
+        sv_ttk.set_theme("dark")
+        mode = win32mica.MICAMODE.DARK
+        HWND = windll.user32.GetParent(boxRoot.winfo_id())
+        win32mica.ApplyMica(HWND, mode)
+
+        
     
 
     def quitter():
@@ -3220,18 +3250,23 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         return None
 
     boxRoot.update()
-    sv_ttk.set_theme("dark")
-    mode = win32mica.MICAMODE.DARK
-    HWND = windll.user32.GetParent(boxRoot.winfo_id())
-    win32mica.ApplyMica(HWND, mode)
+
+    if fade == False:
+        sv_ttk.set_theme("dark")
+        mode = win32mica.MICAMODE.DARK
+        HWND = windll.user32.GetParent(boxRoot.winfo_id())
+        win32mica.ApplyMica(HWND, mode)
+
+
+
         
     
 
     boxRoot.title("Shortcut Creator")
     boxRoot.iconname("Dialog")
-    width, height = ui.inch2pix(4.3), ui.inch2pix(4)
+    width, height = ui.inch2pix(4.5), ui.inch2pix(4)
     
-    boxRoot.minsize(420, 480)
+    boxRoot.minsize(440, 480)
     boxRoot.minsize(width, height)
 
     boxRoot.iconbitmap(asset_dir + "icon.ico")
@@ -3240,7 +3275,7 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     boxRoot.running = True
     boxRoot.protocol("WM_DELETE_WINDOW", quitter)
 
-    boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - width / 2, screensize[1] / 2 - height / 2 - ui.inch2pix(0.5)))
+    boxRoot.geometry('+%d+%d' % (screensize[0] / 2 - width / 2, screensize[1] / 2 - height / 2 - ui.inch2pix(1.5)))
 
     lbl = tk.Label(boxRoot, text="Create a Start Menu Shortcut:", justify=CENTER)  # , font=("Helvetica", 16))
     lbl.grid(row=0, padx=10, pady=10, sticky="EW")
@@ -3537,10 +3572,12 @@ def putty():
         return None
 
     boxRoot.update()
-    sv_ttk.set_theme("dark")
-    mode = win32mica.MICAMODE.DARK
-    HWND = windll.user32.GetParent(boxRoot.winfo_id())
-    win32mica.ApplyMica(HWND, mode)
+    if fade == False:
+        sv_ttk.set_theme("dark")
+        mode = win32mica.MICAMODE.DARK
+        HWND = windll.user32.GetParent(boxRoot.winfo_id())
+        win32mica.ApplyMica(HWND, mode)
+
 
     
 
@@ -4040,15 +4077,23 @@ def draw(canvas, mouse=False):
                    [_("Linux Apps"), icons["app_list"], apper],
                    [_("Linux Files"), icons["folder"], browse_wsl],
                    [_("Linux Shell"), icons["shell"], shells],
-                   [_("Graphical SSH Connection"), icons["network"], putty],
+                   [_("Graphical SSH Connection"), icons["network"], putty]]#,
                    #[_("More Apps"), icons["network"], putty],
-                   [_("Donate With PayPal etc."), icons["heart"], donate]]
+                   #[_("Please Consider Donating"), icons["heart"], donate]]
+
+        if show_donate:
+            buttons.append([_("Please Consider Donating"), icons["heart"], donate])
     else:
         buttons = [[_("Graphical SSH Connection"), icons["network"], putty],
-                   [_("Install WSL for More Features"), icons["question"], wsl_installer],
+                   [_("Install WSL for More Features"), icons["question"], wsl_installer]]#,
                    #[_("Get Help on Discord."), icons["discord"], discorder],
-                   [_("Donate With PayPal etc."), icons["heart"], donate]]  # 
+                   #[_("Please Consider Donating"), icons["heart"], donate]]  # 
+        if show_donate:
+            buttons.append([_("Please Consider Donating"), icons["heart"], donate])
 
+
+    
+    
     selected = False
     q = 0
     s2 = False
