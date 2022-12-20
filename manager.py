@@ -3258,6 +3258,9 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
         mode = win32mica.MICAMODE.DARK
         HWND = windll.user32.GetParent(boxRoot.winfo_id())
         win32mica.ApplyMica(HWND, mode)
+        
+
+
 
 
 
@@ -3266,8 +3269,8 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
 
     boxRoot.title("Shortcut Creator")
     boxRoot.iconname("Dialog")
-    width, height = ui.inch2pix(4.5), ui.inch2pix(4)
     
+    width, height = ui.inch2pix(4.5), ui.inch2pix(4)
     boxRoot.minsize(440, 480)
     boxRoot.minsize(width, height)
 
