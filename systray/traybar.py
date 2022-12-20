@@ -9,6 +9,7 @@ import win32con
 import win32api
 
 import blur
+import rounder
 import ctypes
 
 class _MARGINS(ctypes.Structure):
@@ -349,7 +350,10 @@ class SysTrayIcon(object):
         
         hbmOld = SelectObject(hdcBitmap, hbm)
         # Fill the background.
-        brush = CreateSolidBrush(0x00F9F9F9)#GetSysColorBrush(win32con.COLOR_WINDOW)	#COLOR_MENU)
+        if rounder.round(self._hwnd) == True:
+            brush = CreateSolidBrush(0x00F9F9F9)#GetSysColorBrush(win32con.COLOR_WINDOW)	#COLOR_MENU)
+        else:
+            brush = GetSysColorBrush(win32con.COLOR_WINDOW)
         FillRect(hdcBitmap, ctypes.byref(RECT(0, 0, ico_x + 10, ico_y + 10)), brush)
         # draw the icon
         DrawIconEx(hdcBitmap, 5, 5, hicon, ico_x, ico_y, 0, 0, DI_NORMAL)
