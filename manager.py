@@ -405,6 +405,8 @@ if "--r" not in args:
         if int(platform.release()) >= 8:
             ctypes.windll.shcore.SetProcessDpiAwareness(True)
 
+
+
         from win32api import GetMonitorInfo, MonitorFromPoint
         from pathlib import Path
 

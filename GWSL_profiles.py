@@ -15,6 +15,7 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 import win32mica
 import sv_ttk
+import rounder
 
 
 def add(asset_dir):
@@ -46,10 +47,13 @@ def add(asset_dir):
 
     
     boxRoot.update()
-    sv_ttk.set_theme("dark")
     mode = win32mica.MICAMODE.DARK
     HWND = ctypes.windll.user32.GetParent(boxRoot.winfo_id())
-    win32mica.ApplyMica(HWND, mode)
+
+    if rounder.round(HWND) == True:
+        sv_ttk.set_theme("dark")
+        win32mica.ApplyMica(HWND, mode)
+
 
     
     boxRoot.title("XServer Profile Creator")
