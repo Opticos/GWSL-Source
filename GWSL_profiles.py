@@ -33,8 +33,6 @@ def add(asset_dir):
         boxRoot.withdraw()
 
     def quitter():
-        print("quit")
-        
         boxRoot.running = False
         boxRoot.quit()
         boxRoot.destroy()

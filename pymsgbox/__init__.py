@@ -37,6 +37,7 @@ TODO Roadmap:
 
 import sys
 
+
 RUNNING_PYTHON_2 = sys.version_info[0] == 2
 
 # Because PyAutoGUI requires PyMsgBox but might be installed on systems
@@ -209,6 +210,9 @@ def _buttonbox(msg, title, choices, root=None, timeout=None):
         boxRoot.quit()
         boxRoot.destroy()
         return None
+
+
+
     boxRoot.title(title)
     boxRoot.iconname("Dialog")
     #icon = tk.PhotoImage(height=16, width=16)
@@ -353,6 +357,7 @@ def __fillablebox(msg, title="", default="", mask=None, root=None, timeout=None)
         boxRoot.quit()
         boxRoot.destroy()
         return None
+        
     
     boxRoot.title(title)
     boxRoot.iconname("Dialog")
