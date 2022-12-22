@@ -5,6 +5,7 @@ import time
 
 root = None
 
+
 from PIL import Image
 import PIL
 import PIL.ImageTk
@@ -15,7 +16,11 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 import win32mica
 import sv_ttk
-import rounder
+
+try:
+    windows_11 = sys.getwindowsversion().build > 20000
+except:
+    windows_11 = False
 
 
 def add(asset_dir):
@@ -28,9 +33,14 @@ def add(asset_dir):
         boxRoot.withdraw()
 
     def quitter():
+        print("quit")
+        
+        boxRoot.running = False
         boxRoot.quit()
         boxRoot.destroy()
-        boxRoot.running = False
+
+        
+        
         return None
 
     def login(*args):
@@ -45,14 +55,17 @@ def add(asset_dir):
             boxRoot.destroy()
             # boxRoot.running = False
 
-    
+
     boxRoot.update()
     mode = win32mica.MICAMODE.DARK
     HWND = ctypes.windll.user32.GetParent(boxRoot.winfo_id())
 
-    if rounder.round(HWND) == True:
-        sv_ttk.set_theme("dark")
-        win32mica.ApplyMica(HWND, mode)
+    if windows_11 == True:
+        try:
+            sv_ttk.set_theme("dark")
+            win32mica.ApplyMica(HWND, mode)
+        except:
+            pass
 
 
     

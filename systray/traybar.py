@@ -9,7 +9,7 @@ import win32con
 import win32api
 
 import blur
-import rounder
+import sys
 import ctypes
 
 class _MARGINS(ctypes.Structure):
@@ -19,8 +19,10 @@ class _MARGINS(ctypes.Structure):
                 ("cyBottomHeight", ctypes.c_int)
                 ]
 
-            
-
+try:
+    windows_11 = sys.getwindowsversion().build > 20000
+except:
+    windows_11 = False
 
         
 
@@ -350,7 +352,7 @@ class SysTrayIcon(object):
         
         hbmOld = SelectObject(hdcBitmap, hbm)
         # Fill the background.
-        if rounder.round(self._hwnd) == True:
+        if windows_11 == True:
             brush = CreateSolidBrush(0x00F9F9F9)#GetSysColorBrush(win32con.COLOR_WINDOW)	#COLOR_MENU)
         else:
             brush = GetSysColorBrush(4)

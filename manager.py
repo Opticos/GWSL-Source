@@ -1,6 +1,6 @@
 # GWSL Dashboard *lets do this again*
 
-# Copyright Paul-E/Opticos Studios 2022
+# Copyright Paul-E/Opticos Studios 2022-2023
 # https://sites.google.com/bartimee.com/opticos-studios/home
 
 # Dedicated to the Sacred Heart of Jesus
