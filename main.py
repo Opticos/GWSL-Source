@@ -8,7 +8,7 @@ import keyboard
 import psutil
 
 import GWSL_profiles as profile
-# Copyright Paul-E/Opticos Studios 2021
+# Copyright Paul-E/Opticos Studios 2022-2023
 # https://opticos.github.io/gwsl/
 import iset
 import pymsgbox
