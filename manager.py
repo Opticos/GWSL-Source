@@ -33,6 +33,7 @@ from winreg import *
 from exe_layer import cmd
 import logging
 import ipaddress
+import rounder
 
 
 
@@ -1105,7 +1106,7 @@ def about():
         h = ui.inch2pix(0.8) + txt.get_height() + ui.inch2pix(0)
 
         machines = ["GWSL Version" + " " + str(version),
-                    "© Copyright Paul-E/Opticos Studios 2022",
+                    "© Copyright Paul-E/Opticos Studios 2022-2023",
                     "GWSL Uses:",
                     "Python - Pyinstaller - SDL",
                     "VCXSRV - Putty - Pillow",
@@ -2968,6 +2969,7 @@ def spawn_n_run(machine, command, w_mode, w_clipboard, GTK, QT, appends, cmd=Fal
 
 			
 def get_login(machine):
+    global fade
     if root:
         root.withdraw()
         boxRoot = tk.Toplevel(master=root)  # , fg="red", bg="black")
@@ -2977,12 +2979,16 @@ def get_login(machine):
         boxRoot.withdraw()
 
     boxRoot.update()
-
+    HWND = windll.user32.GetParent(boxRoot.winfo_id())
+    
+    if rounder.round(HWND) == True:
+        fade = False
+    else:
+        fade = True
 
     if fade == False:
         sv_ttk.set_theme("dark")
         mode = win32mica.MICAMODE.DARK
-        HWND = windll.user32.GetParent(boxRoot.winfo_id())
         win32mica.ApplyMica(HWND, mode)
 
         
