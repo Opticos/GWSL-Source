@@ -41,7 +41,7 @@ import sv_ttk
 import win32mica
 
 
-BUILD_MODE = "MSIX"  # MSIX or WIN32
+BUILD_MODE = "WIN32"  # MSIX or WIN32
 
 version = "1.4.5"
 
@@ -2738,6 +2738,7 @@ def create_shortcut(command, name, icon):
             print(sys.executable)
             shortcut.WorkingDirectory = home
 
+
         shortcut.Arguments = args
 
         shortcut.IconLocation = str(icon)
@@ -2749,7 +2750,7 @@ def create_shortcut(command, name, icon):
         if os.path.exists(shortcut_path) == True:
             print("Shortcut Successfully Created")
         print(subprocess.getoutput('copy "' + shortcut_path + '" "' + winshell.start_menu() + '"'))
-
+        
     except Exception as e:
         logger.exception("Exception occurred - Cannot Create Shortcut")
 
@@ -4171,6 +4172,8 @@ def draw(canvas, mouse=False):
 
 
         start += ui.inch2pix(0.22) + ui.inch2pix(0.5) - ui.inch2pix(0.15) #last used to be 0.15
+        if show_donate == False:
+            start += ui.inch2pix(0.1)
         s += ui.inch2pix(0.17) #used to be 0.17
         q += 1
 
