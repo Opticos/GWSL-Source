@@ -4173,7 +4173,7 @@ def draw(canvas, mouse=False):
 
         start += ui.inch2pix(0.22) + ui.inch2pix(0.5) - ui.inch2pix(0.15) #last used to be 0.15
         if show_donate == False:
-            start += ui.inch2pix(0.1)
+            start += ui.inch2pix(0.08)
         s += ui.inch2pix(0.17) #used to be 0.17
         q += 1
 
