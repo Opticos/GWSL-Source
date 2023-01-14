@@ -826,6 +826,11 @@ def choose_machine():
     machines = re.sub(r'[^a-zA-Z0-9_./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
+    # Hide this if wsl not installed?
+    if "CopyrightcMicrosoftCorporation.All".lower() in str(machines).lower():
+        machines = []
+        print("no wsl")
+
     
     sett = iset.read()
 
@@ -3398,6 +3403,11 @@ def shortcut(name=None, cmd=None, mach=None, icn=None):
     machines = re.sub(r'[^a-zA-Z0-9_./\n-]', r'', machines).splitlines()
     machines[:] = (value for value in machines if value != "")
 
+    # Hide this if wsl not installed?
+    if "CopyrightcMicrosoftCorporation.All".lower() in str(machines).lower():
+        machines = []
+        print("no wsl")
+        
     if len(machines) == 23:
         machines = []
     sett = iset.read()
