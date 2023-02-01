@@ -9,7 +9,7 @@ GWSL automates the process of running X on top of WSL and over SSH:
 
 Here is a video demo: https://youtu.be/S6GXBEQ5KzA
 
-This is the actual code for GWSL. And some premade binaries.
+This is the actual code for GWSL. And some premade binaries (Note due to time constraints, I temporarily do not have the ability to publish the newest version on GitHub so the releases tab points to the Microsoft Store).
 
 ## Downloading
 
