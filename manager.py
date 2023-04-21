@@ -43,7 +43,7 @@ import win32mica
 
 BUILD_MODE = "WIN32"  # MSIX or WIN32
 
-version = "1.4.5"
+version = "1.4.6"
 
 lc_name = "Licenses145.txt"
 
@@ -588,9 +588,9 @@ if "--r" not in args:
             try:
                 mini1 = pygame.image.load(os.getenv('APPDATA') + r"\Microsoft\Windows\Themes\TranscodedWallpaper").convert()
             except:
-                bak = asset_dir + random.choice(["1", "2", "3"]) + ".jpg"
-                mini1 = pygame.image.load(bak).convert()
-            back = mini1.copy()#
+                mini1 = pygame.Surface(screensize)
+
+            back = mini1.copy()
             back = pygame.transform.scale(back, screensize)
 
 
