@@ -779,7 +779,7 @@ def get_ip(machine):
     :return:
     """
     #print("get_ip")
-    cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""" + '"'
+    cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """(ip -4 route show default | cut -d' ' -f3)""" + '"'
 
     
     #print(cmd)
@@ -795,7 +795,7 @@ def get_ip(machine):
     try:
         ipa = ipaddress.ip_address(result)
     except:
-        cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""" + '"'
+        cmd = "wsl.exe -d " + str(machine) + ' ' + "/bin/sh -c " + '"' + """echo $(ip -4 route show default | cut -d' ' -f3)""" + '"'
         result = os.popen(cmd).readlines()[0]
         #result = "localhost"
     
@@ -803,7 +803,7 @@ def get_ip(machine):
     #print("ipa", ipa, "ipd")
 
     
-    #result = runo3(machine, """echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')""")
+    #result = runo3(machine, """echo $(ip -4 route show default | cut -d' ' -f3)""")
     #print("ip", result, "done")
     return result  # [0][:-1]
 
