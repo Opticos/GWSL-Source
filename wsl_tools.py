@@ -1,6 +1,4 @@
-import os
 import subprocess
-import time
 
 script = None
 
@@ -18,7 +16,7 @@ def pat_con(path):
 
 def get_themes(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listthemes'
-    read = os.popen(cmd).read()
+    read = subprocess.check_output(cmd).decode("UTF-8")
     read = read.split(":theme:")
     read[:] = (value for value in read if value != "\n")
     read[:] = (value for value in read if value != "\n\n")
@@ -63,7 +61,7 @@ class WSLApp: #Credit to @sanzoghenzo on github. I did some adapting
 def get_apps(machine, logger=None):
     #first make sure the machine is booted. Scanning should do the trick
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listapps'
-    read = os.popen(cmd).read()
+    read = subprocess.check_output(cmd).decode("UTF-8")
     apps = read.splitlines()
     #apps.remove("")
     """
@@ -97,7 +95,7 @@ def get_apps_old(machine):
     # except:
     #    pass
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" listappsold'
-    read = os.popen(cmd).read()
+    read = subprocess.check_output(cmd).decode("UTF-8")
     # print("copy")
     # cmd2 = 'wsl.exe -d ' + str(machine) + ' cp ~/.scanapps ' + str(pat_con(script[:-15]))
     # subprocess.getoutput(cmd2)
@@ -144,7 +142,7 @@ def get_apps_old(machine):
 
 def export_v(machine, name, value, shell="bash"):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + f'" export-v {name} {value} {shell}'
-    print(os.popen(cmd).read()[:-1])
+    print(subprocess.check_output(cmd).decode("UTF-8")[:-1])
 
 def gtk(machine, scale, shell="bash"):
     export_v(machine, "GDK_SCALE", scale, shell=shell)
@@ -164,7 +162,7 @@ def qt(machine, scale, shell="bash"):
 
 def dbus(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" dbus'
-    print(os.popen(cmd).read()[:-1])
+    print(subprocess.check_output(cmd).decode("UTF-8")[:-1])
 
 
 
@@ -173,19 +171,20 @@ def dbus(machine):
 def export(machine, version, shell="bash"):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-d ' + str(version) + " " + shell
     print(cmd)
-    print(os.popen(cmd).read()[:-1])
+    print(subprocess.check_output(cmd).decode("UTF-8")[:-1])
 
 def export_audio(machine, version, shell="bash"):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" export-a ' + str(version) + " " + shell
     print(cmd)
-    print(os.popen(cmd).read()[:-1])
+    print(subprocess.check_output(cmd).decode("UTF-8")[:-1])
 
 def cleanup(machine):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" cleanup'
     print(cmd)
-    print(os.popen(cmd).read()[:-1])
+    print(subprocess.check_output(cmd).decode("UTF-8")[:-1])
     
     
 def profile(machine, shell="bash"):
     cmd = 'wsl.exe -d ' + str(machine) + ' "' + str(pat_con(script)) + '" profile ' + shell
-    return os.popen(cmd).read()
+    return subprocess.check_output(cmd).decode("UTF-8")
+
