@@ -16,6 +16,11 @@ on:
         # Input has to be provided for the workflow to run
         required: true
 
+      version:
+        description: "Version"
+        default: "145_MSIX_build_3"
+        required: true
+
 jobs:
   build:
 
@@ -30,24 +35,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pygame
-          pip install pywin32
-          pip install winshell
-          pip install Pillow
-          pip install imtools
-          pip install infi.systray
-          pip install keyboard
-          pip install pyinstaller==3.5
-      - name: Building GWSL_service...
-        run: |
-          echo "pyinstaller"
-          #python pyinstaller.....
-      - name: Building GWSL...
-        run: |
-          echo "pyinstaller"
-      - name: Merging Results...
-        run: |
-          echo "pyinstaller"
-      - name: Copying Assets...
-        run: |
-          echo "pyinstaller"
+          pip install -r requirements.txt
+
+      - name: Building 
+        run: python build.py ${{ github.event.inputs.version }}
+
+      - name: Zip build artifacts
+        run: powershell Compress-Archive -Path "dist/GWSL_${{ github.event.inputs.version }}" -DestinationPath "dist/GWSL_${{ github.event.inputs.version }}.zip"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: gwsl-build
+          path: dist/GWSL_${{ github.event.inputs.version }}.zip

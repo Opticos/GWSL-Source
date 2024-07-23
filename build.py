@@ -1,9 +1,10 @@
+import sys
 import os
 import PyInstaller.__main__
 import shutil
 from distutils.dir_util import copy_tree
 
-version = "145 MSIX build 3"
+version = sys.argv[1]
 
 
 print("\nBuilding Dashboard...")
@@ -13,7 +14,7 @@ PyInstaller.__main__.run([
     '-w',
     '-y',
     '-n=GWSL',
-    #'--hidden-import=pkg_resources.py2_warn'
+    '--hidden-import=pkg_resources.py2_warn'
 ])
 
 
@@ -26,7 +27,7 @@ PyInstaller.__main__.run([
     '-n=GWSL_service',
     '--hidden-import=pkg_resources',
     '--hidden-import=infi.systray',
-    #'--hidden-import=pkg_resources.py2_warn'
+    '--hidden-import=pkg_resources.py2_warn'
 ])
 
 
